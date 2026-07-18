@@ -574,6 +574,9 @@
         .coming-soon p {
             color: var(--text-light);
         }
+        .coming-soon .btn {
+            margin-top: 15px;
+        }
 
         /* ===== SKELETON ===== */
         .skeleton {
@@ -972,21 +975,20 @@
         .catch(() => {});
 
     // ============================================
-    // RENDER COMING SOON
+    // RENDER FUNCTIONS
     // ============================================
-    function renderComingSoon(container, message) {
+
+    function renderComingSoon(container, message, linkText, linkUrl) {
         container.innerHTML = `
             <div class="coming-soon">
                 <i class="fas fa-clock"></i>
                 <h3>Coming Soon</h3>
                 <p>${message || 'Check back soon for updates!'}</p>
+                ${linkText && linkUrl ? `<a href="${linkUrl}" class="btn btn-secondary">${linkText}</a>` : ''}
             </div>
         `;
     }
 
-    // ============================================
-    // RENDER SKELETON
-    // ============================================
     function renderSkeleton(container, type) {
         const skeletons = {
             face: `
@@ -1078,11 +1080,11 @@
                     </div>
                 `;
             } else {
-                renderComingSoon(faceContainer, 'Meet our featured member soon!');
+                renderComingSoon(faceContainer, 'Meet our featured member soon!', 'View All', '/about');
             }
         })
         .catch(() => {
-            renderComingSoon(faceContainer, 'Unable to load. Please refresh.');
+            renderComingSoon(faceContainer, 'Unable to load. Please refresh.', 'Refresh', '#');
         });
 
     // ============================================
@@ -1104,11 +1106,11 @@
                     </div>
                 `;
             } else {
-                renderComingSoon(prayerContainer, 'A new prayer will be posted soon!');
+                renderComingSoon(prayerContainer, 'A new prayer will be posted soon!', 'Contact Us', '/contact');
             }
         })
         .catch(() => {
-            renderComingSoon(prayerContainer, 'Unable to load. Please refresh.');
+            renderComingSoon(prayerContainer, 'Unable to load. Please refresh.', 'Refresh', '#');
         });
 
     // ============================================
@@ -1134,11 +1136,11 @@
                     </div>
                 `;
             } else {
-                renderComingSoon(openHeavenContainer, 'Today\'s devotion will be posted soon!');
+                renderComingSoon(openHeavenContainer, 'Today\'s devotion will be posted soon!', 'Contact Us', '/contact');
             }
         })
         .catch(() => {
-            renderComingSoon(openHeavenContainer, 'Unable to load. Please refresh.');
+            renderComingSoon(openHeavenContainer, 'Unable to load. Please refresh.', 'Refresh', '#');
         });
 
     // ============================================
@@ -1166,11 +1168,11 @@
                     </div>
                 `;
             } else {
-                renderComingSoon(sermonContainer, 'A new sermon will be posted soon!');
+                renderComingSoon(sermonContainer, 'A new sermon will be posted soon!', 'View All Sermons', '/sermons');
             }
         })
         .catch(() => {
-            renderComingSoon(sermonContainer, 'Unable to load. Please refresh.');
+            renderComingSoon(sermonContainer, 'Unable to load. Please refresh.', 'Refresh', '#');
         });
 
     // ============================================
@@ -1198,11 +1200,11 @@
                     </div>
                 `;
             } else {
-                renderComingSoon(sundayContainer, 'New Sunday School lessons coming soon!');
+                renderComingSoon(sundayContainer, 'New Sunday School lessons coming soon!', 'View All Lessons', '/sunday-school');
             }
         })
         .catch(() => {
-            renderComingSoon(sundayContainer, 'Unable to load. Please refresh.');
+            renderComingSoon(sundayContainer, 'Unable to load. Please refresh.', 'Refresh', '#');
         });
 
     // ============================================
@@ -1232,7 +1234,6 @@
                             <p>${event.description || ''}</p>
                             ${event.location ? `<p style="font-size:0.9rem;color:var(--text-light);"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>` : ''}
                             <span class="badge">${event.category || 'Other'}</span>
-                            <a href="/events" class="view-link">View Details <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 `).join('');
@@ -1288,7 +1289,6 @@
                             <h3>${item.title || 'Untitled'}</h3>
                             <p class="meta"><i class="fas fa-tag"></i> ${item.type || 'Media'}</p>
                             <span class="badge">${item.type || 'Other'}</span>
-                            <a href="/media" class="view-link">View Media <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </div>
                 `).join('');
