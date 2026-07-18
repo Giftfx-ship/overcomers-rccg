@@ -34,7 +34,7 @@ const mainDB = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-mainDB.on('connected', () => console.log('✅ Main DB Connected'));
+mainDB.on('connected', () => console.log('✅ Main DB Connected (rccg_overcomers)'));
 mainDB.on('error', err => console.error('❌ Main DB Error:', err));
 
 // Database 2: Media Storage
@@ -42,7 +42,7 @@ const mediaDB = mongoose.createConnection(process.env.MONGODB_URI_MEDIA, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-mediaDB.on('connected', () => console.log('✅ Media DB Connected'));
+mediaDB.on('connected', () => console.log('✅ Media DB Connected (rccg_media)'));
 mediaDB.on('error', err => console.error('❌ Media DB Error:', err));
 
 // ============================================================
@@ -188,8 +188,8 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ 
-    storage, 
+const upload = multer({
+    storage,
     limits: { fileSize: 50 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'audio/mpeg', 'audio/mp3', 'audio/wav', 'video/mp4', 'video/webm'];
@@ -221,12 +221,12 @@ const authMiddleware = async (req, res, next) => {
 const initAdmin = async () => {
     const adminUsername = process.env.ADMIN_USERNAME || 'admin';
     const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
-    
+
     const adminExists = await User.findOne({ username: adminUsername });
     if (!adminExists) {
         const hashedPassword = await bcrypt.hash(adminPassword, 10);
         await User.create({ username: adminUsername, password: hashedPassword });
-        console.log(`✅ Admin created`);
+        console.log(`✅ Admin created - username: ${adminUsername}`);
     }
 };
 
@@ -238,7 +238,7 @@ const initSocialLinks = async () => {
         { platform: 'whatsapp', url: 'https://wa.me/2348000000000', icon: 'fab fa-whatsapp', active: true },
         { platform: 'twitter', url: 'https://twitter.com/rccgovercomers', icon: 'fab fa-twitter', active: true }
     ];
-    
+
     for (const link of defaultLinks) {
         const exists = await SocialLink.findOne({ platform: link.platform });
         if (!exists) {
@@ -452,7 +452,7 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - MEDIA
+// API ROUTES - MEDIA (FIXED)
 // ============================================================
 app.get('/api/media', async (req, res) => {
     try {
@@ -510,7 +510,7 @@ app.delete('/api/admin/media/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - TESTIMONIES
+// API ROUTES - TESTIMONIES (FIXED)
 // ============================================================
 app.get('/api/testimonies', async (req, res) => {
     try {
@@ -563,7 +563,7 @@ app.delete('/api/admin/testimonies/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - PRAYER REQUESTS
+// API ROUTES - PRAYER REQUESTS (FIXED)
 // ============================================================
 app.post('/api/prayer-requests', async (req, res) => {
     try {
@@ -879,7 +879,6 @@ app.get('/sunday-school', (req, res) => {
     res.sendFile(path.join(__dirname, 'sunday-school.html'));
 });
 
-// SECRET ADMIN ROUTE - ONE FILE WITH LOGIN + DASHBOARD
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
