@@ -14,6 +14,7 @@
             display: flex;
         }
 
+        /* ===== LOADING ===== */
         .loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -34,6 +35,7 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
 
+        /* ===== LOGIN ===== */
         #loginPage {
             display: flex;
             width: 100%;
@@ -98,6 +100,7 @@
             letter-spacing: 1px; color: #5a6a7a;
         }
 
+        /* ===== DASHBOARD ===== */
         #dashboardPage {
             display: none;
             width: 100%;
@@ -105,6 +108,7 @@
         }
         #dashboardPage.show { display: flex; }
 
+        /* ===== SIDEBAR ===== */
         .sidebar {
             width: 240px;
             background: #1a3a5c;
@@ -144,6 +148,7 @@
         .sidebar .nav-item i { width: 20px; }
         .sidebar .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
 
+        /* ===== MAIN CONTENT ===== */
         .main {
             margin-left: 240px;
             padding: 25px 30px;
@@ -161,6 +166,7 @@
         .header .user { color: #5a7a9a; font-size: 0.9rem; }
         .header .user i { margin-right: 5px; }
 
+        /* ===== STATS CARDS ===== */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -175,6 +181,11 @@
             position: relative;
             min-height: 80px;
             border-left: 4px solid #1a3a5c;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
         }
         .stat-card h3 {
             font-size: 0.7rem;
@@ -199,12 +210,8 @@
             opacity: 0.1;
             color: #1a3a5c;
         }
-        .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s ease;
-        }
 
+        /* ===== CARDS ===== */
         .card {
             background: #fff;
             border-radius: 10px;
@@ -221,7 +228,13 @@
             margin-bottom: 15px;
         }
         .card h2 { font-size: 1.1rem; color: #1a3a5c; }
+        .card .description {
+            color: #7a8a9a;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
 
+        /* ===== BUTTONS ===== */
         .btn {
             padding: 8px 18px;
             border: none;
@@ -244,6 +257,7 @@
         .btn-warning:hover { background: #d97706; }
         .btn-sm { padding: 4px 12px; font-size: 0.75rem; }
 
+        /* ===== TABLES ===== */
         .table-wrapper { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
         th {
@@ -262,6 +276,7 @@
         }
         td .actions { display: flex; gap: 5px; flex-wrap: wrap; }
 
+        /* ===== MODAL ===== */
         .modal {
             display: none;
             position: fixed;
@@ -325,6 +340,7 @@
             margin-bottom: 0;
         }
 
+        /* ===== UTILITY ===== */
         .section-page { display: none; }
         .section-page.active { display: block; }
 
@@ -340,6 +356,23 @@
         .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-info { background: #dbeafe; color: #1e40af; }
 
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7a8a9a;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.2;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .empty-state h3 {
+            color: #1a3a5c;
+            margin-bottom: 5px;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .sidebar { width: 60px; padding: 15px 8px; }
             .sidebar h2 span, .sidebar .nav-item span { display: none; }
@@ -356,11 +389,13 @@
 </head>
 <body>
 
+<!-- ===== LOADING ===== -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">Loading Admin Panel...</div>
 </div>
 
+<!-- ===== LOGIN PAGE ===== -->
 <div id="loginPage">
     <div class="login-box">
         <div class="logo">
@@ -384,9 +419,11 @@
     </div>
 </div>
 
+<!-- ===== DASHBOARD ===== -->
 <div id="dashboardPage">
+    <!-- Sidebar -->
     <div class="sidebar">
-        <h2><i class="fas fa-church"></i> <span>Admin</span></h2>
+        <h2><i class="fas fa-church"></i> <span>Admin Panel</span></h2>
         <div class="nav-item active" onclick="showSection('dashboard')">
             <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
         </div>
@@ -427,12 +464,14 @@
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="main">
         <div class="header">
             <h1 id="pageTitle">Dashboard</h1>
             <span class="user"><i class="fas fa-user"></i> <span id="adminName">Admin</span></span>
         </div>
 
+        <!-- ===== DASHBOARD SECTION ===== -->
         <div id="dashboardSection" class="section-page active">
             <div class="stats">
                 <div class="stat-card"><h3>Sermons</h3><span class="number" id="statSermons">0</span><span class="icon"><i class="fas fa-bible"></i></span></div>
@@ -447,141 +486,181 @@
             </div>
             <div class="card">
                 <h2>Welcome to Admin Panel</h2>
-                <p style="color: #5a7a9a;">Manage all church content from one place. Select a section from the sidebar.</p>
+                <p style="color: #5a7a9a;">Manage all church content from one place. Select a section from the sidebar to get started.</p>
             </div>
         </div>
 
+        <!-- ===== SERMONS ===== -->
         <div id="sermonsSection" class="section-page">
             <div class="card">
                 <div class="card-header">
-                    <h2>Manage Sermons</h2>
+                    <h2><i class="fas fa-bible"></i> Manage Sermons</h2>
                     <button class="btn btn-primary" onclick="openModal('sermon')"><i class="fas fa-plus"></i> Add Sermon</button>
                 </div>
+                <p class="description">Add, edit, or delete sermons. Featured sermons appear on the homepage.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Title</th><th>Preacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                    <tbody id="sermonsBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No sermons found. Click "Add Sermon" to create one.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Title</th><th>Preacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
+                        <tbody id="sermonsBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading sermons...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== EVENTS ===== -->
         <div id="eventsSection" class="section-page">
             <div class="card">
                 <div class="card-header">
-                    <h2>Manage Events</h2>
+                    <h2><i class="fas fa-calendar"></i> Manage Events</h2>
                     <button class="btn btn-primary" onclick="openModal('event')"><i class="fas fa-plus"></i> Add Event</button>
                 </div>
+                <p class="description">Add, edit, or delete upcoming church events.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead>
-                    <tbody id="eventsBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No events found. Click "Add Event" to create one.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead>
+                        <tbody id="eventsBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading events...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== MEDIA ===== -->
         <div id="mediaSection" class="section-page">
             <div class="card">
                 <div class="card-header">
-                    <h2>Manage Media</h2>
+                    <h2><i class="fas fa-photo-video"></i> Manage Media</h2>
                     <button class="btn btn-primary" onclick="openModal('media')"><i class="fas fa-plus"></i> Add Media</button>
                 </div>
+                <p class="description">Upload photos, videos, and audio files for the media gallery.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead>
-                    <tbody id="mediaBody"><tr><td colspan="3" style="text-align:center;color:#7a8a9a;">No media found. Click "Add Media" to upload.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead>
+                        <tbody id="mediaBody"><tr><td colspan="3" style="text-align:center;color:#7a8a9a;">Loading media...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== PRAYER WEEK ===== -->
         <div id="prayerWeekSection" class="section-page">
             <div class="card">
                 <div class="card-header">
-                    <h2>Prayer for the Week</h2>
+                    <h2><i class="fas fa-pray"></i> Prayer for the Week</h2>
                     <button class="btn btn-primary" onclick="openModal('prayer-week')"><i class="fas fa-plus"></i> Add Prayer</button>
                 </div>
+                <p class="description">Set the weekly prayer that appears on the homepage. Only one can be active at a time.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Title</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
-                    <tbody id="prayerWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No prayers found. Click "Add Prayer" to create one.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Title</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
+                        <tbody id="prayerWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading prayers...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== OPEN HEAVEN ===== -->
         <div id="openHeavenSection" class="section-page">
             <div class="card">
                 <div class="card-header">
-                    <h2>Open Heaven</h2>
+                    <h2><i class="fas fa-cloud"></i> Open Heaven</h2>
                     <button class="btn btn-primary" onclick="openModal('open-heaven')"><i class="fas fa-plus"></i> Add Open Heaven</button>
                 </div>
+                <p class="description">Add daily devotionals. Featured ones appear on the homepage.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Title</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                    <tbody id="openHeavenBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No entries found. Click "Add Open Heaven" to create one.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Title</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
+                        <tbody id="openHeavenBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading entries...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== FACE OF WEEK ===== -->
         <div id="faceOfWeekSection" class="section-page">
             <div class="card">
                 <div class="card-header">
-                    <h2>Face of the Week</h2>
+                    <h2><i class="fas fa-user-circle"></i> Face of the Week</h2>
                     <button class="btn btn-primary" onclick="openModal('face-of-week')"><i class="fas fa-plus"></i> Add Face</button>
                 </div>
+                <p class="description">Feature a church member with their photo and testimony. Only one can be active at a time.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Name</th><th>Title</th><th>Active</th><th>Actions</th></tr></thead>
-                    <tbody id="faceOfWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No faces found. Click "Add Face" to create one.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Name</th><th>Title</th><th>Active</th><th>Actions</th></tr></thead>
+                        <tbody id="faceOfWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading faces...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== SUNDAY SCHOOL ===== -->
         <div id="sundaySchoolSection" class="section-page">
             <div class="card">
                 <div class="card-header">
-                    <h2>Sunday School</h2>
+                    <h2><i class="fas fa-school"></i> Sunday School</h2>
                     <button class="btn btn-primary" onclick="openModal('sunday-school')"><i class="fas fa-plus"></i> Add Lesson</button>
                 </div>
+                <p class="description">Add Sunday School lessons with Bible readings and memory verses.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Title</th><th>Teacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                    <tbody id="sundaySchoolBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No lessons found. Click "Add Lesson" to create one.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Title</th><th>Teacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
+                        <tbody id="sundaySchoolBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading lessons...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== TESTIMONIES ===== -->
         <div id="testimoniesSection" class="section-page">
             <div class="card">
-                <h2>Testimonies (Pending Approval)</h2>
+                <h2><i class="fas fa-comment"></i> Testimonies</h2>
+                <p class="description">Approve or delete testimonies submitted by church members.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Name</th><th>Testimony</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody id="testimoniesBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No testimonies found.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Name</th><th>Testimony</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="testimoniesBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading testimonies...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== PRAYER REQUESTS ===== -->
         <div id="prayersSection" class="section-page">
             <div class="card">
-                <h2>Prayer Requests</h2>
+                <h2><i class="fas fa-hands-praying"></i> Prayer Requests</h2>
+                <p class="description">View and manage prayer requests from church members.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Name</th><th>Request</th><th>Date</th><th>Prayed</th><th>Actions</th></tr></thead>
-                    <tbody id="prayersBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No prayer requests found.</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Name</th><th>Request</th><th>Date</th><th>Prayed</th><th>Actions</th></tr></thead>
+                        <tbody id="prayersBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading prayer requests...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ===== SOCIAL LINKS ===== -->
         <div id="socialLinksSection" class="section-page">
             <div class="card">
-                <h2>Social Links</h2>
-                <p style="color:#7a8a9a;margin-bottom:15px;">Update your social media links. These appear in the footer.</p>
+                <h2><i class="fas fa-share-alt"></i> Social Links</h2>
+                <p class="description">Update your social media links. These appear in the footer of the website.</p>
                 <div class="table-wrapper">
-                    <table><thead><tr><th>Platform</th><th>URL</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody id="socialLinksBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <table>
+                        <thead><tr><th>Platform</th><th>URL</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="socialLinksBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading social links...</td></tr></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- ===== MODAL ===== -->
 <div class="modal" id="modal">
     <div class="modal-content" id="modalContent"></div>
 </div>
 
 <script>
 // ============================================================
-// AUTH CHECK
+// AUTH CHECK - FIXED
 // ============================================================
 const token = localStorage.getItem('adminToken');
 
@@ -624,12 +703,13 @@ async function verifyAuth() {
 }
 
 // ============================================================
-// LOGIN
+// LOGIN - FIXED
 // ============================================================
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
     const errorMsg = document.getElementById('loginError');
     const loginBtn = document.querySelector('#loginForm .btn');
 
@@ -645,9 +725,25 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         });
         const data = await res.json();
 
-        if (res.ok) {
+        if (res.ok && data.token) {
             localStorage.setItem('adminToken', data.token);
-            location.reload();
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('show');
+            document.getElementById('loaderWrapper').classList.add('hidden');
+            document.getElementById('adminName').textContent = data.username || 'Admin';
+            loadDashboard();
+            loadSermons();
+            loadEvents();
+            loadMedia();
+            loadPrayerWeek();
+            loadOpenHeaven();
+            loadFaceOfWeek();
+            loadSundaySchool();
+            loadTestimonies();
+            loadPrayers();
+            loadSocialLinks();
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
         } else {
             errorMsg.textContent = data.error || 'Invalid credentials';
             errorMsg.style.display = 'block';
@@ -745,27 +841,29 @@ function openModal(type, data = null) {
     if (type === 'sermon') {
         html = `
             <h2>${d._id ? 'Edit' : 'Add'} Sermon</h2>
+            <p style="color:#7a8a9a;margin-bottom:15px;">Add a new sermon message. Featured sermons appear on the homepage.</p>
             <form id="sermonForm">
-                <input type="text" name="title" placeholder="Title" value="${d.title || ''}" required/>
-                <input type="text" name="preacher" placeholder="Preacher" value="${d.preacher || ''}" required/>
+                <input type="text" name="title" placeholder="Sermon Title*" value="${d.title || ''}" required/>
+                <input type="text" name="preacher" placeholder="Preacher Name*" value="${d.preacher || ''}" required/>
                 <input type="date" name="date" value="${d.date ? new Date(d.date).toISOString().split('T')[0] : ''}"/>
                 <textarea name="description" placeholder="Description">${d.description || ''}</textarea>
-                <input type="text" name="audioUrl" placeholder="Audio URL" value="${d.audioUrl || ''}"/>
-                <input type="text" name="videoUrl" placeholder="Video URL" value="${d.videoUrl || ''}"/>
-                <input type="text" name="pdfUrl" placeholder="PDF URL" value="${d.pdfUrl || ''}"/>
+                <input type="text" name="audioUrl" placeholder="Audio URL (e.g. https://example.com/audio.mp3)" value="${d.audioUrl || ''}"/>
+                <input type="text" name="videoUrl" placeholder="Video URL (e.g. https://youtube.com/watch?v=...)" value="${d.videoUrl || ''}"/>
+                <input type="text" name="pdfUrl" placeholder="PDF URL (e.g. https://example.com/notes.pdf)" value="${d.pdfUrl || ''}"/>
                 <input type="file" name="image" accept="image/*"/>
-                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured</label>
+                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured (shows on homepage)</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
                 </div>
             </form>
         `;
     } else if (type === 'event') {
         html = `
             <h2>${d._id ? 'Edit' : 'Add'} Event</h2>
+            <p style="color:#7a8a9a;margin-bottom:15px;">Add a new church event. Upcoming events appear on the homepage.</p>
             <form id="eventForm">
-                <input type="text" name="title" placeholder="Title" value="${d.title || ''}" required/>
+                <input type="text" name="title" placeholder="Event Title*" value="${d.title || ''}" required/>
                 <input type="date" name="date" value="${d.date ? new Date(d.date).toISOString().split('T')[0] : ''}" required/>
                 <input type="text" name="time" placeholder="Time (e.g. 8:00 AM)" value="${d.time || ''}"/>
                 <input type="text" name="location" placeholder="Location" value="${d.location || ''}"/>
@@ -780,15 +878,16 @@ function openModal(type, data = null) {
                 <input type="file" name="image" accept="image/*"/>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
                 </div>
             </form>
         `;
     } else if (type === 'media') {
         html = `
             <h2>${d._id ? 'Edit' : 'Add'} Media</h2>
+            <p style="color:#7a8a9a;margin-bottom:15px;">Upload photos, videos, or audio for the media gallery.</p>
             <form id="mediaForm">
-                <input type="text" name="title" placeholder="Title" value="${d.title || ''}" required/>
+                <input type="text" name="title" placeholder="Media Title*" value="${d.title || ''}" required/>
                 <select name="type" required>
                     <option value="photo" ${d.type === 'photo' ? 'selected' : ''}>Photo</option>
                     <option value="video" ${d.type === 'video' ? 'selected' : ''}>Video</option>
@@ -799,61 +898,65 @@ function openModal(type, data = null) {
                 <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
                 </div>
             </form>
         `;
     } else if (type === 'prayer-week') {
         html = `
             <h2>${d._id ? 'Edit' : 'Add'} Prayer for the Week</h2>
+            <p style="color:#7a8a9a;margin-bottom:15px;">Set the weekly prayer. Only one prayer can be active at a time.</p>
             <form id="prayerWeekForm">
-                <input type="text" name="title" placeholder="Title" value="${d.title || ''}" required/>
-                <input type="text" name="bibleVerse" placeholder="Bible Verse" value="${d.bibleVerse || ''}"/>
-                <textarea name="prayer" placeholder="Prayer" required>${d.prayer || ''}</textarea>
-                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active</label>
+                <input type="text" name="title" placeholder="Prayer Title*" value="${d.title || ''}" required/>
+                <input type="text" name="bibleVerse" placeholder="Bible Verse (e.g. Philippians 4:6)" value="${d.bibleVerse || ''}"/>
+                <textarea name="prayer" placeholder="Prayer Text*" required>${d.prayer || ''}</textarea>
+                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active (shows on homepage)</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
                 </div>
             </form>
         `;
     } else if (type === 'open-heaven') {
         html = `
             <h2>${d._id ? 'Edit' : 'Add'} Open Heaven</h2>
+            <p style="color:#7a8a9a;margin-bottom:15px;">Add a daily devotion. Featured ones appear on the homepage.</p>
             <form id="openHeavenForm">
-                <input type="text" name="title" placeholder="Title" value="${d.title || ''}" required/>
+                <input type="text" name="title" placeholder="Title*" value="${d.title || ''}" required/>
                 <input type="text" name="bibleReading" placeholder="Bible Reading" value="${d.bibleReading || ''}"/>
                 <input type="text" name="memoryVerse" placeholder="Memory Verse" value="${d.memoryVerse || ''}"/>
-                <textarea name="content" placeholder="Content" required>${d.content || ''}</textarea>
+                <textarea name="content" placeholder="Content*" required>${d.content || ''}</textarea>
                 <textarea name="prayer" placeholder="Prayer">${d.prayer || ''}</textarea>
-                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured</label>
+                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured (shows on homepage)</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
                 </div>
             </form>
         `;
     } else if (type === 'face-of-week') {
         html = `
             <h2>${d._id ? 'Edit' : 'Add'} Face of the Week</h2>
+            <p style="color:#7a8a9a;margin-bottom:15px;">Feature a church member. Only one can be active at a time.</p>
             <form id="faceOfWeekForm">
-                <input type="text" name="name" placeholder="Full Name" value="${d.name || ''}" required/>
-                <input type="text" name="title" placeholder="Title" value="${d.title || ''}" required/>
-                <textarea name="words" placeholder="Words / Testimony" required>${d.words || ''}</textarea>
+                <input type="text" name="name" placeholder="Full Name*" value="${d.name || ''}" required/>
+                <input type="text" name="title" placeholder="Title (e.g. Worship Leader)" value="${d.title || ''}" required/>
+                <textarea name="words" placeholder="Words / Testimony*" required>${d.words || ''}</textarea>
                 <input type="file" name="image" accept="image/*" ${d._id ? '' : 'required'}/>
-                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active</label>
+                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active (shows on homepage)</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
                 </div>
             </form>
         `;
     } else if (type === 'sunday-school') {
         html = `
             <h2>${d._id ? 'Edit' : 'Add'} Sunday School Lesson</h2>
+            <p style="color:#7a8a9a;margin-bottom:15px;">Add a new Sunday School lesson with Bible reading and memory verse.</p>
             <form id="sundaySchoolForm">
-                <input type="text" name="title" placeholder="Lesson Title" value="${d.title || ''}" required/>
-                <input type="text" name="teacher" placeholder="Teacher Name" value="${d.teacher || ''}" required/>
+                <input type="text" name="title" placeholder="Lesson Title*" value="${d.title || ''}" required/>
+                <input type="text" name="teacher" placeholder="Teacher Name*" value="${d.teacher || ''}" required/>
                 <input type="date" name="date" value="${d.date ? new Date(d.date).toISOString().split('T')[0] : ''}"/>
                 <textarea name="description" placeholder="Description">${d.description || ''}</textarea>
                 <input type="text" name="bibleReading" placeholder="Bible Reading" value="${d.bibleReading || ''}"/>
@@ -862,7 +965,7 @@ function openModal(type, data = null) {
                 <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
                 </div>
             </form>
         `;
@@ -916,13 +1019,13 @@ async function loadSermons() {
         }
         tbody.innerHTML = data.map(s => `
             <tr>
-                <td>${s.title}</td>
+                <td><strong>${s.title}</strong></td>
                 <td>${s.preacher}</td>
                 <td>${new Date(s.date).toLocaleDateString()}</td>
                 <td>${s.featured ? '<span class="badge badge-success">Featured</span>' : ''}</td>
                 <td class="actions">
-                    <button class="btn btn-warning btn-sm" onclick="editSermon('${s._id}')">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteSermon('${s._id}')">Delete</button>
+                    <button class="btn btn-warning btn-sm" onclick="editSermon('${s._id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSermon('${s._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -974,12 +1077,12 @@ async function loadEvents() {
         }
         tbody.innerHTML = data.map(e => `
             <tr>
-                <td>${e.title}</td>
+                <td><strong>${e.title}</strong></td>
                 <td>${new Date(e.date).toLocaleDateString()} ${e.time ? '• ' + e.time : ''}</td>
                 <td>${e.location || '-'}</td>
                 <td class="actions">
-                    <button class="btn btn-warning btn-sm" onclick="editEvent('${e._id}')">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e._id}')">Delete</button>
+                    <button class="btn btn-warning btn-sm" onclick="editEvent('${e._id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1032,11 +1135,11 @@ async function loadMedia() {
         }
         tbody.innerHTML = data.map(m => `
             <tr>
-                <td>${m.title}</td>
+                <td><strong>${m.title}</strong></td>
                 <td><span class="badge ${m.type === 'photo' ? 'badge-info' : m.type === 'video' ? 'badge-warning' : 'badge-success'}">${m.type}</span></td>
                 <td class="actions">
-                    <button class="btn btn-warning btn-sm" onclick="editMedia('${m._id}')">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteMedia('${m._id}')">Delete</button>
+                    <button class="btn btn-warning btn-sm" onclick="editMedia('${m._id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteMedia('${m._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1089,12 +1192,12 @@ async function loadPrayerWeek() {
         }
         tbody.innerHTML = data.map(p => `
             <tr>
-                <td>${p.title}</td>
+                <td><strong>${p.title}</strong></td>
                 <td>${new Date(p.date).toLocaleDateString()}</td>
                 <td><span class="badge ${p.active ? 'badge-success' : 'badge-danger'}">${p.active ? 'Active' : 'Inactive'}</span></td>
                 <td class="actions">
-                    <button class="btn btn-warning btn-sm" onclick="editPrayerWeek('${p._id}')">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deletePrayerWeek('${p._id}')">Delete</button>
+                    <button class="btn btn-warning btn-sm" onclick="editPrayerWeek('${p._id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deletePrayerWeek('${p._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1146,12 +1249,12 @@ async function loadOpenHeaven() {
         }
         tbody.innerHTML = data.map(o => `
             <tr>
-                <td>${o.title}</td>
+                <td><strong>${o.title}</strong></td>
                 <td>${new Date(o.date).toLocaleDateString()}</td>
                 <td>${o.featured ? '<span class="badge badge-success">Featured</span>' : ''}</td>
                 <td class="actions">
-                    <button class="btn btn-warning btn-sm" onclick="editOpenHeaven('${o._id}')">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteOpenHeaven('${o._id}')">Delete</button>
+                    <button class="btn btn-warning btn-sm" onclick="editOpenHeaven('${o._id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteOpenHeaven('${o._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1203,12 +1306,12 @@ async function loadFaceOfWeek() {
         }
         tbody.innerHTML = data.map(f => `
             <tr>
-                <td>${f.name}</td>
+                <td><strong>${f.name}</strong></td>
                 <td>${f.title}</td>
                 <td><span class="badge ${f.active ? 'badge-success' : 'badge-danger'}">${f.active ? 'Active' : 'Inactive'}</span></td>
                 <td class="actions">
-                    <button class="btn btn-warning btn-sm" onclick="editFaceOfWeek('${f._id}')">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteFaceOfWeek('${f._id}')">Delete</button>
+                    <button class="btn btn-warning btn-sm" onclick="editFaceOfWeek('${f._id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteFaceOfWeek('${f._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1261,13 +1364,13 @@ async function loadSundaySchool() {
         }
         tbody.innerHTML = data.map(s => `
             <tr>
-                <td>${s.title}</td>
+                <td><strong>${s.title}</strong></td>
                 <td>${s.teacher}</td>
                 <td>${new Date(s.date).toLocaleDateString()}</td>
                 <td>${s.featured ? '<span class="badge badge-success">Featured</span>' : ''}</td>
                 <td class="actions">
-                    <button class="btn btn-warning btn-sm" onclick="editSundaySchool('${s._id}')">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteSundaySchool('${s._id}')">Delete</button>
+                    <button class="btn btn-warning btn-sm" onclick="editSundaySchool('${s._id}')"><i class="fas fa-edit"></i> Edit</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSundaySchool('${s._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1320,13 +1423,13 @@ async function loadTestimonies() {
         }
         tbody.innerHTML = data.map(t => `
             <tr>
-                <td>${t.name}</td>
+                <td><strong>${t.name}</strong></td>
                 <td>${t.testimony.substring(0, 60)}${t.testimony.length > 60 ? '...' : ''}</td>
                 <td>${new Date(t.date).toLocaleDateString()}</td>
                 <td><span class="badge ${t.approved ? 'badge-success' : 'badge-warning'}">${t.approved ? 'Approved' : 'Pending'}</span></td>
                 <td class="actions">
-                    ${!t.approved ? `<button class="btn btn-success btn-sm" onclick="approveTestimony('${t._id}')">Approve</button>` : ''}
-                    <button class="btn btn-danger btn-sm" onclick="deleteTestimony('${t._id}')">Delete</button>
+                    ${!t.approved ? `<button class="btn btn-success btn-sm" onclick="approveTestimony('${t._id}')"><i class="fas fa-check"></i> Approve</button>` : ''}
+                    <button class="btn btn-danger btn-sm" onclick="deleteTestimony('${t._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1364,13 +1467,13 @@ async function loadPrayers() {
         }
         tbody.innerHTML = data.map(p => `
             <tr>
-                <td>${p.name}</td>
+                <td><strong>${p.name}</strong></td>
                 <td>${p.request.substring(0, 50)}${p.request.length > 50 ? '...' : ''}</td>
                 <td>${new Date(p.date).toLocaleDateString()}</td>
                 <td><span class="badge ${p.prayed ? 'badge-success' : 'badge-warning'}">${p.prayed ? 'Prayed' : 'Pending'}</span></td>
                 <td class="actions">
-                    ${!p.prayed ? `<button class="btn btn-success btn-sm" onclick="markPrayed('${p._id}')">Mark Prayed</button>` : ''}
-                    <button class="btn btn-danger btn-sm" onclick="deletePrayer('${p._id}')">Delete</button>
+                    ${!p.prayed ? `<button class="btn btn-success btn-sm" onclick="markPrayed('${p._id}')"><i class="fas fa-check"></i> Mark Prayed</button>` : ''}
+                    <button class="btn btn-danger btn-sm" onclick="deletePrayer('${p._id}')"><i class="fas fa-trash"></i> Delete</button>
                 </td>
             </tr>
         `).join('');
@@ -1408,13 +1511,13 @@ async function loadSocialLinks() {
         }
         tbody.innerHTML = data.map(link => `
             <tr>
-                <td><i class="${link.icon}"></i> ${link.platform}</td>
+                <td><i class="${link.icon}"></i> <strong>${link.platform}</strong></td>
                 <td><input type="text" id="url_${link._id}" value="${link.url}" style="width:100%;padding:6px 10px;border:1px solid #e2e8f0;border-radius:4px;font-size:0.85rem;"/></td>
                 <td><span class="badge ${link.active ? 'badge-success' : 'badge-danger'}">${link.active ? 'Active' : 'Inactive'}</span></td>
                 <td class="actions">
-                    <button class="btn btn-primary btn-sm" onclick="saveSocialLink('${link._id}')">Save</button>
+                    <button class="btn btn-primary btn-sm" onclick="saveSocialLink('${link._id}')"><i class="fas fa-save"></i> Save</button>
                     <button class="btn ${link.active ? 'btn-danger' : 'btn-success'} btn-sm" onclick="toggleSocialLink('${link._id}', ${!link.active})">
-                        ${link.active ? 'Disable' : 'Enable'}
+                        ${link.active ? '<i class="fas fa-eye-slash"></i> Disable' : '<i class="fas fa-eye"></i> Enable'}
                     </button>
                 </td>
             </tr>
