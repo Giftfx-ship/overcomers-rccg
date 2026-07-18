@@ -617,7 +617,7 @@
 
 <script>
 // ============================================================
-// AUTH CHECK
+// AUTH CHECK - FIXED
 // ============================================================
 const token = localStorage.getItem('adminToken');
 
@@ -660,16 +660,28 @@ async function verifyAuth() {
 }
 
 // ============================================================
-// LOGIN
+// LOGIN - FIXED
 // ============================================================
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
     const errorMsg = document.getElementById('loginError');
     const loginBtn = document.querySelector('#loginForm .btn');
 
+    // Reset error
     errorMsg.style.display = 'none';
+    errorMsg.textContent = '';
+
+    // Validate inputs
+    if (!username || !password) {
+        errorMsg.textContent = 'Please enter both username and password';
+        errorMsg.style.display = 'block';
+        return;
+    }
+
+    // Disable button
     loginBtn.disabled = true;
     loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
 
@@ -679,19 +691,44 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
+
         const data = await res.json();
 
-        if (res.ok) {
+        if (res.ok && data.token) {
+            // Save token
             localStorage.setItem('adminToken', data.token);
-            location.reload();
+            
+            // Show dashboard
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('show');
+            document.getElementById('loaderWrapper').classList.add('hidden');
+            document.getElementById('adminName').textContent = data.username || 'Admin';
+            
+            // Load all data
+            loadDashboard();
+            loadSermons();
+            loadEvents();
+            loadMedia();
+            loadPrayerWeek();
+            loadOpenHeaven();
+            loadFaceOfWeek();
+            loadSundaySchool();
+            loadTestimonies();
+            loadPrayers();
+            loadSocialLinks();
+            
+            // Reset button
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
         } else {
-            errorMsg.textContent = data.error || 'Invalid credentials';
+            errorMsg.textContent = data.error || 'Invalid username or password';
             errorMsg.style.display = 'block';
             loginBtn.disabled = false;
             loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
         }
     } catch (err) {
-        errorMsg.textContent = 'Network error. Please try again.';
+        console.error('Login error:', err);
+        errorMsg.textContent = 'Network error. Please check your connection and try again.';
         errorMsg.style.display = 'block';
         loginBtn.disabled = false;
         loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
@@ -946,7 +983,7 @@ async function loadSermons() {
         const res = await fetch('/api/sermons');
         const data = await res.json();
         const tbody = document.getElementById('sermonsBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No sermons found</td></tr>`;
             return;
         }
@@ -963,7 +1000,7 @@ async function loadSermons() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('sermonsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading sermons</td></tr>`;
+        document.getElementById('sermonsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc2626;">Error loading sermons</td></tr>`;
     }
 }
 
@@ -1004,7 +1041,7 @@ async function loadEvents() {
         const res = await fetch('/api/events');
         const data = await res.json();
         const tbody = document.getElementById('eventsBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No events found</td></tr>`;
             return;
         }
@@ -1020,7 +1057,7 @@ async function loadEvents() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('eventsBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading events</td></tr>`;
+        document.getElementById('eventsBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error loading events</td></tr>`;
     }
 }
 
@@ -1062,7 +1099,7 @@ async function loadMedia() {
         const res = await fetch('/api/media');
         const data = await res.json();
         const tbody = document.getElementById('mediaBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#7a8a9a;">No media found</td></tr>`;
             return;
         }
@@ -1077,7 +1114,7 @@ async function loadMedia() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('mediaBody').innerHTML = `<tr><td colspan="3" style="text-align:center;color:#7a8a9a;">Error loading media</td></tr>`;
+        document.getElementById('mediaBody').innerHTML = `<tr><td colspan="3" style="text-align:center;color:#dc2626;">Error loading media</td></tr>`;
     }
 }
 
@@ -1119,7 +1156,7 @@ async function loadPrayerWeek() {
         const res = await fetch('/api/admin/prayer-week', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
         const tbody = document.getElementById('prayerWeekBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No prayers found</td></tr>`;
             return;
         }
@@ -1135,7 +1172,7 @@ async function loadPrayerWeek() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('prayerWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading prayer week</td></tr>`;
+        document.getElementById('prayerWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error loading prayer week</td></tr>`;
     }
 }
 
@@ -1176,7 +1213,7 @@ async function loadOpenHeaven() {
         const res = await fetch('/api/admin/open-heaven', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
         const tbody = document.getElementById('openHeavenBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No entries found</td></tr>`;
             return;
         }
@@ -1192,7 +1229,7 @@ async function loadOpenHeaven() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('openHeavenBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading open heaven</td></tr>`;
+        document.getElementById('openHeavenBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error loading open heaven</td></tr>`;
     }
 }
 
@@ -1233,7 +1270,7 @@ async function loadFaceOfWeek() {
         const res = await fetch('/api/admin/face-of-week', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
         const tbody = document.getElementById('faceOfWeekBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No faces found</td></tr>`;
             return;
         }
@@ -1249,7 +1286,7 @@ async function loadFaceOfWeek() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('faceOfWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading face of week</td></tr>`;
+        document.getElementById('faceOfWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error loading face of week</td></tr>`;
     }
 }
 
@@ -1291,7 +1328,7 @@ async function loadSundaySchool() {
         const res = await fetch('/api/admin/sunday-school', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
         const tbody = document.getElementById('sundaySchoolBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No lessons found</td></tr>`;
             return;
         }
@@ -1308,7 +1345,7 @@ async function loadSundaySchool() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('sundaySchoolBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading Sunday School</td></tr>`;
+        document.getElementById('sundaySchoolBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc2626;">Error loading Sunday School</td></tr>`;
     }
 }
 
@@ -1350,7 +1387,7 @@ async function loadTestimonies() {
         const res = await fetch('/api/admin/testimonies', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
         const tbody = document.getElementById('testimoniesBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No testimonies found</td></tr>`;
             return;
         }
@@ -1367,7 +1404,7 @@ async function loadTestimonies() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('testimoniesBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading testimonies</td></tr>`;
+        document.getElementById('testimoniesBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc2626;">Error loading testimonies</td></tr>`;
     }
 }
 
@@ -1394,7 +1431,7 @@ async function loadPrayers() {
         const res = await fetch('/api/admin/prayer-requests', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
         const tbody = document.getElementById('prayersBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No prayer requests found</td></tr>`;
             return;
         }
@@ -1411,7 +1448,7 @@ async function loadPrayers() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('prayersBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading prayer requests</td></tr>`;
+        document.getElementById('prayersBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#dc2626;">Error loading prayer requests</td></tr>`;
     }
 }
 
@@ -1438,7 +1475,7 @@ async function loadSocialLinks() {
         const res = await fetch('/api/admin/social-links', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
         const tbody = document.getElementById('socialLinksBody');
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No social links found</td></tr>`;
             return;
         }
@@ -1456,7 +1493,7 @@ async function loadSocialLinks() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('socialLinksBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading social links</td></tr>`;
+        document.getElementById('socialLinksBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#dc2626;">Error loading social links</td></tr>`;
     }
 }
 
