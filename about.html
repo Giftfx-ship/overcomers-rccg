@@ -5,22 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>About - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2c5f8a;
+            --primary-dark: #0f2a44;
+            --secondary: #ffd700;
+            --secondary-hover: #f0c800;
+            --text: #2c3e50;
+            --text-light: #5a7a9a;
+            --text-lighter: #8a9aaa;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #2c3e50;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.7;
             overflow-x: hidden;
         }
 
-        /* Loading */
         .loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a3a5c;
+            background: var(--primary);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 9999;
@@ -28,14 +47,15 @@
         }
         .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
         .loader {
-            width: 50px; height: 50px;
+            width: 60px; height: 60px;
             border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffd700;
+            border-top: 4px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+        .loader-text { color: #fff; margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; opacity: 0.7; }
+        .loader-sub { color: rgba(255,255,255,0.4); font-size: 0.7rem; letter-spacing: 1px; }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(40px); }
@@ -47,15 +67,23 @@
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
 
-        /* Navbar */
+        /* ===== NAVBAR ===== */
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 15px 0;
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
         }
         .navbar .container {
             display: flex;
@@ -66,34 +94,34 @@
         .navbar .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-decoration: none;
         }
-        .navbar .logo img { height: 50px; width: auto; }
+        .navbar .logo img { height: 50px; width: auto; border-radius: 8px; }
         .navbar .logo-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #1a3a5c;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary);
             line-height: 1.2;
         }
         .navbar .logo-text small {
             display: block;
             font-weight: 400;
             font-size: 0.7rem;
-            color: #5a7a9a;
+            color: var(--text-light);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 30px;
             list-style: none;
             align-items: center;
         }
         .nav-links a {
             text-decoration: none;
-            color: #2c3e50;
+            color: var(--text);
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
+            transition: var(--transition);
             position: relative;
         }
         .nav-links a::after {
@@ -103,55 +131,107 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #1a3a5c;
-            transition: width 0.3s ease;
+            background: var(--primary);
+            transition: var(--transition);
         }
         .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: #1a3a5c; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links .btn-nav {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .nav-links .btn-nav:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
+        }
+        .nav-links .btn-nav::after { display: none; }
         .hamburger {
             display: none;
             font-size: 1.8rem;
             cursor: pointer;
-            color: #1a3a5c;
+            color: var(--primary);
         }
 
+        /* ===== PAGE HERO ===== */
         .page-hero {
-            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: #fff;
-            padding: 60px 0;
+            padding: 60px 0 50px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
-        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--bg);
+            clip-path: ellipse(70% 100% at 50% 100%);
+        }
+        .page-hero .container { position: relative; z-index: 1; }
+        .page-hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .page-hero h1 i { color: var(--secondary); margin-right: 10px; }
+        .page-hero p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
 
-        .section { padding: 60px 0; }
-        .section-light { background: #ffffff; }
-        .section-gray { background: #f5f7fa; }
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1a3a5c;
-            margin-bottom: 15px;
-        }
-        .section-subtitle {
-            color: #5a7a9a;
-            font-size: 1.05rem;
-            margin-bottom: 30px;
-        }
+        /* ===== ABOUT SECTION ===== */
+        .section { padding: 70px 0; }
+        .section-light { background: var(--white); }
+        .section-gray { background: var(--bg); }
 
         .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
+            gap: 60px;
             align-items: center;
         }
-        .about-grid img {
-            width: 100%;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        .about-grid .about-image {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
         }
-        .about-grid .content p { color: #5a6a7a; margin-bottom: 15px; }
+        .about-grid .about-image img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        .about-grid .about-content h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+        .about-grid .about-content .subtitle {
+            color: var(--text-light);
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .about-grid .about-content p {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .about-grid .about-content .btn {
+            margin-top: 10px;
+        }
 
+        /* ===== VALUES ===== */
         .values-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -159,66 +239,188 @@
             margin-top: 30px;
         }
         .value-card {
-            background: #fff;
-            padding: 25px;
-            border-radius: 12px;
+            background: var(--white);
+            padding: 30px 25px;
+            border-radius: var(--radius);
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
-        .value-card:hover { transform: translateY(-5px); }
-        .value-card i { font-size: 2.5rem; color: #ffd700; margin-bottom: 10px; }
-        .value-card h3 { color: #1a3a5c; font-size: 1.1rem; }
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+        .value-card .icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: #fff;
+            font-size: 1.8rem;
+        }
+        .value-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .value-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
 
+        /* ===== SERVICE TIMES ===== */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .service-card {
+            background: var(--white);
+            padding: 30px 25px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .service-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .service-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .service-card .time {
+            font-weight: 600;
+            color: var(--text);
+            margin: 5px 0;
+        }
+        .service-card .desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        /* ===== BUTTONS ===== */
         .btn {
             display: inline-block;
-            padding: 12px 30px;
+            padding: 12px 32px;
             border-radius: 30px;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             border: none;
             cursor: pointer;
             font-size: 0.95rem;
+            font-family: var(--font);
         }
         .btn-primary {
-            background: #ffd700;
-            color: #1a3a5c;
+            background: var(--secondary);
+            color: var(--primary);
         }
         .btn-primary:hover {
-            background: #f0c800;
+            background: var(--secondary-hover);
             transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(255,215,0,0.4);
+            box-shadow: 0 8px 30px rgba(255,215,0,0.4);
+        }
+        .btn-secondary {
+            background: var(--primary-light);
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(44,95,138,0.4);
         }
 
+        /* ===== FOOTER ===== */
         .footer {
-            background: #1a3a5c;
+            background: var(--primary-dark);
             color: #fff;
-            padding: 40px 0;
-            margin-top: 40px;
+            padding: 50px 0 30px;
         }
-        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
         .footer a:hover { opacity: 1; }
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            gap: 40px;
         }
-        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
-        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
+        .footer h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .footer ul {
+            list-style: none;
+            opacity: 0.7;
+        }
+        .footer ul li { margin-bottom: 6px; }
+        .footer .social {
+            display: flex;
+            gap: 15px;
+            font-size: 1.4rem;
+        }
+        .footer .social a {
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer .social a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        .footer hr {
+            border-color: rgba(255,255,255,0.08);
+            margin: 30px 0 20px;
+        }
+        .footer .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
         .footer .dev-credit {
             text-align: center;
             opacity: 0.3;
             font-size: 0.7rem;
-            margin-top: 10px;
             letter-spacing: 1px;
+            margin-top: 10px;
         }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                text-align: center;
+            }
+            .about-grid .about-image img {
+                height: 300px;
+            }
+            .value-card .icon { margin: 0 auto 15px; }
+        }
 
         @media (max-width: 768px) {
-            .about-grid { grid-template-columns: 1fr; text-align: center; }
             .nav-links {
                 display: none;
                 width: 100%;
@@ -229,7 +431,20 @@
             .nav-links.open { display: flex; }
             .hamburger { display: block; }
             .page-hero h1 { font-size: 2rem; }
-            .section-title { font-size: 1.6rem; }
+            .about-grid .about-content h2 { font-size: 1.6rem; }
+            .navbar .logo img { height: 40px; }
+            .navbar .logo-text { font-size: 1rem; }
+            .footer .bottom { flex-direction: column; text-align: center; }
+            .values-grid { grid-template-columns: 1fr 1fr; }
+            .service-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero { padding: 40px 0 30px; }
+            .page-hero h1 { font-size: 1.6rem; }
+            .values-grid { grid-template-columns: 1fr; }
+            .service-grid { grid-template-columns: 1fr; }
+            .about-grid .about-image img { height: 200px; }
         }
     </style>
 </head>
@@ -239,6 +454,7 @@
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">RCCG Overcomers HOC</div>
+    <div class="loader-sub">Loading About...</div>
 </div>
 
 <!-- NAVBAR -->
@@ -256,66 +472,70 @@
         </div>
         <ul class="nav-links" id="navLinks">
             <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="/about" class="active" style="color:var(--primary);">About</a></li>
             <li><a href="/sermons">Sermons</a></li>
             <li><a href="/events">Events</a></li>
             <li><a href="/media">Media</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/sunday-school">Sunday School</a></li>
+            <li><a href="/contact" class="btn-nav">Contact</a></li>
         </ul>
     </div>
 </nav>
 
 <!-- PAGE HERO -->
-<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+<section class="page-hero">
     <div class="container">
-        <h1>About Us</h1>
-        <p>RCCG Overcomers HOC - Oke Ado, Ogbomoso</p>
+        <h1 class="animate-fade-in"><i class="fas fa-info-circle"></i> About Us</h1>
+        <p class="animate-fade-in delay-1">RCCG Overcomers HOC - Oke Ado, Ogbomoso</p>
     </div>
 </section>
 
-<!-- ABOUT CONTENT -->
+<!-- ABOUT SECTION -->
 <section class="section section-light">
     <div class="container">
         <div class="about-grid">
-            <div style="animation: fadeUp 0.8s ease forwards;">
+            <div class="about-image animate-fade-up">
                 <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.src='https://placehold.co/600x400/1a3a5c/fff?text=RCCG+Overcomers+HOC'"/>
             </div>
-            <div class="content" style="animation: fadeUp 0.8s ease forwards; animation-delay: 0.2s;">
-                <h2 class="section-title">Our Story</h2>
+            <div class="about-content animate-fade-up delay-2">
+                <h2>Our Story</h2>
+                <div class="subtitle">A Community of Believers Committed to Christ</div>
                 <p>RCCG Overcomers HOC is a parish of the Redeemed Christian Church of God located at Oke Ado, Old Stadium Road, Ogbomoso, Oyo State.</p>
                 <p>We are a community of believers committed to winning souls for Christ, raising disciples, and transforming lives through the power of the Holy Spirit.</p>
                 <p>Our vision is to be a beacon of light in Ogbomoso and beyond, demonstrating God's love through worship, fellowship, and service.</p>
-                <a href="/contact" class="btn btn-primary" style="margin-top: 15px;">Visit Us</a>
+                <a href="/contact" class="btn btn-primary">Visit Us</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- OUR VALUES -->
+<!-- VALUES SECTION -->
 <section class="section section-gray">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Our Values</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">What we stand for</p>
+        <div style="text-align:center;max-width:700px;margin:0 auto 40px;">
+            <h2 class="animate-fade-up" style="font-size:2.2rem;font-weight:800;color:var(--primary);letter-spacing:-0.5px;">Our Values</h2>
+            <p class="animate-fade-up delay-1" style="color:var(--text-light);font-size:1.05rem;">What we stand for as a church</p>
+        </div>
         <div class="values-grid">
-            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">
-                <i class="fas fa-cross"></i>
+            <div class="value-card animate-fade-up delay-1">
+                <div class="icon"><i class="fas fa-cross"></i></div>
                 <h3>Faith in Christ</h3>
-                <p style="color: #5a6a7a; font-size: 0.9rem;">We believe in Jesus Christ as our Lord and Savior.</p>
+                <p>We believe in Jesus Christ as our Lord and Savior, the foundation of our faith.</p>
             </div>
-            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-                <i class="fas fa-bible"></i>
+            <div class="value-card animate-fade-up delay-2">
+                <div class="icon"><i class="fas fa-bible"></i></div>
                 <h3>Word of God</h3>
-                <p style="color: #5a6a7a; font-size: 0.9rem;">We stand firm on the truth of God's Word.</p>
+                <p>We stand firm on the truth of God's Word as our guide for life and ministry.</p>
             </div>
-            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.3s;">
-                <i class="fas fa-hands-praying"></i>
+            <div class="value-card animate-fade-up delay-3">
+                <div class="icon"><i class="fas fa-hands-praying"></i></div>
                 <h3>Prayer</h3>
-                <p style="color: #5a6a7a; font-size: 0.9rem;">We are a house of prayer for all nations.</p>
+                <p>We are a house of prayer for all nations, committed to seeking God's face.</p>
             </div>
-            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.4s;">
-                <i class="fas fa-users"></i>
+            <div class="value-card animate-fade-up delay-4">
+                <div class="icon"><i class="fas fa-users"></i></div>
                 <h3>Fellowship</h3>
-                <p style="color: #5a6a7a; font-size: 0.9rem;">We are family, united in love and purpose.</p>
+                <p>We are family, united in love and purpose, supporting one another in Christ.</p>
             </div>
         </div>
     </div>
@@ -324,23 +544,34 @@
 <!-- SERVICE TIMES -->
 <section class="section section-light">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Service Times</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Come worship with us</p>
-        <div class="values-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
-            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">
-                <i class="fas fa-church" style="color: #1a3a5c;"></i>
+        <div style="text-align:center;max-width:700px;margin:0 auto 40px;">
+            <h2 class="animate-fade-up" style="font-size:2.2rem;font-weight:800;color:var(--primary);letter-spacing:-0.5px;">Service Times</h2>
+            <p class="animate-fade-up delay-1" style="color:var(--text-light);font-size:1.05rem;">Come worship with us</p>
+        </div>
+        <div class="service-grid">
+            <div class="service-card animate-fade-up delay-1">
+                <i class="fas fa-church"></i>
                 <h3>Sunday Service</h3>
-                <p style="color: #5a6a7a; font-size: 0.9rem;">8:00 AM - 10:00 AM</p>
+                <div class="time">8:00 AM - 10:00 AM</div>
+                <div class="desc">Morning Worship</div>
             </div>
-            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-                <i class="fas fa-pray" style="color: #1a3a5c;"></i>
+            <div class="service-card animate-fade-up delay-2">
+                <i class="fas fa-pray"></i>
                 <h3>Wednesday Bible Study</h3>
-                <p style="color: #5a6a7a; font-size: 0.9rem;">6:00 PM - 7:30 PM</p>
+                <div class="time">6:00 PM - 7:30 PM</div>
+                <div class="desc">Midweek Service</div>
             </div>
-            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.3s;">
-                <i class="fas fa-users" style="color: #1a3a5c;"></i>
+            <div class="service-card animate-fade-up delay-3">
+                <i class="fas fa-users"></i>
                 <h3>Friday Vigil</h3>
-                <p style="color: #5a6a7a; font-size: 0.9rem;">10:00 PM - 12:00 AM</p>
+                <div class="time">10:00 PM - 12:00 AM</div>
+                <div class="desc">Prayer &amp; Intercession</div>
+            </div>
+            <div class="service-card animate-fade-up delay-4">
+                <i class="fas fa-child"></i>
+                <h3>Youth Fellowship</h3>
+                <div class="time">4:00 PM - 6:00 PM</div>
+                <div class="desc">Saturdays</div>
             </div>
         </div>
     </div>
@@ -351,56 +582,64 @@
     <div class="container">
         <div class="footer-grid">
             <div>
-                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+                <h4>RCCG Overcomers HOC</h4>
+                <p style="opacity:0.7;font-size:0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Quick Links</h4>
-                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                <h4>Quick Links</h4>
+                <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/sunday-school">Sunday School</a></li>
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
-                <div class="social" id="socialLinks">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                </div>
+                <h4>Connect With Us</h4>
+                <div class="social" id="socialLinks"></div>
             </div>
         </div>
         <hr/>
-        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
-        <div class="dev-credit">Developed by Dev Gift Team & Powered by De Creative Mide</div>
+        <div class="bottom">
+            <span>&copy; 2026 RCCG Overcomers HOC. All rights reserved.</span>
+            <span>Developed by Dev Gift Team</span>
+        </div>
+        <div class="dev-credit">Powered by De Creative Mide</div>
     </div>
 </footer>
 
 <script>
-    // Hide loader
+    // ============================================
+    // HIDE LOADER
+    // ============================================
     window.addEventListener('load', function() {
-        setTimeout(() => {
+        setTimeout(function() {
             document.getElementById('loaderWrapper').classList.add('hidden');
-        }, 600);
+        }, 800);
     });
 
-    // Load social links
+    // ============================================
+    // SOCIAL LINKS
+    // ============================================
     fetch('/api/social-links')
         .then(res => res.json())
         .then(links => {
             const container = document.getElementById('socialLinks');
-            container.innerHTML = '';
-            links.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url || '#';
-                a.target = '_blank';
-                a.rel = 'noopener';
-                a.innerHTML = `<i class="${link.icon}"></i>`;
-                container.appendChild(a);
-            });
+            if (links && links.length) {
+                container.innerHTML = links.map(link => `
+                    <a href="${link.url}" target="_blank" rel="noopener">
+                        <i class="${link.icon}"></i>
+                    </a>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                `;
+            }
         })
         .catch(() => {});
 </script>
