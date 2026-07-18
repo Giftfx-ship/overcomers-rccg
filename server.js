@@ -328,16 +328,6 @@ app.get('/api/sermons/featured', async (req, res) => {
   }
 });
 
-app.get('/api/sermons/:id', async (req, res) => {
-  try {
-    const sermon = await Sermon.findById(req.params.id);
-    if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
-    res.json(sermon);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Events
 app.get('/api/events', async (req, res) => {
   try {
@@ -360,30 +350,10 @@ app.get('/api/events/upcoming', async (req, res) => {
   }
 });
 
-app.get('/api/events/:id', async (req, res) => {
-  try {
-    const event = await Event.findById(req.params.id);
-    if (!event) return res.status(404).json({ error: 'Event not found' });
-    res.json(event);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // Media
 app.get('/api/media', async (req, res) => {
   try {
     const media = await Media.find().sort({ createdAt: -1 });
-    res.json(media);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/media/:id', async (req, res) => {
-  try {
-    const media = await Media.findById(req.params.id);
-    if (!media) return res.status(404).json({ error: 'Media not found' });
     res.json(media);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -1060,8 +1030,36 @@ app.delete('/api/admin/testimonies', authMiddleware, async (req, res) => {
 // ============================================
 // SERVE INDEX.HTML FOR ALL OTHER ROUTES
 // ============================================
-app.get('*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, 'about.html'));
+});
+
+app.get('/sermons', (req, res) => {
+  res.sendFile(path.join(__dirname, 'sermons.html'));
+});
+
+app.get('/events', (req, res) => {
+  res.sendFile(path.join(__dirname, 'events.html'));
+});
+
+app.get('/media', (req, res) => {
+  res.sendFile(path.join(__dirname, 'media.html'));
+});
+
+app.get('/sunday-school', (req, res) => {
+  res.sendFile(path.join(__dirname, 'sunday-school.html'));
+});
+
+app.get('/contact', (req, res) => {
+  res.sendFile(path.join(__dirname, 'contact.html'));
+});
+
+app.get('/admin.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 // ============================================
