@@ -66,6 +66,7 @@
             transition: all 0.3s ease;
         }
         .login-box .btn:hover { background: #0f2a44; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,58,92,0.3); }
+        .login-box .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .login-box .error {
             background: #fee2e2; color: #991b1b;
             padding: 10px 15px; border-radius: 8px;
@@ -577,11 +578,14 @@
 
 <script>
 // ============================================================
+// ADMIN PANEL - COMPLETE FIXED JAVASCRIPT
+// ============================================================
+
+// ============================================================
 // AUTH CHECK
 // ============================================================
 const token = localStorage.getItem('adminToken');
 
-// Check if already logged in
 if (token) {
     verifyAuth();
 } else {
@@ -602,6 +606,7 @@ async function verifyAuth() {
         document.getElementById('dashboardPage').classList.add('show');
         document.getElementById('loaderWrapper').classList.add('hidden');
         loadDashboard();
+        loadSermons();
     } catch {
         localStorage.removeItem('adminToken');
         document.getElementById('loginPage').classList.remove('hidden');
@@ -611,15 +616,18 @@ async function verifyAuth() {
 }
 
 // ============================================================
-// LOGIN
+// LOGIN - FIXED
 // ============================================================
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const errorMsg = document.getElementById('loginError');
+    const loginBtn = document.querySelector('#loginForm .btn');
 
     errorMsg.style.display = 'none';
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
 
     try {
         const res = await fetch('/api/admin/login', {
@@ -628,18 +636,38 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             body: JSON.stringify({ username, password })
         });
         const data = await res.json();
+        
         if (res.ok) {
             localStorage.setItem('adminToken', data.token);
-            location.reload();
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('show');
+            document.getElementById('loaderWrapper').classList.add('hidden');
+            document.getElementById('adminName').textContent = data.username || 'Admin';
+            loadDashboard();
+            loadSermons();
         } else {
             errorMsg.textContent = data.error || 'Invalid credentials';
             errorMsg.style.display = 'block';
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
         }
     } catch (err) {
         errorMsg.textContent = 'Network error. Please try again.';
         errorMsg.style.display = 'block';
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
     }
 });
+
+// ============================================================
+// LOGOUT
+// ============================================================
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('adminToken');
+        location.reload();
+    }
+}
 
 // ============================================================
 // NAVIGATION
@@ -870,16 +898,6 @@ function formDataToJSON(formData) {
         }
     }
     return obj;
-}
-
-// ============================================================
-// LOGOUT
-// ============================================================
-function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('adminToken');
-        location.reload();
-    }
 }
 
 // ============================================================
