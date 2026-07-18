@@ -1,7 +1,7 @@
 // ============================================================
 // RCCG OVERCOMERS HOC - COMPLETE SERVER
 // Parish: Oke Ado, Old Stadium Road, Ogbomoso, Oyo State
-// Dual MongoDB Setup (2 Databases = 1GB Storage)
+// Dual MongoDB (2 DBs = 1GB Storage)
 // Developed by Dev Gift Team
 // ============================================================
 
@@ -26,7 +26,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(express.static('public'));
 
 // ============================================================
-// DUAL MONGODB CONNECTION (2 Databases = 1GB Storage)
+// DUAL MONGODB CONNECTION
 // ============================================================
 
 // Database 1: Main Church Data
@@ -34,15 +34,15 @@ const mainDB = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-mainDB.on('connected', () => console.log('✅ Main DB Connected (rccg_overcomers)'));
+mainDB.on('connected', () => console.log('✅ Main DB Connected'));
 mainDB.on('error', err => console.error('❌ Main DB Error:', err));
 
-// Database 2: Media Storage (Photos, Videos, Audio)
+// Database 2: Media Storage
 const mediaDB = mongoose.createConnection(process.env.MONGODB_URI_MEDIA, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-mediaDB.on('connected', () => console.log('✅ Media DB Connected (rccg_media)'));
+mediaDB.on('connected', () => console.log('✅ Media DB Connected'));
 mediaDB.on('error', err => console.error('❌ Media DB Error:', err));
 
 // ============================================================
@@ -55,6 +55,15 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true }
 });
 const User = mainDB.model('User', UserSchema);
+
+// Social Links
+const SocialLinksSchema = new mongoose.Schema({
+    platform: { type: String, required: true, unique: true },
+    url: { type: String, default: '' },
+    icon: { type: String, required: true },
+    active: { type: Boolean, default: true }
+}, { timestamps: true });
+const SocialLink = mainDB.model('SocialLink', SocialLinksSchema);
 
 // Sermon
 const SermonSchema = new mongoose.Schema({
@@ -149,7 +158,7 @@ const SundaySchoolSchema = new mongoose.Schema({
 const SundaySchool = mainDB.model('SundaySchool', SundaySchoolSchema);
 
 // ============================================================
-// MODELS - MEDIA DATABASE (Photos, Videos, Audio)
+// MODELS - MEDIA DATABASE
 // ============================================================
 
 const MediaSchema = new mongoose.Schema({
@@ -169,7 +178,6 @@ const Media = mediaDB.model('Media', MediaSchema);
 // ============================================================
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Store files in uploads folder (served statically)
         const dir = 'uploads/';
         if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
         cb(null, dir);
@@ -182,14 +190,11 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
     storage, 
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
+    limits: { fileSize: 50 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'audio/mpeg', 'audio/mp3', 'audio/wav', 'video/mp4', 'video/webm'];
-        if (allowed.includes(file.mimetype)) {
-            cb(null, true);
-        } else {
-            cb(new Error('Invalid file type'), false);
-        }
+        if (allowed.includes(file.mimetype)) cb(null, true);
+        else cb(new Error('Invalid file type'), false);
     }
 });
 
@@ -211,7 +216,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 // ============================================================
-// INIT ADMIN USER
+// INIT ADMIN USER & SOCIAL LINKS
 // ============================================================
 const initAdmin = async () => {
     const adminUsername = process.env.ADMIN_USERNAME || 'admin';
@@ -221,11 +226,32 @@ const initAdmin = async () => {
     if (!adminExists) {
         const hashedPassword = await bcrypt.hash(adminPassword, 10);
         await User.create({ username: adminUsername, password: hashedPassword });
-        console.log(`✅ Admin created - username: ${adminUsername}`);
+        console.log(`✅ Admin created`);
     }
 };
-// Wait for DB connection then init
-mainDB.once('connected', initAdmin);
+
+const initSocialLinks = async () => {
+    const defaultLinks = [
+        { platform: 'facebook', url: 'https://facebook.com/rccgovercomers', icon: 'fab fa-facebook', active: true },
+        { platform: 'youtube', url: 'https://youtube.com/rccgovercomers', icon: 'fab fa-youtube', active: true },
+        { platform: 'instagram', url: 'https://instagram.com/rccgovercomers', icon: 'fab fa-instagram', active: true },
+        { platform: 'whatsapp', url: 'https://wa.me/2348000000000', icon: 'fab fa-whatsapp', active: true },
+        { platform: 'twitter', url: 'https://twitter.com/rccgovercomers', icon: 'fab fa-twitter', active: true }
+    ];
+    
+    for (const link of defaultLinks) {
+        const exists = await SocialLink.findOne({ platform: link.platform });
+        if (!exists) {
+            await SocialLink.create(link);
+            console.log(`✅ Social link created: ${link.platform}`);
+        }
+    }
+};
+
+mainDB.once('connected', async () => {
+    await initAdmin();
+    await initSocialLinks();
+});
 
 // ============================================================
 // API ROUTES - AUTH
@@ -246,6 +272,41 @@ app.post('/api/admin/login', async (req, res) => {
 
 app.post('/api/admin/verify', authMiddleware, (req, res) => {
     res.json({ valid: true, username: req.user.username });
+});
+
+// ============================================================
+// API ROUTES - SOCIAL LINKS (Admin can edit)
+// ============================================================
+app.get('/api/social-links', async (req, res) => {
+    try {
+        const links = await SocialLink.find({ active: true });
+        res.json(links);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/admin/social-links', authMiddleware, async (req, res) => {
+    try {
+        const links = await SocialLink.find().sort({ platform: 1 });
+        res.json(links);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/admin/social-links/:id', authMiddleware, async (req, res) => {
+    try {
+        const link = await SocialLink.findByIdAndUpdate(
+            req.params.id,
+            { url: req.body.url, active: req.body.active },
+            { new: true }
+        );
+        if (!link) return res.status(404).json({ error: 'Social link not found' });
+        res.json(link);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // ============================================================
@@ -391,7 +452,7 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - MEDIA (Stored in Media Database)
+// API ROUTES - MEDIA
 // ============================================================
 app.get('/api/media', async (req, res) => {
     try {
