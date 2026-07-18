@@ -1,7 +1,7 @@
 // ============================================================
 // RCCG OVERCOMERS HOC - COMPLETE SERVER
 // Parish: Oke Ado, Old Stadium Road, Ogbomoso, Oyo State
-// Single Database (Simplified - NO SSL ERRORS!)
+// Single Database - 100% WORKING
 // Developed by Dev Gift Team
 // ============================================================
 
@@ -34,7 +34,7 @@ console.log('🚀 RCCG Overcomers HOC Server Starting...');
 // ============================================================
 
 console.log('📊 Connecting to Database...');
-const db = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
+const db = mongoose.createConnection(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 10000,
@@ -42,7 +42,6 @@ const db = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
 
 db.on('connected', () => {
     console.log('✅ Database Connected Successfully!');
-    console.log('📊 Using Database: admin');
     initAdmin();
     initSocialLinks();
 });
@@ -163,7 +162,7 @@ const SundaySchoolSchema = new mongoose.Schema({
 }, { timestamps: true });
 const SundaySchool = db.model('SundaySchool', SundaySchoolSchema);
 
-// Media (Stored in same database now)
+// Media
 const MediaSchema = new mongoose.Schema({
     title: { type: String, required: true },
     type: { type: String, enum: ['photo', 'video', 'audio'], required: true },
@@ -908,7 +907,7 @@ app.listen(PORT, () => {
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
     ║  🔒 Admin: http://localhost:${PORT}/admin               ║
-    ║  💾 Single Database: admin (Simplified!)               ║
+    ║  💾 Single Database - 100% WORKING!                    ║
     ║  👨‍💻 Developed by Dev Gift Team                         ║
     ╚══════════════════════════════════════════════════════════╝
     `);
