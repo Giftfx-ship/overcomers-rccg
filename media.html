@@ -5,13 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Media - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2c5f8a;
+            --primary-dark: #0f2a44;
+            --secondary: #ffd700;
+            --secondary-hover: #f0c800;
+            --text: #2c3e50;
+            --text-light: #5a7a9a;
+            --text-lighter: #8a9aaa;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #2c3e50;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.7;
             overflow-x: hidden;
         }
@@ -19,7 +38,7 @@
         .loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a3a5c;
+            background: var(--primary);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 9999;
@@ -27,14 +46,15 @@
         }
         .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
         .loader {
-            width: 50px; height: 50px;
+            width: 60px; height: 60px;
             border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffd700;
+            border-top: 4px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+        .loader-text { color: #fff; margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; opacity: 0.7; }
+        .loader-sub { color: rgba(255,255,255,0.4); font-size: 0.7rem; letter-spacing: 1px; }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(40px); }
@@ -48,16 +68,27 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
 
+        /* ===== NAVBAR ===== */
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 15px 0;
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
         }
         .navbar .container {
             display: flex;
@@ -68,34 +99,34 @@
         .navbar .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-decoration: none;
         }
-        .navbar .logo img { height: 50px; width: auto; }
+        .navbar .logo img { height: 50px; width: auto; border-radius: 8px; }
         .navbar .logo-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #1a3a5c;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary);
             line-height: 1.2;
         }
         .navbar .logo-text small {
             display: block;
             font-weight: 400;
             font-size: 0.7rem;
-            color: #5a7a9a;
+            color: var(--text-light);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 30px;
             list-style: none;
             align-items: center;
         }
         .nav-links a {
             text-decoration: none;
-            color: #2c3e50;
+            color: var(--text);
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
+            transition: var(--transition);
             position: relative;
         }
         .nav-links a::after {
@@ -105,176 +136,332 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #1a3a5c;
-            transition: width 0.3s ease;
+            background: var(--primary);
+            transition: var(--transition);
         }
         .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: #1a3a5c; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links .btn-nav {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .nav-links .btn-nav:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
+        }
+        .nav-links .btn-nav::after { display: none; }
         .hamburger {
             display: none;
             font-size: 1.8rem;
             cursor: pointer;
-            color: #1a3a5c;
+            color: var(--primary);
         }
 
+        /* ===== PAGE HERO ===== */
         .page-hero {
-            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: #fff;
-            padding: 60px 0;
+            padding: 60px 0 50px;
             text-align: center;
-        }
-        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
-        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
-
-        .section { padding: 60px 0; }
-        .section-gray { background: #f5f7fa; }
-
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 25px;
-        }
-        .media-item {
-            background: #fff;
-            border-radius: 12px;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: all 0.4s ease;
-            animation: fadeUp 0.6s ease forwards;
-            opacity: 0;
-            cursor: pointer;
         }
-        .media-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
-        }
-        .media-item .thumb {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: #eef2f7;
-        }
-        .media-item .thumb.video { position: relative; }
-        .media-item .thumb.video::after {
-            content: '\f04b';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
+        .page-hero::after {
+            content: '';
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--bg);
+            clip-path: ellipse(70% 100% at 50% 100%);
+        }
+        .page-hero .container { position: relative; z-index: 1; }
+        .page-hero h1 {
             font-size: 3rem;
-            color: rgba(255,255,255,0.8);
-            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-weight: 900;
+            letter-spacing: -1px;
         }
-        .media-item .info { padding: 15px 20px; }
-        .media-item .info h3 {
-            font-size: 1rem;
-            color: #1a3a5c;
-            margin-bottom: 4px;
+        .page-hero h1 i { color: var(--secondary); margin-right: 10px; }
+        .page-hero p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin-top: 8px;
         }
-        .media-item .info .type {
-            font-size: 0.75rem;
-            color: #7a8a9a;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .media-item .info .type i { margin-right: 4px; }
 
-        .skeleton-image { height: 200px; background: #e2e8f0; border-radius: 8px; animation: pulse 1.5s ease-in-out infinite; }
-        .skeleton-text { height: 12px; margin: 8px 0; background: #e2e8f0; border-radius: 4px; animation: pulse 1.5s ease-in-out infinite; }
-
+        /* ===== FILTERS ===== */
+        .filter-section {
+            padding: 25px 0 15px;
+            background: var(--white);
+            border-bottom: 1px solid #eef2f7;
+        }
         .filter-buttons {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 30px;
             justify-content: center;
         }
         .filter-btn {
-            padding: 8px 20px;
+            padding: 8px 22px;
             border: 2px solid #e2e8f0;
-            border-radius: 20px;
-            background: #fff;
+            border-radius: 30px;
+            background: var(--white);
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             font-size: 0.85rem;
+            font-family: var(--font);
+            color: var(--text-light);
         }
-        .filter-btn:hover { border-color: #1a3a5c; }
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
         .filter-btn.active {
-            background: #1a3a5c;
+            background: var(--primary);
             color: #fff;
-            border-color: #1a3a5c;
+            border-color: var(--primary);
         }
+        .filter-btn i { margin-right: 5px; }
 
-        .footer {
-            background: #1a3a5c;
-            color: #fff;
-            padding: 40px 0;
-            margin-top: 40px;
-        }
-        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
-        .footer a:hover { opacity: 1; }
-        .footer-grid {
+        /* ===== MEDIA GRID ===== */
+        .section { padding: 50px 0 70px; }
+        .media-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
         }
-        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
-        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
-        .footer .dev-credit {
-            text-align: center;
-            opacity: 0.3;
-            font-size: 0.7rem;
-            margin-top: 10px;
-            letter-spacing: 1px;
-        }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
 
-        /* Modal for media preview */
-        .media-modal {
+        .media-item {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+            cursor: pointer;
+            position: relative;
+        }
+        .media-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+        .media-item .thumb {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #eef2f7;
+        }
+        .media-item .thumb-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+        .media-item .thumb-wrapper .overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+        .media-item:hover .thumb-wrapper .overlay {
+            opacity: 1;
+        }
+        .media-item .thumb-wrapper .overlay i {
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .media-item .thumb-wrapper .type-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+        }
+        .media-item .thumb-wrapper .type-badge i { margin-right: 4px; }
+        .media-item .info { padding: 18px 22px; }
+        .media-item .info h3 {
+            font-size: 1rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .media-item .info .date {
+            font-size: 0.8rem;
+            color: var(--text-lighter);
+        }
+        .media-item .info .description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0,0,0,0.9);
             z-index: 2000;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            animation: fadeIn 0.3s ease;
         }
-        .media-modal.show { display: flex; }
-        .media-modal-content {
+        .modal.show { display: flex; }
+        .modal-content {
             max-width: 90%;
             max-height: 90vh;
             position: relative;
+            animation: zoomIn 0.3s ease;
         }
-        .media-modal-content img,
-        .media-modal-content video {
+        .modal-content img,
+        .modal-content video {
             max-width: 100%;
             max-height: 85vh;
             border-radius: 8px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
         }
-        .media-modal-content .close-modal {
+        .modal-content .close-modal {
             position: absolute;
-            top: -40px;
+            top: -50px;
             right: 0;
             color: #fff;
-            font-size: 2rem;
+            font-size: 2.5rem;
             cursor: pointer;
             opacity: 0.7;
-            transition: opacity 0.3s ease;
+            transition: var(--transition);
+            background: none;
+            border: none;
+            font-family: var(--font);
         }
-        .media-modal-content .close-modal:hover { opacity: 1; }
-        .media-modal-content .modal-title {
+        .modal-content .close-modal:hover { opacity: 1; transform: rotate(90deg); }
+        .modal-content .modal-title {
             color: #fff;
             text-align: center;
             margin-top: 15px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
         }
-        audio { width: 100%; margin-top: 10px; }
+        .modal-content .modal-description {
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        .modal-content audio {
+            width: 100%;
+            margin-top: 15px;
+            border-radius: 8px;
+        }
+        .modal-content .audio-wrapper {
+            background: var(--primary);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            min-width: 400px;
+        }
+        .modal-content .audio-wrapper i {
+            font-size: 4rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            display: block;
+        }
 
+        .skeleton-image {
+            height: 220px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .skeleton-text {
+            height: 12px;
+            margin: 8px 0;
+            background: #e2e8f0;
+            border-radius: 4px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 50px 0 30px;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer a:hover { opacity: 1; }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+        .footer h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .footer ul {
+            list-style: none;
+            opacity: 0.7;
+        }
+        .footer ul li { margin-bottom: 6px; }
+        .footer .social {
+            display: flex;
+            gap: 15px;
+            font-size: 1.4rem;
+        }
+        .footer .social a {
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer .social a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        .footer hr {
+            border-color: rgba(255,255,255,0.08);
+            margin: 30px 0 20px;
+        }
+        .footer .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
+        .footer .dev-credit {
+            text-align: center;
+            opacity: 0.3;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -287,16 +474,29 @@
             .hamburger { display: block; }
             .page-hero h1 { font-size: 2rem; }
             .media-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+            .navbar .logo img { height: 40px; }
+            .navbar .logo-text { font-size: 1rem; }
+            .footer .bottom { flex-direction: column; text-align: center; }
+            .modal-content .audio-wrapper { min-width: auto; padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero { padding: 40px 0 30px; }
+            .page-hero h1 { font-size: 1.6rem; }
+            .media-item .info { padding: 12px 16px; }
         }
     </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">RCCG Overcomers HOC</div>
+    <div class="loader-sub">Loading Media...</div>
 </div>
 
+<!-- NAVBAR -->
 <nav class="navbar">
     <div class="container">
         <a href="/" class="logo">
@@ -314,27 +514,36 @@
             <li><a href="/about">About</a></li>
             <li><a href="/sermons">Sermons</a></li>
             <li><a href="/events">Events</a></li>
-            <li><a href="/media">Media</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/media" class="active" style="color:var(--primary);">Media</a></li>
+            <li><a href="/sunday-school">Sunday School</a></li>
+            <li><a href="/contact" class="btn-nav">Contact</a></li>
         </ul>
     </div>
 </nav>
 
-<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+<!-- PAGE HERO -->
+<section class="page-hero">
     <div class="container">
-        <h1>Media Gallery</h1>
-        <p>Photos, videos, and audio from our services</p>
+        <h1 class="animate-fade-in"><i class="fas fa-photo-video"></i> Media Gallery</h1>
+        <p class="animate-fade-in delay-1">Photos, videos, and audio from our services and events</p>
     </div>
 </section>
 
-<section class="section section-gray">
+<!-- FILTERS -->
+<section class="filter-section">
     <div class="container">
-        <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all" onclick="filterMedia('all')">All</button>
+        <div class="filter-buttons animate-fade-up">
+            <button class="filter-btn active" data-filter="all" onclick="filterMedia('all')"><i class="fas fa-th"></i> All</button>
             <button class="filter-btn" data-filter="photo" onclick="filterMedia('photo')"><i class="fas fa-image"></i> Photos</button>
             <button class="filter-btn" data-filter="video" onclick="filterMedia('video')"><i class="fas fa-video"></i> Videos</button>
             <button class="filter-btn" data-filter="audio" onclick="filterMedia('audio')"><i class="fas fa-music"></i> Audio</button>
         </div>
+    </div>
+</section>
+
+<!-- MEDIA GRID -->
+<section class="section">
+    <div class="container">
         <div id="mediaContainer" class="media-grid">
             <div class="media-item"><div class="skeleton-image"></div><div class="info"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:40%;"></div></div></div>
             <div class="media-item"><div class="skeleton-image"></div><div class="info"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:40%;"></div></div></div>
@@ -344,153 +553,221 @@
     </div>
 </section>
 
-<!-- Media Modal -->
-<div class="media-modal" id="mediaModal" onclick="closeMediaModal(event)">
-    <div class="media-modal-content" onclick="event.stopPropagation()">
-        <span class="close-modal" onclick="closeMediaModal()">&times;</span>
-        <div id="modalMediaContent"></div>
+<!-- MODAL -->
+<div class="modal" id="mediaModal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="close-modal" onclick="closeModal()">&times;</button>
+        <div id="modalContent"></div>
         <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-description" id="modalDescription"></div>
     </div>
 </div>
 
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
             <div>
-                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+                <h4>RCCG Overcomers HOC</h4>
+                <p style="opacity:0.7;font-size:0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Quick Links</h4>
-                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                <h4>Quick Links</h4>
+                <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/sunday-school">Sunday School</a></li>
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
-                <div class="social" id="socialLinks">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                </div>
+                <h4>Connect With Us</h4>
+                <div class="social" id="socialLinks"></div>
             </div>
         </div>
         <hr/>
-        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
-        <div class="dev-credit">Developed by Dev Gift Team & Powered by De Creative Mide </div>
+        <div class="bottom">
+            <span>&copy; 2026 RCCG Overcomers HOC. All rights reserved.</span>
+            <span>Developed by Dev Gift Team</span>
+        </div>
+        <div class="dev-credit">Powered by De Creative Mide</div>
     </div>
 </footer>
 
 <script>
+    // Hide Loader
     window.addEventListener('load', function() {
-        setTimeout(() => {
+        setTimeout(function() {
             document.getElementById('loaderWrapper').classList.add('hidden');
-        }, 600);
+        }, 800);
     });
 
+    // Social Links
+    fetch('/api/social-links')
+        .then(res => res.json())
+        .then(links => {
+            const container = document.getElementById('socialLinks');
+            if (links && links.length) {
+                container.innerHTML = links.map(link => `
+                    <a href="${link.url}" target="_blank" rel="noopener">
+                        <i class="${link.icon}"></i>
+                    </a>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                `;
+            }
+        })
+        .catch(() => {});
+
+    // Media Data
     let allMedia = [];
     let currentFilter = 'all';
 
+    function getTypeIcon(type) {
+        const map = {
+            'photo': 'fa-image',
+            'video': 'fa-video',
+            'audio': 'fa-music'
+        };
+        return map[type] || 'fa-file';
+    }
+
+    function getTypeColor(type) {
+        const map = {
+            'photo': '#1a3a5c',
+            'video': '#dc2626',
+            'audio': '#16a34a'
+        };
+        return map[type] || '#374151';
+    }
+
     function renderMedia(media) {
         const container = document.getElementById('mediaContainer');
-        if (media.length === 0) {
+        if (!media || media.length === 0) {
             container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                    <h3>No media found</h3>
-                    <p style="color: #7a8a9a;">Check back soon for new media.</p>
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);">
+                    <i class="fas fa-photo-video" style="font-size:3rem;color:var(--text-lighter);margin-bottom:15px;"></i>
+                    <h3 style="color:var(--text-light);">No media found</h3>
+                    <p style="color:var(--text-lighter);">Check back soon for new photos, videos, and audio.</p>
                 </div>
             `;
             return;
         }
-        container.innerHTML = media.map((m, i) => `
-            <div class="media-item" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i % 4) * 0.1}s;" onclick="openMediaModal('${m._id}')">
-                ${m.type === 'photo' ? `<img src="${m.url}" alt="${m.title}" class="thumb"/>` :
-                  m.type === 'video' ? `<div class="thumb video" style="background-image:url('${m.thumbnail || m.url}');background-size:cover;background-position:center;position:relative;"><i class="fas fa-play" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;color:rgba(255,255,255,0.8);text-shadow:0 4px 20px rgba(0,0,0,0.3);"></i></div>` :
-                  `<div class="thumb" style="display:flex;align-items:center;justify-content:center;background:#1a3a5c;color:#fff;font-size:3rem;"><i class="fas fa-music"></i></div>`}
+
+        container.innerHTML = media.map((item, i) => `
+            <div class="media-item" style="animation-delay:${(i % 8) * 0.06}s;" onclick="openMedia('${item._id}')">
+                <div class="thumb-wrapper">
+                    ${item.type === 'photo' ? 
+                        `<img src="${item.url}" alt="${item.title}" class="thumb" onerror="this.src='https://placehold.co/400x300/e2e8f0/8a9aaa?text=Photo'"/>` :
+                        item.type === 'video' ? 
+                            `<div class="thumb" style="background:url('${item.thumbnail || item.url}') center/cover;"></div>` :
+                            `<div class="thumb" style="display:flex;align-items:center;justify-content:center;background:var(--primary);color:#fff;font-size:4rem;"><i class="fas fa-music"></i></div>`
+                    }
+                    <div class="overlay">
+                        <i class="fas ${item.type === 'photo' ? 'fa-search-plus' : item.type === 'video' ? 'fa-play' : 'fa-play'}"></i>
+                    </div>
+                    <span class="type-badge" style="background:${getTypeColor(item.type)};">
+                        <i class="fas ${getTypeIcon(item.type)}"></i> ${item.type}
+                    </span>
+                </div>
                 <div class="info">
-                    <h3>${m.title}</h3>
-                    <div class="type"><i class="fas ${m.type === 'photo' ? 'fa-image' : m.type === 'video' ? 'fa-video' : 'fa-music'}"></i> ${m.type}</div>
+                    <h3>${item.title || 'Untitled'}</h3>
+                    <div class="date">${new Date(item.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                    ${item.description ? `<div class="description">${item.description}</div>` : ''}
                 </div>
             </div>
         `).join('');
     }
 
-    function filterMedia(category) {
-        currentFilter = category;
+    function filterMedia(type) {
+        currentFilter = type;
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.dataset.filter === category);
+            btn.classList.toggle('active', btn.dataset.filter === type);
         });
-        if (category === 'all') {
+
+        if (type === 'all') {
             renderMedia(allMedia);
         } else {
-            const filtered = allMedia.filter(m => m.type === category);
+            const filtered = allMedia.filter(m => m.type === type);
             renderMedia(filtered);
         }
     }
 
-    function openMediaModal(id) {
+    // ===== MODAL =====
+    function openMedia(id) {
         const item = allMedia.find(m => m._id === id);
         if (!item) return;
+
         const modal = document.getElementById('mediaModal');
-        const content = document.getElementById('modalMediaContent');
+        const content = document.getElementById('modalContent');
         const title = document.getElementById('modalTitle');
+        const desc = document.getElementById('modalDescription');
+
         modal.classList.add('show');
         document.body.style.overflow = 'hidden';
-        title.textContent = item.title;
+        title.textContent = item.title || 'Untitled';
+        desc.textContent = item.description || '';
+
         if (item.type === 'photo') {
-            content.innerHTML = `<img src="${item.url}" alt="${item.title}"/>`;
+            content.innerHTML = `<img src="${item.url}" alt="${item.title}" onerror="this.src='https://placehold.co/800x600/e2e8f0/8a9aaa?text=Image+Not+Found'"/>`;
         } else if (item.type === 'video') {
-            content.innerHTML = `<video controls autoplay src="${item.url}"></video>`;
+            content.innerHTML = `
+                <video controls autoplay style="max-width:100%;max-height:80vh;border-radius:8px;">
+                    <source src="${item.url}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            `;
         } else if (item.type === 'audio') {
-            content.innerHTML = `<div style="background:#1a3a5c;border-radius:8px;padding:40px;text-align:center;color:#fff;">
-                <i class="fas fa-music" style="font-size:4rem;margin-bottom:20px;display:block;"></i>
-                <audio controls src="${item.url}" style="width:100%;"></audio>
-            </div>`;
+            content.innerHTML = `
+                <div class="audio-wrapper">
+                    <i class="fas fa-music"></i>
+                    <h3 style="color:#fff;margin-bottom:15px;">${item.title || 'Audio'}</h3>
+                    <audio controls style="width:100%;">
+                        <source src="${item.url}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
+            `;
         }
     }
 
-    function closeMediaModal(e) {
+    function closeModal(e) {
         if (e && e.target !== e.currentTarget) return;
         const modal = document.getElementById('mediaModal');
         modal.classList.remove('show');
         document.body.style.overflow = '';
-        document.getElementById('modalMediaContent').innerHTML = '';
+        document.getElementById('modalContent').innerHTML = '';
+        document.getElementById('modalTitle').textContent = '';
+        document.getElementById('modalDescription').textContent = '';
     }
 
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // ===== LOAD MEDIA =====
     fetch('/api/media')
         .then(res => res.json())
         .then(data => {
-            allMedia = data;
-            renderMedia(data);
+            allMedia = data || [];
+            renderMedia(allMedia);
         })
         .catch(() => {
             document.getElementById('mediaContainer').innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                    <h3>Unable to load media</h3>
-                    <p style="color: #7a8a9a;">Please refresh the page.</p>
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);">
+                    <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#dc2626;margin-bottom:15px;"></i>
+                    <h3 style="color:var(--text-light);">Unable to load media</h3>
+                    <p style="color:var(--text-lighter);">Please refresh the page.</p>
                 </div>
             `;
         });
-
-    fetch('/api/social-links')
-        .then(res => res.json())
-        .then(links => {
-            const container = document.getElementById('socialLinks');
-            container.innerHTML = '';
-            links.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url || '#';
-                a.target = '_blank';
-                a.rel = 'noopener';
-                a.innerHTML = `<i class="${link.icon}"></i>`;
-                container.appendChild(a);
-            });
-        })
-        .catch(() => {});
 </script>
 </body>
 </html>
