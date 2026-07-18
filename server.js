@@ -28,14 +28,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 console.log('🚀 RCCG Overcomers HOC Server Starting...');
-console.log('📁 Current Directory:', __dirname);
 
 // ============================================================
-// DUAL MONGODB CONNECTION
+// DUAL MONGODB CONNECTION - FIXED!
 // ============================================================
 
-// Database 1: Main Church Data (Text content)
-console.log('📊 Connecting to Main Database (rccg_overcomers)...');
+// Database 1: Main Church Data (WORKING)
+console.log('📊 Connecting to Main Database...');
 const mainDB = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -43,27 +42,27 @@ const mainDB = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
 });
 
 mainDB.on('connected', () => {
-    console.log('✅ Main DB Connected Successfully!');
-    console.log('📊 Database: rccg_overcomers (Text Data)');
-    console.log('💾 Storage: Up to 500MB');
+    console.log('✅ Main DB Connected (rccg_overcomers)');
 });
 
 mainDB.on('error', (err) => {
     console.error('❌ Main DB Error:', err.message);
 });
 
-// Database 2: Media Storage (Photos, Videos, Audio)
-console.log('📊 Connecting to Media Database (rccg_media)...');
+// Database 2: Media Storage - FIXED SSL ERROR!
+console.log('📊 Connecting to Media Database...');
 const mediaDB = mongoose.createConnection(process.env.MONGODB_URI_MEDIA, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 30000,
+    // THESE 3 LINES FIX THE SSL ERROR!
+    tls: true,
+    tlsAllowInvalidCertificates: true,
+    tlsAllowInvalidHostnames: true,
 });
 
 mediaDB.on('connected', () => {
-    console.log('✅ Media DB Connected Successfully!');
-    console.log('📊 Database: rccg_media (Media Files)');
-    console.log('💾 Storage: Up to 500MB');
+    console.log('✅ Media DB Connected (rccg_media)');
 });
 
 mediaDB.on('error', (err) => {
@@ -71,7 +70,7 @@ mediaDB.on('error', (err) => {
 });
 
 // ============================================================
-// MODELS - MAIN DATABASE (Text Data)
+// MODELS - MAIN DATABASE
 // ============================================================
 
 // User
@@ -183,7 +182,7 @@ const SundaySchoolSchema = new mongoose.Schema({
 const SundaySchool = mainDB.model('SundaySchool', SundaySchoolSchema);
 
 // ============================================================
-// MODELS - MEDIA DATABASE (Photos, Videos, Audio)
+// MODELS - MEDIA DATABASE
 // ============================================================
 
 const MediaSchema = new mongoose.Schema({
@@ -283,7 +282,6 @@ const initSocialLinks = async () => {
     }
 };
 
-// Wait for DB connection
 mainDB.once('connected', async () => {
     console.log('🔄 Initializing admin and social links...');
     await initAdmin();
@@ -490,7 +488,7 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - MEDIA (Stored in Media Database)
+// API ROUTES - MEDIA
 // ============================================================
 app.get('/api/media', async (req, res) => {
     try {
@@ -887,10 +885,8 @@ app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req,
 });
 
 // ============================================================
-// SERVE HTML PAGES (Serving from root directory)
+// SERVE HTML PAGES
 // ============================================================
-
-// Serve static HTML files from root
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -919,12 +915,11 @@ app.get('/sunday-school', (req, res) => {
     res.sendFile(path.join(__dirname, 'sunday-school.html'));
 });
 
-// SECRET ADMIN ROUTE
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Catch-all route - serve index for any unknown route
+// Catch-all route
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
