@@ -1,6 +1,8 @@
 // ============================================================
 // RCCG OVERCOMERS HOC - COMPLETE SERVER
 // Parish: Oke Ado, Old Stadium Road, Ogbomoso, Oyo State
+// Dual MongoDB Setup (2 Databases = 1GB Storage)
+// Developed by Dev Gift Team
 // ============================================================
 
 require('dotenv').config();
@@ -23,38 +25,28 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
 app.use(express.static('public'));
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI, {
+// ============================================================
+// DUAL MONGODB CONNECTION (2 Databases = 1GB Storage)
+// ============================================================
+
+// Database 1: Main Church Data
+const mainDB = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
     useNewUrlParser: true,
     useUnifiedTopology: true
-})
-.then(() => console.log('✅ Connected to RCCG Overcomers DB'))
-.catch(err => console.error('❌ MongoDB Error:', err));
+});
+mainDB.on('connected', () => console.log('✅ Main DB Connected (rccg_overcomers)'));
+mainDB.on('error', err => console.error('❌ Main DB Error:', err));
 
-// File Upload
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const dir = 'uploads/';
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, Date.now() + '-' + Math.random().toString(36).substring(7) + ext);
-    }
+// Database 2: Media Storage (Photos, Videos, Audio)
+const mediaDB = mongoose.createConnection(process.env.MONGODB_URI_MEDIA, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
-const upload = multer({ 
-    storage, 
-    limits: { fileSize: 50 * 1024 * 1024 },
-    fileFilter: (req, file, cb) => {
-        const allowed = ['image/jpeg', 'image/png', 'image/webp', 'audio/mpeg', 'video/mp4'];
-        if (allowed.includes(file.mimetype)) cb(null, true);
-        else cb(new Error('Invalid file type'), false);
-    }
-});
+mediaDB.on('connected', () => console.log('✅ Media DB Connected (rccg_media)'));
+mediaDB.on('error', err => console.error('❌ Media DB Error:', err));
 
 // ============================================================
-// MODELS
+// MODELS - MAIN DATABASE
 // ============================================================
 
 // User
@@ -62,7 +54,7 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
-const User = mongoose.model('User', UserSchema);
+const User = mainDB.model('User', UserSchema);
 
 // Sermon
 const SermonSchema = new mongoose.Schema({
@@ -77,7 +69,7 @@ const SermonSchema = new mongoose.Schema({
     featured: { type: Boolean, default: false },
     views: { type: Number, default: 0 }
 }, { timestamps: true });
-const Sermon = mongoose.model('Sermon', SermonSchema);
+const Sermon = mainDB.model('Sermon', SermonSchema);
 
 // Event
 const EventSchema = new mongoose.Schema({
@@ -89,18 +81,7 @@ const EventSchema = new mongoose.Schema({
     imageUrl: String,
     category: { type: String, enum: ['worship', 'youth', 'community', 'prayer', 'other'], default: 'other' }
 }, { timestamps: true });
-const Event = mongoose.model('Event', EventSchema);
-
-// Media
-const MediaSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    type: { type: String, enum: ['photo', 'video', 'audio'], required: true },
-    url: { type: String, required: true },
-    thumbnail: String,
-    description: String,
-    featured: { type: Boolean, default: false }
-}, { timestamps: true });
-const Media = mongoose.model('Media', MediaSchema);
+const Event = mainDB.model('Event', EventSchema);
 
 // Testimony
 const TestimonySchema = new mongoose.Schema({
@@ -109,7 +90,7 @@ const TestimonySchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     approved: { type: Boolean, default: false }
 }, { timestamps: true });
-const Testimony = mongoose.model('Testimony', TestimonySchema);
+const Testimony = mainDB.model('Testimony', TestimonySchema);
 
 // Prayer Request
 const PrayerRequestSchema = new mongoose.Schema({
@@ -119,7 +100,7 @@ const PrayerRequestSchema = new mongoose.Schema({
     prayed: { type: Boolean, default: false },
     date: { type: Date, default: Date.now }
 }, { timestamps: true });
-const PrayerRequest = mongoose.model('PrayerRequest', PrayerRequestSchema);
+const PrayerRequest = mainDB.model('PrayerRequest', PrayerRequestSchema);
 
 // Prayer for the Week
 const PrayerWeekSchema = new mongoose.Schema({
@@ -129,7 +110,7 @@ const PrayerWeekSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     active: { type: Boolean, default: true }
 }, { timestamps: true });
-const PrayerWeek = mongoose.model('PrayerWeek', PrayerWeekSchema);
+const PrayerWeek = mainDB.model('PrayerWeek', PrayerWeekSchema);
 
 // Open Heaven
 const OpenHeavenSchema = new mongoose.Schema({
@@ -141,9 +122,9 @@ const OpenHeavenSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     featured: { type: Boolean, default: false }
 }, { timestamps: true });
-const OpenHeaven = mongoose.model('OpenHeaven', OpenHeavenSchema);
+const OpenHeaven = mainDB.model('OpenHeaven', OpenHeavenSchema);
 
-// ===== NEW: Face of the Week =====
+// Face of the Week
 const FaceOfWeekSchema = new mongoose.Schema({
     name: { type: String, required: true },
     title: { type: String, required: true },
@@ -152,7 +133,65 @@ const FaceOfWeekSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     active: { type: Boolean, default: true }
 }, { timestamps: true });
-const FaceOfWeek = mongoose.model('FaceOfWeek', FaceOfWeekSchema);
+const FaceOfWeek = mainDB.model('FaceOfWeek', FaceOfWeekSchema);
+
+// Sunday School
+const SundaySchoolSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    teacher: { type: String, required: true },
+    date: { type: Date, default: Date.now },
+    description: String,
+    bibleReading: String,
+    memoryVerse: String,
+    imageUrl: String,
+    featured: { type: Boolean, default: false }
+}, { timestamps: true });
+const SundaySchool = mainDB.model('SundaySchool', SundaySchoolSchema);
+
+// ============================================================
+// MODELS - MEDIA DATABASE (Photos, Videos, Audio)
+// ============================================================
+
+const MediaSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    type: { type: String, enum: ['photo', 'video', 'audio'], required: true },
+    url: { type: String, required: true },
+    thumbnail: String,
+    description: String,
+    featured: { type: Boolean, default: false },
+    fileSize: Number,
+    mimeType: String
+}, { timestamps: true });
+const Media = mediaDB.model('Media', MediaSchema);
+
+// ============================================================
+// FILE UPLOAD CONFIG
+// ============================================================
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // Store files in uploads folder (served statically)
+        const dir = 'uploads/';
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, Date.now() + '-' + Math.random().toString(36).substring(7) + ext);
+    }
+});
+
+const upload = multer({ 
+    storage, 
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB max
+    fileFilter: (req, file, cb) => {
+        const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'audio/mpeg', 'audio/mp3', 'audio/wav', 'video/mp4', 'video/webm'];
+        if (allowed.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type'), false);
+        }
+    }
+});
 
 // ============================================================
 // AUTH MIDDLEWARE
@@ -182,10 +221,11 @@ const initAdmin = async () => {
     if (!adminExists) {
         const hashedPassword = await bcrypt.hash(adminPassword, 10);
         await User.create({ username: adminUsername, password: hashedPassword });
-        console.log(`✅ Admin created`);
+        console.log(`✅ Admin created - username: ${adminUsername}`);
     }
 };
-initAdmin();
+// Wait for DB connection then init
+mainDB.once('connected', initAdmin);
 
 // ============================================================
 // API ROUTES - AUTH
@@ -213,7 +253,7 @@ app.post('/api/admin/verify', authMiddleware, (req, res) => {
 // ============================================================
 app.get('/api/admin/stats', authMiddleware, async (req, res) => {
     try {
-        const [sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek] = await Promise.all([
+        const [sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek, sundaySchool] = await Promise.all([
             Sermon.countDocuments(),
             Event.countDocuments(),
             Media.countDocuments(),
@@ -221,9 +261,10 @@ app.get('/api/admin/stats', authMiddleware, async (req, res) => {
             PrayerRequest.countDocuments(),
             PrayerWeek.countDocuments(),
             OpenHeaven.countDocuments(),
-            FaceOfWeek.countDocuments()
+            FaceOfWeek.countDocuments(),
+            SundaySchool.countDocuments()
         ]);
-        res.json({ sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek });
+        res.json({ sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek, sundaySchool });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -350,7 +391,7 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - MEDIA (with file upload)
+// API ROUTES - MEDIA (Stored in Media Database)
 // ============================================================
 app.get('/api/media', async (req, res) => {
     try {
@@ -366,7 +407,8 @@ app.post('/api/admin/media', authMiddleware, upload.single('file'), async (req, 
         const data = JSON.parse(req.body.data || '{}');
         if (req.file) {
             data.url = '/uploads/' + req.file.filename;
-            // Auto-detect type from mime
+            data.fileSize = req.file.size;
+            data.mimeType = req.file.mimetype;
             if (req.file.mimetype.startsWith('image/')) data.type = 'photo';
             else if (req.file.mimetype.startsWith('video/')) data.type = 'video';
             else if (req.file.mimetype.startsWith('audio/')) data.type = 'audio';
@@ -383,6 +425,8 @@ app.put('/api/admin/media/:id', authMiddleware, upload.single('file'), async (re
         const data = JSON.parse(req.body.data || '{}');
         if (req.file) {
             data.url = '/uploads/' + req.file.filename;
+            data.fileSize = req.file.size;
+            data.mimeType = req.file.mimetype;
             if (req.file.mimetype.startsWith('image/')) data.type = 'photo';
             else if (req.file.mimetype.startsWith('video/')) data.type = 'video';
             else if (req.file.mimetype.startsWith('audio/')) data.type = 'audio';
@@ -616,7 +660,7 @@ app.delete('/api/admin/open-heaven/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - FACE OF THE WEEK (NEW)
+// API ROUTES - FACE OF THE WEEK
 // ============================================================
 app.get('/api/face-of-week', async (req, res) => {
     try {
@@ -664,6 +708,68 @@ app.delete('/api/admin/face-of-week/:id', authMiddleware, async (req, res) => {
     try {
         await FaceOfWeek.findByIdAndDelete(req.params.id);
         res.json({ message: 'Face deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============================================================
+// API ROUTES - SUNDAY SCHOOL
+// ============================================================
+app.get('/api/sunday-school', async (req, res) => {
+    try {
+        const sundaySchool = await SundaySchool.find().sort({ date: -1 });
+        res.json(sundaySchool);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/sunday-school/featured', async (req, res) => {
+    try {
+        const sundaySchool = await SundaySchool.findOne({ featured: true }).sort({ date: -1 });
+        res.json(sundaySchool);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/admin/sunday-school', authMiddleware, async (req, res) => {
+    try {
+        const sundaySchool = await SundaySchool.find().sort({ date: -1 });
+        res.json(sundaySchool);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/admin/sunday-school', authMiddleware, upload.single('image'), async (req, res) => {
+    try {
+        const data = JSON.parse(req.body.data || '{}');
+        if (req.file) data.imageUrl = '/uploads/' + req.file.filename;
+        const sundaySchool = await SundaySchool.create(data);
+        res.status(201).json(sundaySchool);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/admin/sunday-school/:id', authMiddleware, upload.single('image'), async (req, res) => {
+    try {
+        const data = JSON.parse(req.body.data || '{}');
+        if (req.file) data.imageUrl = '/uploads/' + req.file.filename;
+        const sundaySchool = await SundaySchool.findByIdAndUpdate(req.params.id, data, { new: true });
+        if (!sundaySchool) return res.status(404).json({ error: 'Sunday School not found' });
+        res.json(sundaySchool);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/api/admin/sunday-school/:id', authMiddleware, async (req, res) => {
+    try {
+        await SundaySchool.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Sunday School deleted' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -723,6 +829,8 @@ app.listen(PORT, () => {
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
     ║  🔒 Admin: http://localhost:${PORT}/admin-panel         ║
+    ║  💾 Dual MongoDB (2 DBs = 1GB Storage)                 ║
+    ║  👨‍💻 Developed by Dev Gift Team                         ║
     ╚══════════════════════════════════════════════════════════╝
     `);
 });
