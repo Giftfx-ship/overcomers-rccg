@@ -3,18 +3,37 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Admin Dashboard - RCCG Overcomers HOC</title>
+    <title>Admin - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f0f4f9;
-            color: #2c3e50;
             min-height: 100vh;
+            display: flex;
         }
 
-        /* Login Page */
+        .loader-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a3a5c;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 99999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+
         #loginPage {
             display: flex;
             width: 100%;
@@ -32,16 +51,21 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             max-width: 400px;
             width: 100%;
+            animation: fadeUp 0.8s ease forwards;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .login-box .logo { text-align: center; margin-bottom: 25px; }
-        .login-box .logo i { font-size: 3rem; color: #1a3a5c; }
-        .login-box .logo h2 { color: #1a3a5c; }
+        .login-box .logo i { font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px; }
+        .login-box .logo h2 { color: #1a3a5c; font-size: 1.2rem; }
         .login-box .logo p { color: #7a8a9a; font-size: 0.8rem; }
         .login-box .form-group { margin-bottom: 18px; }
-        .login-box label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
+        .login-box label { display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50; font-size: 0.9rem; }
         .login-box input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 11px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             font-size: 1rem;
@@ -66,6 +90,7 @@
         /* Dashboard */
         #dashboardPage {
             display: none;
+            width: 100%;
             min-height: 100vh;
         }
         #dashboardPage.show { display: block; }
@@ -107,7 +132,6 @@
             padding: 20px;
         }
 
-        /* Stats */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -125,7 +149,6 @@
         .stat-card .label { color: #7a8a9a; font-size: 0.85rem; }
         .stat-card i { font-size: 1.5rem; color: #ffd700; }
 
-        /* Content Sections */
         .content-section {
             background: #fff;
             border-radius: 12px;
@@ -186,22 +209,13 @@
         .nav-tab:hover { background: rgba(26, 58, 92, 0.1); }
         .nav-tab.active { background: #1a3a5c; color: #fff; }
 
-        /* Table */
         .table-container { overflow-x: auto; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
         th { background: #f8fafc; font-weight: 600; color: #1a3a5c; }
         td { font-size: 0.9rem; }
         .actions { display: flex; gap: 5px; flex-wrap: wrap; }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -241,25 +255,13 @@
         .modal-content textarea { min-height: 100px; resize: vertical; }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
 
-        .alert {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
+        .coming-soon {
+            text-align: center;
+            padding: 40px 20px;
+            color: #7a8a9a;
         }
-        .alert-success { background: #dcfce7; color: #166534; display: block; }
-        .alert-error { background: #fee2e2; color: #991b1b; display: block; }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid #1a3a5c;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .coming-soon i { font-size: 3rem; color: #ffd700; margin-bottom: 15px; display: block; }
+        .coming-soon h3 { color: #1a3a5c; margin-bottom: 5px; }
 
         @media (max-width: 768px) {
             .admin-nav .container { flex-direction: column; gap: 10px; }
@@ -273,6 +275,12 @@
 </head>
 <body>
 
+<!-- LOADING -->
+<div class="loader-wrapper" id="loaderWrapper">
+    <div class="loader"></div>
+    <div class="loader-text">RCCG Overcomers HOC</div>
+</div>
+
 <!-- LOGIN PAGE -->
 <div id="loginPage">
     <div class="login-box">
@@ -284,11 +292,11 @@
         <form id="loginForm" onsubmit="handleLogin(event)">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" id="loginUsername" placeholder="Enter username" required/>
+                <input type="text" id="loginUsername" placeholder="Enter username" value="devgift" required/>
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="loginPassword" placeholder="Enter password" required/>
+                <input type="password" id="loginPassword" placeholder="Enter password" value="mide" required/>
             </div>
             <div id="loginError" class="error">Invalid credentials. Please try again.</div>
             <button type="submit" class="btn">Login</button>
@@ -466,6 +474,13 @@ let token = localStorage.getItem('adminToken');
 let currentSection = 'sermons';
 let editId = null;
 
+// Hide loader
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        document.getElementById('loaderWrapper').classList.add('hidden');
+    }, 600);
+});
+
 // ---------- AUTH ----------
 function handleLogin(e) {
     e.preventDefault();
@@ -557,7 +572,17 @@ function loadSection(section) {
             if (!tbody) return;
             
             if (!data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#7a8a9a;">No items found</td></tr>`;
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align:center;padding:30px;">
+                            <div class="coming-soon">
+                                <i class="fas fa-clock"></i>
+                                <h3>Coming Soon</h3>
+                                <p>No items found. Click "Add" to create your first entry!</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
 
@@ -565,8 +590,13 @@ function loadSection(section) {
         })
         .catch(err => {
             console.error(err);
-            document.getElementById(`${section}Table`).innerHTML = 
-                `<tr><td colspan="10" style="text-align:center;color:#dc2626;">Error loading data</td></tr>`;
+            document.getElementById(`${section}Table`).innerHTML = `
+                <tr>
+                    <td colspan="10" style="text-align:center;padding:30px;color:#dc2626;">
+                        <i class="fas fa-exclamation-triangle"></i> Error loading data. Please refresh.
+                    </td>
+                </tr>
+            `;
         });
 }
 
@@ -606,6 +636,7 @@ function renderRow(section, item) {
 
 // ---------- STATS ----------
 function loadStats() {
+    if (!token) return;
     fetch('/api/admin/stats', { headers: getHeaders() })
         .then(res => res.json())
         .then(data => {
@@ -642,10 +673,7 @@ function openModal(type, item = null) {
             <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
             <div class="form-group"><label>Topic</label><input type="text" name="topic" value="${item?.topic || ''}"/></div>
             <div class="form-group"><label>Preacher *</label><input type="text" name="preacher" value="${item?.preacher || ''}" required/></div>
-            <div class="form-group"><label>Preacher Title</label><input type="text" name="preacherTitle" value="${item?.preacherTitle || ''}"/></div>
             <div class="form-group"><label>Description</label><textarea name="description">${item?.description || ''}</textarea></div>
-            <div class="form-group"><label>Message Text</label><textarea name="messageText">${item?.messageText || ''}</textarea></div>
-            <div class="form-group"><label>Main Scripture</label><input type="text" name="mainScripture" value="${item?.mainScripture || ''}"/></div>
             <div class="form-group"><label>Date</label><input type="date" name="date" value="${item?.date ? new Date(item.date).toISOString().split('T')[0] : ''}"/></div>
             <div class="form-group"><label>Category</label>
                 <select name="category">
@@ -700,7 +728,6 @@ function openModal(type, item = null) {
             <div class="form-group"><label>Name *</label><input type="text" name="name" value="${item?.name || ''}" required/></div>
             <div class="form-group"><label>Title</label><input type="text" name="title" value="${item?.title || ''}"/></div>
             <div class="form-group"><label>Words *</label><textarea name="words" required>${item?.words || ''}</textarea></div>
-            <div class="form-group"><label>Occupation</label><input type="text" name="occupation" value="${item?.occupation || ''}"/></div>
             <div class="form-group"><label>Image URL</label><input type="text" name="imageUrl" value="${item?.imageUrl || ''}"/></div>
             <div class="form-group"><label>Active</label><select name="active"><option value="true">Yes</option><option value="false" ${item?.active === false ? 'selected' : ''}>No</option></select></div>
         `,
@@ -708,8 +735,6 @@ function openModal(type, item = null) {
             <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
             <div class="form-group"><label>Prayer *</label><textarea name="prayer" required>${item?.prayer || ''}</textarea></div>
             <div class="form-group"><label>Bible Verse</label><input type="text" name="bibleVerse" value="${item?.bibleVerse || ''}"/></div>
-            <div class="form-group"><label>Bible Reading</label><input type="text" name="bibleReading" value="${item?.bibleReading || ''}"/></div>
-            <div class="form-group"><label>Theme</label><input type="text" name="theme" value="${item?.theme || ''}"/></div>
             <div class="form-group"><label>Active</label><select name="active"><option value="true">Yes</option><option value="false" ${item?.active === false ? 'selected' : ''}>No</option></select></div>
         `,
         'openheaven': `
@@ -717,7 +742,6 @@ function openModal(type, item = null) {
             <div class="form-group"><label>Content *</label><textarea name="content" required>${item?.content || ''}</textarea></div>
             <div class="form-group"><label>Bible Reading</label><input type="text" name="bibleReading" value="${item?.bibleReading || ''}"/></div>
             <div class="form-group"><label>Memory Verse</label><input type="text" name="memoryVerse" value="${item?.memoryVerse || ''}"/></div>
-            <div class="form-group"><label>Prayer</label><textarea name="prayer">${item?.prayer || ''}</textarea></div>
             <div class="form-group"><label>Date</label><input type="date" name="date" value="${item?.date ? new Date(item.date).toISOString().split('T')[0] : ''}"/></div>
         `,
         'sundayschool': `
