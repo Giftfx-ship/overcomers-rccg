@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Media - RCCG Overcomers HOC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .loader-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a3a5c;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .navbar .logo img { height: 50px; width: auto; }
+        .navbar .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a3a5c;
+            line-height: 1.2;
+        }
+        .navbar .logo-text small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: #5a7a9a;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1a3a5c;
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: #1a3a5c; }
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #1a3a5c;
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            color: #fff;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
+        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
+
+        .section { padding: 60px 0; }
+        .section-gray { background: #f5f7fa; }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        .media-item {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .media-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        .media-item .thumb {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #eef2f7;
+        }
+        .media-item .thumb.video { position: relative; }
+        .media-item .thumb.video::after {
+            content: '\f04b';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            color: rgba(255,255,255,0.8);
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .media-item .info { padding: 15px 20px; }
+        .media-item .info h3 {
+            font-size: 1rem;
+            color: #1a3a5c;
+            margin-bottom: 4px;
+        }
+        .media-item .info .type {
+            font-size: 0.75rem;
+            color: #7a8a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .media-item .info .type i { margin-right: 4px; }
+
+        .skeleton-image { height: 200px; background: #e2e8f0; border-radius: 8px; animation: pulse 1.5s ease-in-out infinite; }
+        .skeleton-text { height: 12px; margin: 8px 0; background: #e2e8f0; border-radius: 4px; animation: pulse 1.5s ease-in-out infinite; }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        .filter-btn {
+            padding: 8px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            background: #fff;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+        .filter-btn:hover { border-color: #1a3a5c; }
+        .filter-btn.active {
+            background: #1a3a5c;
+            color: #fff;
+            border-color: #1a3a5c;
+        }
+
+        .footer {
+            background: #1a3a5c;
+            color: #fff;
+            padding: 40px 0;
+            margin-top: 40px;
+        }
+        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
+        .footer a:hover { opacity: 1; }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
+        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
+        .footer .dev-credit {
+            text-align: center;
+            opacity: 0.3;
+            font-size: 0.7rem;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* Modal for media preview */
+        .media-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .media-modal.show { display: flex; }
+        .media-modal-content {
+            max-width: 90%;
+            max-height: 90vh;
+            position: relative;
+        }
+        .media-modal-content img,
+        .media-modal-content video {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 8px;
+        }
+        .media-modal-content .close-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: #fff;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .media-modal-content .close-modal:hover { opacity: 1; }
+        .media-modal-content .modal-title {
+            color: #fff;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+        audio { width: 100%; margin-top: 10px; }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                padding: 20px 0;
+                gap: 15px;
+            }
+            .nav-links.open { display: flex; }
+            .hamburger { display: block; }
+            .page-hero h1 { font-size: 2rem; }
+            .media-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="loader-wrapper" id="loaderWrapper">
+    <div class="loader"></div>
+    <div class="loader-text">RCCG Overcomers HOC</div>
+</div>
+
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="logo">
+            <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.style.display='none'"/>
+            <span class="logo-text">
+                RCCG Overcomers HOC
+                <small>Oke Ado, Ogbomoso</small>
+            </span>
+        </a>
+        <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+            <i class="fas fa-bars"></i>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/sermons">Sermons</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/media">Media</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+    <div class="container">
+        <h1>Media Gallery</h1>
+        <p>Photos, videos, and audio from our services</p>
+    </div>
+</section>
+
+<section class="section section-gray">
+    <div class="container">
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all" onclick="filterMedia('all')">All</button>
+            <button class="filter-btn" data-filter="photo" onclick="filterMedia('photo')"><i class="fas fa-image"></i> Photos</button>
+            <button class="filter-btn" data-filter="video" onclick="filterMedia('video')"><i class="fas fa-video"></i> Videos</button>
+            <button class="filter-btn" data-filter="audio" onclick="filterMedia('audio')"><i class="fas fa-music"></i> Audio</button>
+        </div>
+        <div id="mediaContainer" class="media-grid">
+            <div class="media-item"><div class="skeleton-image"></div><div class="info"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:40%;"></div></div></div>
+            <div class="media-item"><div class="skeleton-image"></div><div class="info"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:40%;"></div></div></div>
+            <div class="media-item"><div class="skeleton-image"></div><div class="info"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:40%;"></div></div></div>
+            <div class="media-item"><div class="skeleton-image"></div><div class="info"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:40%;"></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- Media Modal -->
+<div class="media-modal" id="mediaModal" onclick="closeMediaModal(event)">
+    <div class="media-modal-content" onclick="event.stopPropagation()">
+        <span class="close-modal" onclick="closeMediaModal()">&times;</span>
+        <div id="modalMediaContent"></div>
+        <div class="modal-title" id="modalTitle"></div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Quick Links</h4>
+                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
+                <div class="social" id="socialLinks">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
+        <div class="dev-credit">Developed by Dev Gift Team</div>
+    </div>
+</footer>
+
+<script>
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            document.getElementById('loaderWrapper').classList.add('hidden');
+        }, 600);
+    });
+
+    let allMedia = [];
+    let currentFilter = 'all';
+
+    function renderMedia(media) {
+        const container = document.getElementById('mediaContainer');
+        if (media.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <h3>No media found</h3>
+                    <p style="color: #7a8a9a;">Check back soon for new media.</p>
+                </div>
+            `;
+            return;
+        }
+        container.innerHTML = media.map((m, i) => `
+            <div class="media-item" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i % 4) * 0.1}s;" onclick="openMediaModal('${m._id}')">
+                ${m.type === 'photo' ? `<img src="${m.url}" alt="${m.title}" class="thumb"/>` :
+                  m.type === 'video' ? `<div class="thumb video" style="background-image:url('${m.thumbnail || m.url}');background-size:cover;background-position:center;position:relative;"><i class="fas fa-play" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:3rem;color:rgba(255,255,255,0.8);text-shadow:0 4px 20px rgba(0,0,0,0.3);"></i></div>` :
+                  `<div class="thumb" style="display:flex;align-items:center;justify-content:center;background:#1a3a5c;color:#fff;font-size:3rem;"><i class="fas fa-music"></i></div>`}
+                <div class="info">
+                    <h3>${m.title}</h3>
+                    <div class="type"><i class="fas ${m.type === 'photo' ? 'fa-image' : m.type === 'video' ? 'fa-video' : 'fa-music'}"></i> ${m.type}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterMedia(category) {
+        currentFilter = category;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filter === category);
+        });
+        if (category === 'all') {
+            renderMedia(allMedia);
+        } else {
+            const filtered = allMedia.filter(m => m.type === category);
+            renderMedia(filtered);
+        }
+    }
+
+    function openMediaModal(id) {
+        const item = allMedia.find(m => m._id === id);
+        if (!item) return;
+        const modal = document.getElementById('mediaModal');
+        const content = document.getElementById('modalMediaContent');
+        const title = document.getElementById('modalTitle');
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        title.textContent = item.title;
+        if (item.type === 'photo') {
+            content.innerHTML = `<img src="${item.url}" alt="${item.title}"/>`;
+        } else if (item.type === 'video') {
+            content.innerHTML = `<video controls autoplay src="${item.url}"></video>`;
+        } else if (item.type === 'audio') {
+            content.innerHTML = `<div style="background:#1a3a5c;border-radius:8px;padding:40px;text-align:center;color:#fff;">
+                <i class="fas fa-music" style="font-size:4rem;margin-bottom:20px;display:block;"></i>
+                <audio controls src="${item.url}" style="width:100%;"></audio>
+            </div>`;
+        }
+    }
+
+    function closeMediaModal(e) {
+        if (e && e.target !== e.currentTarget) return;
+        const modal = document.getElementById('mediaModal');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+        document.getElementById('modalMediaContent').innerHTML = '';
+    }
+
+    fetch('/api/media')
+        .then(res => res.json())
+        .then(data => {
+            allMedia = data;
+            renderMedia(data);
+        })
+        .catch(() => {
+            document.getElementById('mediaContainer').innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <h3>Unable to load media</h3>
+                    <p style="color: #7a8a9a;">Please refresh the page.</p>
+                </div>
+            `;
+        });
+
+    fetch('/api/social-links')
+        .then(res => res.json())
+        .then(links => {
+            const container = document.getElementById('socialLinks');
+            container.innerHTML = '';
+            links.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link.url || '#';
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.innerHTML = `<i class="${link.icon}"></i>`;
+                container.appendChild(a);
+            });
+        })
+        .catch(() => {});
+</script>
+</body>
+</html>
