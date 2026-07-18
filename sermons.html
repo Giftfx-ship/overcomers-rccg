@@ -5,21 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Sermons - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
+        /* ============================================
+           CSS VARIABLES & RESET
+           ============================================ */
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2c5f8a;
+            --primary-dark: #0f2a44;
+            --secondary: #ffd700;
+            --secondary-hover: #f0c800;
+            --text: #2c3e50;
+            --text-light: #5a7a9a;
+            --text-lighter: #8a9aaa;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #2c3e50;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.7;
             overflow-x: hidden;
         }
 
+        /* ============================================
+           LOADING
+           ============================================ */
         .loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a3a5c;
+            background: var(--primary);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 9999;
@@ -27,15 +52,19 @@
         }
         .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
         .loader {
-            width: 50px; height: 50px;
+            width: 60px; height: 60px;
             border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffd700;
+            border-top: 4px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+        .loader-text { color: #fff; margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; opacity: 0.7; }
+        .loader-sub { color: rgba(255,255,255,0.4); font-size: 0.7rem; letter-spacing: 1px; }
 
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
@@ -44,16 +73,30 @@
             from { opacity: 0; }
             to { opacity: 1; }
         }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
 
+        /* ============================================
+           NAVBAR
+           ============================================ */
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 15px 0;
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
         }
         .navbar .container {
             display: flex;
@@ -64,34 +107,34 @@
         .navbar .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-decoration: none;
         }
-        .navbar .logo img { height: 50px; width: auto; }
+        .navbar .logo img { height: 50px; width: auto; border-radius: 8px; }
         .navbar .logo-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #1a3a5c;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary);
             line-height: 1.2;
         }
         .navbar .logo-text small {
             display: block;
             font-weight: 400;
             font-size: 0.7rem;
-            color: #5a7a9a;
+            color: var(--text-light);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 30px;
             list-style: none;
             align-items: center;
         }
         .nav-links a {
             text-decoration: none;
-            color: #2c3e50;
+            color: var(--text);
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
+            transition: var(--transition);
             position: relative;
         }
         .nav-links a::after {
@@ -101,158 +144,322 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #1a3a5c;
-            transition: width 0.3s ease;
+            background: var(--primary);
+            transition: var(--transition);
         }
         .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: #1a3a5c; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links .btn-nav {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .nav-links .btn-nav:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
+        }
+        .nav-links .btn-nav::after { display: none; }
         .hamburger {
             display: none;
             font-size: 1.8rem;
             cursor: pointer;
-            color: #1a3a5c;
+            color: var(--primary);
         }
 
+        /* ============================================
+           PAGE HERO
+           ============================================ */
         .page-hero {
-            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: #fff;
-            padding: 60px 0;
+            padding: 60px 0 50px;
             text-align: center;
-        }
-        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
-        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
-
-        .section { padding: 60px 0; }
-        .section-gray { background: #f5f7fa; }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 12px;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: all 0.4s ease;
-            animation: fadeUp 0.6s ease forwards;
-            opacity: 0;
         }
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
-        }
-        .card-image {
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
             width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: #eef2f7;
+            height: 80px;
+            background: var(--bg);
+            clip-path: ellipse(70% 100% at 50% 100%);
         }
-        .card-body { padding: 20px 25px; }
-        .card-body h3 {
+        .page-hero .container { position: relative; z-index: 1; }
+        .page-hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .page-hero h1 i { color: var(--secondary); margin-right: 10px; }
+        .page-hero p {
+            opacity: 0.8;
             font-size: 1.1rem;
-            margin-bottom: 8px;
-            color: #1a3a5c;
-        }
-        .card-body .meta {
-            font-size: 0.85rem;
-            color: #7a8a9a;
-            margin-bottom: 10px;
-        }
-        .card-body p { color: #5a6a7a; font-size: 0.95rem; margin-bottom: 12px; }
-
-        .btn {
-            display: inline-block;
-            padding: 8px 20px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-        .btn-primary {
-            background: #ffd700;
-            color: #1a3a5c;
-        }
-        .btn-primary:hover {
-            background: #f0c800;
-            transform: translateY(-2px);
-        }
-        .btn-secondary {
-            background: #2c5f8a;
-            color: #fff;
-        }
-        .btn-secondary:hover {
-            background: #1a4a6f;
-            transform: translateY(-2px);
+            margin-top: 8px;
         }
 
+        /* ============================================
+           SEARCH & FILTERS
+           ============================================ */
+        .search-section {
+            padding: 30px 0 20px;
+            background: var(--white);
+            border-bottom: 1px solid #eef2f7;
+        }
         .search-box {
-            max-width: 500px;
-            margin: 0 auto 30px;
             display: flex;
-            gap: 10px;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
         }
         .search-box input {
             flex: 1;
-            padding: 12px 18px;
+            padding: 14px 20px;
             border: 2px solid #e2e8f0;
             border-radius: 30px;
             font-size: 1rem;
-            transition: border 0.3s ease;
+            transition: var(--transition);
+            font-family: var(--font);
         }
         .search-box input:focus {
             outline: none;
-            border-color: #1a3a5c;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26,58,92,0.1);
         }
         .search-box button {
-            padding: 12px 25px;
+            padding: 14px 30px;
             border: none;
             border-radius: 30px;
-            background: #1a3a5c;
+            background: var(--primary);
             color: #fff;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: var(--transition);
+            font-family: var(--font);
         }
-        .search-box button:hover { background: #0f2a44; }
-
-        .skeleton-image { height: 200px; background: #e2e8f0; border-radius: 8px; animation: pulse 1.5s ease-in-out infinite; }
-        .skeleton-text { height: 12px; margin: 8px 0; background: #e2e8f0; border-radius: 4px; animation: pulse 1.5s ease-in-out infinite; }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        .search-box button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
         }
 
-        .footer {
-            background: #1a3a5c;
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px 0 10px;
+        }
+        .filter-btn {
+            padding: 8px 22px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            background: var(--white);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            font-family: var(--font);
+            color: var(--text-light);
+        }
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .filter-btn.active {
+            background: var(--primary);
             color: #fff;
-            padding: 40px 0;
-            margin-top: 40px;
+            border-color: var(--primary);
         }
-        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
+
+        /* ============================================
+           SERMONS GRID
+           ============================================ */
+        .section { padding: 50px 0 70px; }
+        .sermons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .sermon-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        .sermon-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+        .sermon-card .card-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #eef2f7;
+        }
+        .sermon-card .card-body { padding: 24px 28px; }
+        .sermon-card .card-body h3 {
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+            color: var(--primary);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+        .sermon-card .card-body .meta {
+            font-size: 0.85rem;
+            color: var(--text-lighter);
+            margin-bottom: 10px;
+        }
+        .sermon-card .card-body .meta i { margin-right: 4px; }
+        .sermon-card .card-body .preacher {
+            display: inline-block;
+            background: #eef2f7;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        .sermon-card .card-body .description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin: 10px 0 15px;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .sermon-card .card-body .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 22px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: var(--font);
+        }
+        .btn-primary {
+            background: var(--secondary);
+            color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--secondary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,215,0,0.4);
+        }
+        .btn-secondary {
+            background: var(--primary-light);
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44,95,138,0.4);
+        }
+
+        /* ============================================
+           SKELETON LOADING
+           ============================================ */
+        .skeleton-image {
+            height: 220px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .skeleton-text {
+            height: 12px;
+            margin: 8px 0;
+            background: #e2e8f0;
+            border-radius: 4px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        .footer {
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 50px 0 30px;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
         .footer a:hover { opacity: 1; }
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            gap: 40px;
         }
-        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
-        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
+        .footer h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .footer ul {
+            list-style: none;
+            opacity: 0.7;
+        }
+        .footer ul li { margin-bottom: 6px; }
+        .footer .social {
+            display: flex;
+            gap: 15px;
+            font-size: 1.4rem;
+        }
+        .footer .social a {
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer .social a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        .footer hr {
+            border-color: rgba(255,255,255,0.08);
+            margin: 30px 0 20px;
+        }
+        .footer .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
         .footer .dev-credit {
             text-align: center;
             opacity: 0.3;
             font-size: 0.7rem;
-            margin-top: 10px;
             letter-spacing: 1px;
+            margin-top: 10px;
         }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
 
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -265,16 +472,33 @@
             .hamburger { display: block; }
             .page-hero h1 { font-size: 2rem; }
             .search-box { flex-direction: column; }
+            .sermons-grid { grid-template-columns: 1fr; }
+            .navbar .logo img { height: 40px; }
+            .navbar .logo-text { font-size: 1rem; }
+            .footer .bottom { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero { padding: 40px 0 30px; }
+            .page-hero h1 { font-size: 1.6rem; }
+            .sermon-card .card-body { padding: 18px 20px; }
         }
     </style>
 </head>
 <body>
 
+<!-- ============================================
+LOADING
+============================================ -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">RCCG Overcomers HOC</div>
+    <div class="loader-sub">Loading Sermons...</div>
 </div>
 
+<!-- ============================================
+NAVBAR
+============================================ -->
 <nav class="navbar">
     <div class="container">
         <a href="/" class="logo">
@@ -290,97 +514,167 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="/">Home</a></li>
             <li><a href="/about">About</a></li>
-            <li><a href="/sermons">Sermons</a></li>
+            <li><a href="/sermons" class="active" style="color:var(--primary);">Sermons</a></li>
             <li><a href="/events">Events</a></li>
             <li><a href="/media">Media</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/sunday-school">Sunday School</a></li>
+            <li><a href="/contact" class="btn-nav">Contact</a></li>
         </ul>
     </div>
 </nav>
 
-<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+<!-- ============================================
+PAGE HERO
+============================================ -->
+<section class="page-hero">
     <div class="container">
-        <h1>Sermons</h1>
-        <p>Listen to powerful messages from God's Word</p>
+        <h1 class="animate-fade-in"><i class="fas fa-bible"></i> Sermons</h1>
+        <p class="animate-fade-in delay-1">Listen to powerful messages from God's Word that will transform your life</p>
     </div>
 </section>
 
-<section class="section section-gray">
+<!-- ============================================
+SEARCH & FILTERS
+============================================ -->
+<section class="search-section">
     <div class="container">
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Search sermons by title or preacher..." onkeyup="filterSermons()"/>
+        <div class="search-box animate-fade-up">
+            <input type="text" id="searchInput" placeholder="🔍 Search sermons by title, preacher, or topic..." onkeyup="filterSermons()"/>
             <button onclick="filterSermons()"><i class="fas fa-search"></i> Search</button>
         </div>
-        <div id="sermonsContainer" class="card-grid">
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+        <div class="filter-buttons animate-fade-up delay-1">
+            <button class="filter-btn active" data-filter="all" onclick="filterByCategory('all')">All</button>
+            <button class="filter-btn" data-filter="Sunday Service" onclick="filterByCategory('Sunday Service')">Sunday Service</button>
+            <button class="filter-btn" data-filter="Midweek Service" onclick="filterByCategory('Midweek Service')">Midweek</button>
+            <button class="filter-btn" data-filter="Prayer Meeting" onclick="filterByCategory('Prayer Meeting')">Prayer</button>
+            <button class="filter-btn" data-filter="Youth Service" onclick="filterByCategory('Youth Service')">Youth</button>
+            <button class="filter-btn" data-filter="Conference" onclick="filterByCategory('Conference')">Conference</button>
+            <button class="filter-btn" data-filter="Revival" onclick="filterByCategory('Revival')">Revival</button>
         </div>
     </div>
 </section>
 
+<!-- ============================================
+SERMONS LIST
+============================================ -->
+<section class="section">
+    <div class="container">
+        <div id="sermonsContainer" class="sermons-grid">
+            <!-- Skeletons -->
+            <div class="sermon-card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;height:20px;"></div><div class="skeleton-text" style="width:40%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+            <div class="sermon-card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;height:20px;"></div><div class="skeleton-text" style="width:40%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+            <div class="sermon-card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;height:20px;"></div><div class="skeleton-text" style="width:40%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================
+FOOTER
+============================================ -->
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
             <div>
-                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+                <h4>RCCG Overcomers HOC</h4>
+                <p style="opacity:0.7;font-size:0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Quick Links</h4>
-                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                <h4>Quick Links</h4>
+                <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/sunday-school">Sunday School</a></li>
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
+                <h4>Connect With Us</h4>
                 <div class="social" id="socialLinks">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <!-- Loaded by JavaScript -->
                 </div>
             </div>
         </div>
         <hr/>
-        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
-        <div class="dev-credit">Developed by Dev Gift Team & Powered by De Creative Mide</div>
+        <div class="bottom">
+            <span>&copy; 2026 RCCG Overcomers HOC. All rights reserved.</span>
+            <span>Developed by Dev Gift Team</span>
+        </div>
+        <div class="dev-credit">Powered by De Creative Mide</div>
     </div>
 </footer>
 
+<!-- ============================================
+JAVASCRIPT
+============================================ -->
 <script>
+    // ============================================
+    // HIDE LOADER
+    // ============================================
     window.addEventListener('load', function() {
-        setTimeout(() => {
+        setTimeout(function() {
             document.getElementById('loaderWrapper').classList.add('hidden');
-        }, 600);
+        }, 800);
     });
 
+    // ============================================
+    // LOAD SOCIAL LINKS
+    // ============================================
+    fetch('/api/social-links')
+        .then(res => res.json())
+        .then(links => {
+            const container = document.getElementById('socialLinks');
+            if (links && links.length) {
+                container.innerHTML = links.map(link => `
+                    <a href="${link.url}" target="_blank" rel="noopener">
+                        <i class="${link.icon}"></i>
+                    </a>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                `;
+            }
+        })
+        .catch(() => {});
+
+    // ============================================
+    // SERMONS DATA & FUNCTIONS
+    // ============================================
     let allSermons = [];
+    let currentCategory = 'all';
+    let currentSearch = '';
 
     function renderSermons(sermons) {
         const container = document.getElementById('sermonsContainer');
-        if (sermons.length === 0) {
+        if (!sermons || sermons.length === 0) {
             container.innerHTML = `
-                <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                    <h3>No sermons found</h3>
-                    <p style="color: #7a8a9a;">Check back soon for new messages.</p>
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);">
+                    <i class="fas fa-microphone-alt" style="font-size:3rem;color:var(--text-lighter);margin-bottom:15px;"></i>
+                    <h3 style="color:var(--text-light);">No sermons found</h3>
+                    <p style="color:var(--text-lighter);">Check back soon for new messages from God's Word.</p>
                 </div>
             `;
             return;
         }
-        container.innerHTML = sermons.map((s, i) => `
-            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i % 3) * 0.1}s;">
-                ${s.imageUrl ? `<img src="${s.imageUrl}" alt="${s.title}" class="card-image"/>` : ''}
+
+        container.innerHTML = sermons.map((sermon, i) => `
+            <div class="sermon-card" style="animation-delay:${(i % 6) * 0.08}s;">
+                ${sermon.imageUrl ? `<img src="${sermon.imageUrl}" alt="${sermon.title}" class="card-image" onerror="this.style.display='none'"/>` : ''}
                 <div class="card-body">
-                    <h3>${s.title}</h3>
-                    <p class="meta"><i class="fas fa-user"></i> ${s.preacher} &bull; ${new Date(s.date).toLocaleDateString()}</p>
-                    <p>${s.description || 'Listen to this powerful message from God\'s Word.'}</p>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-                        ${s.audioUrl ? `<a href="${s.audioUrl}" class="btn btn-primary" target="_blank"><i class="fas fa-play"></i> Listen</a>` : ''}
-                        ${s.videoUrl ? `<a href="${s.videoUrl}" class="btn btn-secondary" target="_blank"><i class="fas fa-video"></i> Watch</a>` : ''}
+                    <span class="preacher"><i class="fas fa-user"></i> ${sermon.preacher || 'Unknown'}</span>
+                    <span class="preacher" style="background:var(--secondary);color:var(--primary);margin-left:5px;">${sermon.category || 'Other'}</span>
+                    <h3>${sermon.title || 'Untitled Sermon'}</h3>
+                    <p class="meta"><i class="fas fa-calendar"></i> ${new Date(sermon.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+                    ${sermon.description ? `<p class="description">${sermon.description}</p>` : ''}
+                    ${sermon.topic ? `<p style="font-size:0.85rem;color:var(--text-lighter);"><i class="fas fa-tag"></i> ${sermon.topic}</p>` : ''}
+                    <div class="actions">
+                        ${sermon.audioUrl ? `<a href="${sermon.audioUrl}" class="btn btn-primary" target="_blank"><i class="fas fa-play"></i> Listen</a>` : ''}
+                        ${sermon.videoUrl ? `<a href="${sermon.videoUrl}" class="btn btn-secondary" target="_blank"><i class="fas fa-video"></i> Watch</a>` : ''}
+                        ${sermon.pdfUrl ? `<a href="${sermon.pdfUrl}" class="btn btn-secondary" target="_blank"><i class="fas fa-file-pdf"></i> PDF</a>` : ''}
                     </div>
                 </div>
             </div>
@@ -388,48 +682,58 @@
     }
 
     function filterSermons() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        if (!query) {
-            renderSermons(allSermons);
-            return;
+        const search = document.getElementById('searchInput').value.toLowerCase().trim();
+        currentSearch = search;
+        applyFilters();
+    }
+
+    function filterByCategory(category) {
+        currentCategory = category;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filter === category);
+        });
+        applyFilters();
+    }
+
+    function applyFilters() {
+        let filtered = allSermons;
+
+        // Category filter
+        if (currentCategory !== 'all') {
+            filtered = filtered.filter(s => s.category === currentCategory);
         }
-        const filtered = allSermons.filter(s => 
-            s.title.toLowerCase().includes(query) || 
-            s.preacher.toLowerCase().includes(query)
-        );
+
+        // Search filter
+        if (currentSearch) {
+            filtered = filtered.filter(s => 
+                (s.title && s.title.toLowerCase().includes(currentSearch)) ||
+                (s.preacher && s.preacher.toLowerCase().includes(currentSearch)) ||
+                (s.topic && s.topic.toLowerCase().includes(currentSearch)) ||
+                (s.description && s.description.toLowerCase().includes(currentSearch))
+            );
+        }
+
         renderSermons(filtered);
     }
 
+    // ============================================
+    // LOAD SERMONS
+    // ============================================
     fetch('/api/sermons')
         .then(res => res.json())
         .then(data => {
-            allSermons = data;
-            renderSermons(data);
+            allSermons = data || [];
+            renderSermons(allSermons);
         })
         .catch(() => {
             document.getElementById('sermonsContainer').innerHTML = `
-                <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                    <h3>Unable to load sermons</h3>
-                    <p style="color: #7a8a9a;">Please refresh the page.</p>
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);">
+                    <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#dc2626;margin-bottom:15px;"></i>
+                    <h3 style="color:var(--text-light);">Unable to load sermons</h3>
+                    <p style="color:var(--text-lighter);">Please refresh the page or try again later.</p>
                 </div>
             `;
         });
-
-    fetch('/api/social-links')
-        .then(res => res.json())
-        .then(links => {
-            const container = document.getElementById('socialLinks');
-            container.innerHTML = '';
-            links.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url || '#';
-                a.target = '_blank';
-                a.rel = 'noopener';
-                a.innerHTML = `<i class="${link.icon}"></i>`;
-                container.appendChild(a);
-            });
-        })
-        .catch(() => {});
 </script>
 </body>
 </html>
