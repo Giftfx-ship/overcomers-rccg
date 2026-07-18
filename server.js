@@ -226,7 +226,7 @@ const initAdmin = async () => {
     if (!adminExists) {
         const hashedPassword = await bcrypt.hash(adminPassword, 10);
         await User.create({ username: adminUsername, password: hashedPassword });
-        console.log(`✅ Admin created`);
+        console.log(`✅ Admin created: ${adminUsername}`);
     }
 };
 
@@ -849,35 +849,56 @@ app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req,
 });
 
 // ============================================================
-// SERVE HTML PAGES
+// SERVE HTML PAGES - FIXED
 // ============================================================
+
+// Create public directory if it doesn't exist
+const publicDir = path.join(__dirname, 'public');
+if (!fs.existsSync(publicDir)) {
+    fs.mkdirSync(publicDir, { recursive: true });
+}
+
+// Serve static files from public directory
+app.use(express.static(publicDir));
+
+// Serve HTML pages - with fallback to index.html for SPA
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 app.get('/about', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'about.html'));
+    res.sendFile(path.join(publicDir, 'about.html'));
 });
 
 app.get('/sermons', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'sermons.html'));
+    res.sendFile(path.join(publicDir, 'sermons.html'));
 });
 
 app.get('/events', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'events.html'));
+    res.sendFile(path.join(publicDir, 'events.html'));
 });
 
 app.get('/media', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'media.html'));
+    res.sendFile(path.join(publicDir, 'media.html'));
 });
 
 app.get('/contact', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'contact.html'));
+    res.sendFile(path.join(publicDir, 'contact.html'));
 });
 
 // SECRET ADMIN ROUTE
 app.get('/admin-panel', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    res.sendFile(path.join(publicDir, 'admin.html'));
+});
+
+// Catch-all route - for any other route, serve index.html
+app.get('*', (req, res) => {
+    // Don't interfere with API routes
+    if (req.path.startsWith('/api/')) {
+        return res.status(404).json({ error: 'API endpoint not found' });
+    }
+    // For any other route, serve index.html
+    res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 // ============================================================
