@@ -5,13 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Contact - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2c5f8a;
+            --primary-dark: #0f2a44;
+            --secondary: #ffd700;
+            --secondary-hover: #f0c800;
+            --text: #2c3e50;
+            --text-light: #5a7a9a;
+            --text-lighter: #8a9aaa;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #2c3e50;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.7;
             overflow-x: hidden;
         }
@@ -19,7 +38,7 @@
         .loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a3a5c;
+            background: var(--primary);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 9999;
@@ -27,14 +46,15 @@
         }
         .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
         .loader {
-            width: 50px; height: 50px;
+            width: 60px; height: 60px;
             border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffd700;
+            border-top: 4px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+        .loader-text { color: #fff; margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; opacity: 0.7; }
+        .loader-sub { color: rgba(255,255,255,0.4); font-size: 0.7rem; letter-spacing: 1px; }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(40px); }
@@ -46,14 +66,22 @@
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
 
+        /* ===== NAVBAR ===== */
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 15px 0;
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
         }
         .navbar .container {
             display: flex;
@@ -64,34 +92,34 @@
         .navbar .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-decoration: none;
         }
-        .navbar .logo img { height: 50px; width: auto; }
+        .navbar .logo img { height: 50px; width: auto; border-radius: 8px; }
         .navbar .logo-text {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: #1a3a5c;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--primary);
             line-height: 1.2;
         }
         .navbar .logo-text small {
             display: block;
             font-weight: 400;
             font-size: 0.7rem;
-            color: #5a7a9a;
+            color: var(--text-light);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 30px;
             list-style: none;
             align-items: center;
         }
         .nav-links a {
             text-decoration: none;
-            color: #2c3e50;
+            color: var(--text);
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
+            transition: var(--transition);
             position: relative;
         }
         .nav-links a::after {
@@ -101,77 +129,171 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #1a3a5c;
-            transition: width 0.3s ease;
+            background: var(--primary);
+            transition: var(--transition);
         }
         .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: #1a3a5c; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links .btn-nav {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .nav-links .btn-nav:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
+        }
+        .nav-links .btn-nav::after { display: none; }
         .hamburger {
             display: none;
             font-size: 1.8rem;
             cursor: pointer;
-            color: #1a3a5c;
+            color: var(--primary);
         }
 
+        /* ===== PAGE HERO ===== */
         .page-hero {
-            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: #fff;
-            padding: 60px 0;
+            padding: 60px 0 50px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
-        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--bg);
+            clip-path: ellipse(70% 100% at 50% 100%);
+        }
+        .page-hero .container { position: relative; z-index: 1; }
+        .page-hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .page-hero h1 i { color: var(--secondary); margin-right: 10px; }
+        .page-hero p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
 
+        /* ===== CONTACT SECTION ===== */
         .section { padding: 60px 0; }
-        .section-light { background: #ffffff; }
+        .section-light { background: var(--white); }
 
         .contact-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 50px;
+            align-items: start;
+        }
+
+        /* ===== CONTACT FORM ===== */
+        .contact-form .form-group {
+            margin-bottom: 20px;
+        }
+        .contact-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+        .contact-form label .required {
+            color: #dc2626;
         }
         .contact-form input,
-        .contact-form textarea {
+        .contact-form textarea,
+        .contact-form select {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 18px;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: border 0.3s ease;
-            font-family: inherit;
-            margin-bottom: 15px;
+            transition: var(--transition);
+            font-family: var(--font);
+            background: var(--white);
         }
         .contact-form input:focus,
-        .contact-form textarea:focus {
+        .contact-form textarea:focus,
+        .contact-form select:focus {
             outline: none;
-            border-color: #1a3a5c;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(26,58,92,0.08);
         }
         .contact-form textarea {
-            min-height: 120px;
+            min-height: 140px;
             resize: vertical;
+        }
+        .contact-form .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
         }
 
         .btn {
             display: inline-block;
-            padding: 12px 30px;
+            padding: 14px 36px;
             border-radius: 30px;
             text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-weight: 700;
+            transition: var(--transition);
             border: none;
             cursor: pointer;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            font-family: var(--font);
         }
         .btn-primary {
-            background: #ffd700;
-            color: #1a3a5c;
+            background: var(--secondary);
+            color: var(--primary);
         }
         .btn-primary:hover {
-            background: #f0c800;
+            background: var(--secondary-hover);
             transform: translateY(-3px);
-            box-shadow: 0 6px 25px rgba(255,215,0,0.4);
+            box-shadow: 0 8px 30px rgba(255,215,0,0.4);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
+        .alert {
+            padding: 16px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            font-weight: 500;
+        }
+        .alert-success {
+            background: #dcfce7;
+            color: #166534;
+            display: block;
+            border-left: 4px solid #16a34a;
+        }
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+            border-left: 4px solid #dc2626;
+        }
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            display: block;
+            border-left: 4px solid #2563eb;
+        }
+
+        /* ===== CONTACT INFO ===== */
         .contact-info {
             display: flex;
             flex-direction: column;
@@ -179,81 +301,163 @@
         }
         .contact-info .info-item {
             display: flex;
-            gap: 15px;
+            gap: 18px;
             align-items: flex-start;
+            padding: 20px 24px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            transition: var(--transition);
         }
-        .contact-info .info-item i {
-            font-size: 1.3rem;
-            color: #1a3a5c;
-            width: 24px;
-            margin-top: 4px;
+        .contact-info .info-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
         }
-        .contact-info .info-item h4 {
-            color: #1a3a5c;
+        .contact-info .info-item .icon {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.2rem;
+        }
+        .contact-info .info-item .icon i { color: #fff; }
+        .contact-info .info-item .details h4 {
+            color: var(--primary);
             font-size: 1rem;
+            font-weight: 700;
             margin-bottom: 2px;
         }
-        .contact-info .info-item p {
-            color: #5a6a7a;
+        .contact-info .info-item .details p {
+            color: var(--text-light);
             font-size: 0.95rem;
         }
+        .contact-info .info-item .details a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .contact-info .info-item .details a:hover {
+            color: var(--primary);
+        }
 
+        /* ===== MAP ===== */
         .map-container {
-            border-radius: 12px;
+            border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            margin-top: 20px;
+            box-shadow: var(--shadow);
+            margin-top: 25px;
         }
         .map-container iframe {
             width: 100%;
-            height: 300px;
+            height: 280px;
             border: none;
         }
 
-        .footer {
-            background: #1a3a5c;
+        /* ===== SERVICE TIMES MINI ===== */
+        .service-times-mini {
+            background: var(--primary);
             color: #fff;
-            padding: 40px 0;
-            margin-top: 40px;
+            border-radius: var(--radius);
+            padding: 25px 30px;
+            margin-top: 25px;
         }
-        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
+        .service-times-mini h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--secondary);
+        }
+        .service-times-mini .time-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .service-times-mini .time-item:last-child {
+            border-bottom: none;
+        }
+        .service-times-mini .time-item .day {
+            opacity: 0.8;
+        }
+        .service-times-mini .time-item .time {
+            font-weight: 600;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 50px 0 30px;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
         .footer a:hover { opacity: 1; }
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            gap: 40px;
         }
-        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
-        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
+        .footer h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .footer ul {
+            list-style: none;
+            opacity: 0.7;
+        }
+        .footer ul li { margin-bottom: 6px; }
+        .footer .social {
+            display: flex;
+            gap: 15px;
+            font-size: 1.4rem;
+        }
+        .footer .social a {
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer .social a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        .footer hr {
+            border-color: rgba(255,255,255,0.08);
+            margin: 30px 0 20px;
+        }
+        .footer .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
         .footer .dev-credit {
             text-align: center;
             opacity: 0.3;
             font-size: 0.7rem;
-            margin-top: 10px;
             letter-spacing: 1px;
+            margin-top: 10px;
         }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
 
-        .alert {
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            display: none;
-        }
-        .alert-success {
-            background: #dcfce7;
-            color: #166534;
-            display: block;
-        }
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            display: block;
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
         }
 
         @media (max-width: 768px) {
-            .contact-grid { grid-template-columns: 1fr; }
             .nav-links {
                 display: none;
                 width: 100%;
@@ -264,16 +468,42 @@
             .nav-links.open { display: flex; }
             .hamburger { display: block; }
             .page-hero h1 { font-size: 2rem; }
+            .contact-form .form-row {
+                grid-template-columns: 1fr;
+            }
+            .navbar .logo img { height: 40px; }
+            .navbar .logo-text { font-size: 1rem; }
+            .footer .bottom { flex-direction: column; text-align: center; }
+            .service-times-mini .time-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 2px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero { padding: 40px 0 30px; }
+            .page-hero h1 { font-size: 1.6rem; }
+            .contact-info .info-item { padding: 15px 18px; }
+            .contact-info .info-item .icon {
+                width: 40px;
+                height: 40px;
+                min-width: 40px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">RCCG Overcomers HOC</div>
+    <div class="loader-sub">Loading Contact...</div>
 </div>
 
+<!-- NAVBAR -->
 <nav class="navbar">
     <div class="container">
         <a href="/" class="logo">
@@ -292,164 +522,282 @@
             <li><a href="/sermons">Sermons</a></li>
             <li><a href="/events">Events</a></li>
             <li><a href="/media">Media</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/sunday-school">Sunday School</a></li>
+            <li><a href="/contact" class="btn-nav">Contact</a></li>
         </ul>
     </div>
 </nav>
 
-<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+<!-- PAGE HERO -->
+<section class="page-hero">
     <div class="container">
-        <h1>Contact Us</h1>
-        <p>We'd love to hear from you</p>
+        <h1 class="animate-fade-in"><i class="fas fa-envelope"></i> Contact Us</h1>
+        <p class="animate-fade-in delay-1">We'd love to hear from you, pray with you, and connect with you</p>
     </div>
 </section>
 
+<!-- CONTACT SECTION -->
 <section class="section section-light">
     <div class="container">
         <div class="contact-grid">
-            <div style="animation: fadeUp 0.8s ease forwards;">
-                <h2 class="section-title" style="font-size:1.8rem;margin-bottom:10px;">Get in Touch</h2>
-                <p style="color:#5a6a7a;margin-bottom:25px;">Have questions, prayer requests, or need more information? Reach out to us!</p>
+            <!-- LEFT: Contact Form -->
+            <div class="animate-fade-up">
+                <h2 style="font-size:1.8rem;color:var(--primary);margin-bottom:8px;font-weight:800;">Get in Touch</h2>
+                <p style="color:var(--text-light);margin-bottom:25px;">Have questions, prayer requests, or need more information? Reach out to us!</p>
+
                 <div id="formAlert" class="alert"></div>
-                <form class="contact-form" id="contactForm" onsubmit="submitForm(event)">
-                    <input type="text" name="name" placeholder="Your Name" required/>
-                    <input type="email" name="email" placeholder="Your Email" required/>
-                    <input type="text" name="subject" placeholder="Subject"/>
-                    <textarea name="message" placeholder="Your Message" required></textarea>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
+
+                <form class="contact-form" id="contactForm" onsubmit="handleSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" name="name" placeholder="Enter your full name" required/>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address <span class="required">*</span></label>
+                            <input type="email" name="email" placeholder="Enter your email" required/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="phone" placeholder="Enter your phone number"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select name="category">
+                            <option value="Personal">Personal</option>
+                            <option value="Family">Family</option>
+                            <option value="Health">Health</option>
+                            <option value="Financial">Financial</option>
+                            <option value="Spiritual">Spiritual</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Message / Prayer Request <span class="required">*</span></label>
+                        <textarea name="request" placeholder="Share your prayer request or message..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label style="font-weight:400;font-size:0.85rem;color:var(--text-light);">
+                            <input type="checkbox" name="confidential" value="true" style="width:auto;margin-right:8px;"/>
+                            Keep this request confidential
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
                 </form>
             </div>
-            <div style="animation: fadeUp 0.8s ease forwards; animation-delay: 0.2s;">
+
+            <!-- RIGHT: Contact Info -->
+            <div class="animate-fade-up delay-2">
                 <div class="contact-info">
                     <div class="info-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
+                        <div class="icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="details">
                             <h4>Address</h4>
                             <p>Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
                         </div>
                     </div>
                     <div class="info-item">
-                        <i class="fas fa-phone"></i>
-                        <div>
+                        <div class="icon"><i class="fas fa-phone"></i></div>
+                        <div class="details">
                             <h4>Phone</h4>
-                            <p>+234 800 000 0000</p>
+                            <p><a href="tel:+2348000000000">+234 800 000 0000</a></p>
                         </div>
                     </div>
                     <div class="info-item">
-                        <i class="fas fa-envelope"></i>
-                        <div>
+                        <div class="icon"><i class="fas fa-envelope"></i></div>
+                        <div class="details">
                             <h4>Email</h4>
-                            <p>info@rccgovercomers.org</p>
+                            <p><a href="mailto:info@rccgovercomers.org">info@rccgovercomers.org</a></p>
                         </div>
                     </div>
                     <div class="info-item">
-                        <i class="fas fa-clock"></i>
-                        <div>
+                        <div class="icon"><i class="fas fa-clock"></i></div>
+                        <div class="details">
                             <h4>Service Times</h4>
                             <p>Sunday: 8:00 AM - 10:00 AM<br/>Wednesday: 6:00 PM - 7:30 PM<br/>Friday Vigil: 10:00 PM - 12:00 AM</p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Service Times Mini -->
+                <div class="service-times-mini">
+                    <h4><i class="fas fa-church"></i> Weekly Services</h4>
+                    <div class="time-item">
+                        <span class="day">Sunday Worship</span>
+                        <span class="time">8:00 AM - 10:00 AM</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="day">Wednesday Bible Study</span>
+                        <span class="time">6:00 PM - 7:30 PM</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="day">Friday Vigil</span>
+                        <span class="time">10:00 PM - 12:00 AM</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="day">Youth Fellowship</span>
+                        <span class="time">Saturdays 4:00 PM</span>
+                    </div>
+                </div>
+
+                <!-- Map -->
                 <div class="map-container">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126457.123456789!2d4.2!3d8.1!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOMKwMDYnMDAuMCJOIDTCsDEyJzAwLjAiRQ!5e0!3m2!1sen!2sng!4v1234567890" allowfullscreen loading="lazy"></iframe>
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3952.0!2d4.2!3d8.1!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOMKwMDYnMDAuMCJOIDTCsDEyJzAwLjAiRQ!5e0!3m2!1sen!2sng!4v1234567890" 
+                        allowfullscreen 
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
             <div>
-                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+                <h4>RCCG Overcomers HOC</h4>
+                <p style="opacity:0.7;font-size:0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Quick Links</h4>
-                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                <h4>Quick Links</h4>
+                <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/sunday-school">Sunday School</a></li>
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
-                <div class="social" id="socialLinks">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                </div>
+                <h4>Connect With Us</h4>
+                <div class="social" id="socialLinks"></div>
             </div>
         </div>
         <hr/>
-        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
-        <div class="dev-credit">Developed by Dev Gift Team & Powered by De Creative Mide</div>
+        <div class="bottom">
+            <span>&copy; 2026 RCCG Overcomers HOC. All rights reserved.</span>
+            <span>Developed by Dev Gift Team</span>
+        </div>
+        <div class="dev-credit">Powered by De Creative Mide</div>
     </div>
 </footer>
 
 <script>
+    // ============================================
+    // HIDE LOADER
+    // ============================================
     window.addEventListener('load', function() {
-        setTimeout(() => {
+        setTimeout(function() {
             document.getElementById('loaderWrapper').classList.add('hidden');
-        }, 600);
+        }, 800);
     });
 
-    async function submitForm(e) {
-        e.preventDefault();
-        const form = document.getElementById('contactForm');
-        const alert = document.getElementById('formAlert');
-        const data = new FormData(form);
-        const obj = {};
-        for (let [key, value] of data.entries()) {
-            obj[key] = value;
-        }
-
-        try {
-            const res = await fetch('/api/prayer-requests', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    name: obj.name,
-                    email: obj.email,
-                    request: `Subject: ${obj.subject || 'General'}\n\n${obj.message}`
-                })
-            });
-            if (res.ok) {
-                alert.className = 'alert alert-success';
-                alert.textContent = '✅ Your message was sent successfully! We\'ll get back to you soon.';
-                form.reset();
-                setTimeout(() => {
-                    alert.className = 'alert';
-                    alert.textContent = '';
-                }, 5000);
-            } else {
-                alert.className = 'alert alert-error';
-                alert.textContent = '❌ Something went wrong. Please try again.';
-            }
-        } catch (err) {
-            alert.className = 'alert alert-error';
-            alert.textContent = '❌ Network error. Please try again.';
-        }
-    }
-
+    // ============================================
+    // SOCIAL LINKS
+    // ============================================
     fetch('/api/social-links')
         .then(res => res.json())
         .then(links => {
             const container = document.getElementById('socialLinks');
-            container.innerHTML = '';
-            links.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url || '#';
-                a.target = '_blank';
-                a.rel = 'noopener';
-                a.innerHTML = `<i class="${link.icon}"></i>`;
-                container.appendChild(a);
-            });
+            if (links && links.length) {
+                container.innerHTML = links.map(link => `
+                    <a href="${link.url}" target="_blank" rel="noopener">
+                        <i class="${link.icon}"></i>
+                    </a>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                `;
+            }
         })
         .catch(() => {});
+
+    // ============================================
+    // CONTACT FORM SUBMIT
+    // ============================================
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const form = document.getElementById('contactForm');
+        const alert = document.getElementById('formAlert');
+        const submitBtn = document.getElementById('submitBtn');
+
+        const formData = new FormData(form);
+        const data = {};
+        for (let [key, value] of formData.entries()) {
+            if (key === 'confidential') {
+                data[key] = value === 'true';
+            } else {
+                data[key] = value;
+            }
+        }
+
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+        try {
+            const response = await fetch('/api/prayer-requests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert.className = 'alert alert-success';
+                alert.innerHTML = `
+                    <i class="fas fa-check-circle"></i> 
+                    <strong>Thank you!</strong> Your message was sent successfully. 
+                    We'll get back to you soon and pray with you.
+                `;
+                form.reset();
+                
+                // Scroll to alert
+                alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Hide alert after 8 seconds
+                setTimeout(() => {
+                    alert.className = 'alert';
+                    alert.innerHTML = '';
+                }, 8000);
+            } else {
+                alert.className = 'alert alert-error';
+                alert.innerHTML = `
+                    <i class="fas fa-exclamation-circle"></i> 
+                    <strong>Oops!</strong> ${result.error || 'Something went wrong. Please try again.'}
+                `;
+            }
+        } catch (error) {
+            alert.className = 'alert alert-error';
+            alert.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i> 
+                <strong>Network Error!</strong> Please check your connection and try again.
+            `;
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+        }
+    }
+
+    // ============================================
+    // AUTO-FILL SAMPLE (Remove in production)
+    // ============================================
+    // Uncomment to pre-fill for testing
+    // document.querySelector('[name="name"]').value = 'John Doe';
+    // document.querySelector('[name="email"]').value = 'john@example.com';
+    // document.querySelector('[name="request"]').value = 'Please pray for my family.';
 </script>
 </body>
 </html>
