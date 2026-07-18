@@ -1,39 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Admin - RCCG Overcomers HOC</title>
+    <title>Admin Dashboard - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f0f4f9;
+            color: #2c3e50;
             min-height: 100vh;
-            display: flex;
         }
 
-        .loader-wrapper {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a3a5c;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 99999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
-        .loader {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffd700;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
-
+        /* Login Page */
         #loginPage {
             display: flex;
             width: 100%;
@@ -51,21 +32,16 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             max-width: 400px;
             width: 100%;
-            animation: fadeUp 0.8s ease forwards;
-        }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         .login-box .logo { text-align: center; margin-bottom: 25px; }
-        .login-box .logo i { font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px; }
-        .login-box .logo h2 { color: #1a3a5c; font-size: 1.2rem; }
+        .login-box .logo i { font-size: 3rem; color: #1a3a5c; }
+        .login-box .logo h2 { color: #1a3a5c; }
         .login-box .logo p { color: #7a8a9a; font-size: 0.8rem; }
         .login-box .form-group { margin-bottom: 18px; }
-        .login-box label { display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50; font-size: 0.9rem; }
+        .login-box label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
         .login-box input {
             width: 100%;
-            padding: 11px 16px;
+            padding: 12px 16px;
             border: 2px solid #e2e8f0;
             border-radius: 8px;
             font-size: 1rem;
@@ -84,4 +60,842 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .login-box .btn:hover { background: #0f2a44; transform: translate
+        .login-box .btn:hover { background: #0f2a44; transform: translateY(-2px); }
+        .login-box .error { color: #dc2626; font-size: 0.9rem; margin-top: 10px; display: none; }
+
+        /* Dashboard */
+        #dashboardPage {
+            display: none;
+            min-height: 100vh;
+        }
+        #dashboardPage.show { display: block; }
+
+        .admin-nav {
+            background: #1a3a5c;
+            color: #fff;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .admin-nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .admin-nav h2 { font-size: 1.2rem; }
+        .admin-nav .user-info { display: flex; align-items: center; gap: 15px; }
+        .admin-nav .user-info span { opacity: 0.8; font-size: 0.9rem; }
+        .admin-nav .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .admin-nav .logout-btn:hover { background: rgba(255,255,255,0.2); }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .stat-card .number { font-size: 2rem; font-weight: 700; color: #1a3a5c; }
+        .stat-card .label { color: #7a8a9a; font-size: 0.85rem; }
+        .stat-card i { font-size: 1.5rem; color: #ffd700; }
+
+        /* Content Sections */
+        .content-section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: none;
+        }
+        .content-section.active { display: block; }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .section-header h3 { color: #1a3a5c; }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+        .btn-primary { background: #1a3a5c; color: #fff; }
+        .btn-primary:hover { background: #0f2a44; transform: translateY(-2px); }
+        .btn-success { background: #16a34a; color: #fff; }
+        .btn-success:hover { background: #15803d; }
+        .btn-danger { background: #dc2626; color: #fff; }
+        .btn-danger:hover { background: #b91c1c; }
+        .btn-warning { background: #f59e0b; color: #fff; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-sm { padding: 4px 12px; font-size: 0.75rem; }
+
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            background: #f0f4f9;
+            padding: 5px;
+            border-radius: 10px;
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-tab:hover { background: rgba(26, 58, 92, 0.1); }
+        .nav-tab.active { background: #1a3a5c; color: #fff; }
+
+        /* Table */
+        .table-container { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th { background: #f8fafc; font-weight: 600; color: #1a3a5c; }
+        td { font-size: 0.9rem; }
+        .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h3 { margin-bottom: 20px; color: #1a3a5c; }
+        .modal-content .form-group { margin-bottom: 15px; }
+        .modal-content label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9rem; }
+        .modal-content input, .modal-content textarea, .modal-content select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.3s ease;
+            font-family: inherit;
+        }
+        .modal-content input:focus, .modal-content textarea:focus, .modal-content select:focus {
+            outline: none;
+            border-color: #1a3a5c;
+        }
+        .modal-content textarea { min-height: 100px; resize: vertical; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .alert-success { background: #dcfce7; color: #166534; display: block; }
+        .alert-error { background: #fee2e2; color: #991b1b; display: block; }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #1a3a5c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .admin-nav .container { flex-direction: column; gap: 10px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .nav-tabs { flex-direction: column; }
+            .nav-tab { text-align: center; }
+            .section-header { flex-direction: column; align-items: stretch; }
+            .modal-content { margin: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+    <div class="login-box">
+        <div class="logo">
+            <i class="fas fa-church"></i>
+            <h2>RCCG Overcomers HOC</h2>
+            <p>Admin Dashboard</p>
+        </div>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter username" required/>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter password" required/>
+            </div>
+            <div id="loginError" class="error">Invalid credentials. Please try again.</div>
+            <button type="submit" class="btn">Login</button>
+        </form>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardPage">
+    <nav class="admin-nav">
+        <div class="container">
+            <h2><i class="fas fa-church"></i> RCCG Overcomers HOC - Admin</h2>
+            <div class="user-info">
+                <span id="adminUsername">admin</span>
+                <button class="logout-btn" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card"><i class="fas fa-bible"></i><div class="number" id="statSermons">0</div><div class="label">Sermons</div></div>
+            <div class="stat-card"><i class="fas fa-calendar"></i><div class="number" id="statEvents">0</div><div class="label">Events</div></div>
+            <div class="stat-card"><i class="fas fa-images"></i><div class="number" id="statMedia">0</div><div class="label">Media</div></div>
+            <div class="stat-card"><i class="fas fa-pray"></i><div class="number" id="statPrayers">0</div><div class="label">Prayer Requests</div></div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('sermons')"><i class="fas fa-bible"></i> Sermons</button>
+            <button class="nav-tab" onclick="showSection('events')"><i class="fas fa-calendar"></i> Events</button>
+            <button class="nav-tab" onclick="showSection('media')"><i class="fas fa-images"></i> Media</button>
+            <button class="nav-tab" onclick="showSection('face')"><i class="fas fa-user"></i> Face of Week</button>
+            <button class="nav-tab" onclick="showSection('prayer')"><i class="fas fa-pray"></i> Prayer Week</button>
+            <button class="nav-tab" onclick="showSection('openheaven')"><i class="fas fa-sun"></i> Open Heaven</button>
+            <button class="nav-tab" onclick="showSection('sundayschool')"><i class="fas fa-school"></i> Sunday School</button>
+            <button class="nav-tab" onclick="showSection('requests')"><i class="fas fa-hand-holding-heart"></i> Requests</button>
+            <button class="nav-tab" onclick="showSection('social')"><i class="fas fa-share-alt"></i> Social Links</button>
+            <button class="nav-tab" onclick="showSection('testimonies')"><i class="fas fa-comment"></i> Testimonies</button>
+        </div>
+
+        <!-- Content Sections -->
+        <div id="section-sermons" class="content-section active">
+            <div class="section-header">
+                <h3><i class="fas fa-bible"></i> Sermons</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('sermons')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('sermon')"><i class="fas fa-plus"></i> Add Sermon</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Title</th><th>Preacher</th><th>Date</th><th>Actions</th></tr></thead><tbody id="sermonsTable"></tbody></table></div>
+        </div>
+
+        <div id="section-events" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-calendar"></i> Events</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('events')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('event')"><i class="fas fa-plus"></i> Add Event</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead><tbody id="eventsTable"></tbody></table></div>
+        </div>
+
+        <div id="section-media" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-images"></i> Media</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('media')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('media')"><i class="fas fa-plus"></i> Add Media</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead><tbody id="mediaTable"></tbody></table></div>
+        </div>
+
+        <div id="section-face" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-user"></i> Face of the Week</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('face')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('face')"><i class="fas fa-plus"></i> Add Face</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Title</th><th>Active</th><th>Actions</th></tr></thead><tbody id="faceTable"></tbody></table></div>
+        </div>
+
+        <div id="section-prayer" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-pray"></i> Prayer for the Week</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('prayer')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('prayer')"><i class="fas fa-plus"></i> Add Prayer</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Title</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead><tbody id="prayerTable"></tbody></table></div>
+        </div>
+
+        <div id="section-openheaven" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-sun"></i> Open Heaven</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('openheaven')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('openheaven')"><i class="fas fa-plus"></i> Add Devotion</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Title</th><th>Date</th><th>Actions</th></tr></thead><tbody id="openheavenTable"></tbody></table></div>
+        </div>
+
+        <div id="section-sundayschool" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-school"></i> Sunday School</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('sundayschool')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('sundayschool')"><i class="fas fa-plus"></i> Add Lesson</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Title</th><th>Teacher</th><th>Date</th><th>Actions</th></tr></thead><tbody id="sundayschoolTable"></tbody></table></div>
+        </div>
+
+        <div id="section-requests" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-hand-holding-heart"></i> Prayer Requests</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('requests')"><i class="fas fa-trash"></i> Delete All</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Actions</th></tr></thead><tbody id="requestsTable"></tbody></table></div>
+        </div>
+
+        <div id="section-social" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-share-alt"></i> Social Links</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('social')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('social')"><i class="fas fa-plus"></i> Add Link</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Platform</th><th>URL</th><th>Active</th><th>Actions</th></tr></thead><tbody id="socialTable"></tbody></table></div>
+        </div>
+
+        <div id="section-testimonies" class="content-section">
+            <div class="section-header">
+                <h3><i class="fas fa-comment"></i> Testimonies</h3>
+                <div>
+                    <button class="btn btn-danger" onclick="deleteAll('testimonies')"><i class="fas fa-trash"></i> Delete All</button>
+                    <button class="btn btn-primary" onclick="openModal('testimony')"><i class="fas fa-plus"></i> Add Testimony</button>
+                </div>
+            </div>
+            <div class="table-container"><table><thead><tr><th>Title</th><th>Author</th><th>Actions</th></tr></thead><tbody id="testimoniesTable"></tbody></table></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Add New</h3>
+        <form id="modalForm" onsubmit="handleModalSubmit(event)">
+            <div id="modalFields"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// ============================================
+// ADMIN PANEL - COMPLETE JAVASCRIPT
+// ============================================
+
+let token = localStorage.getItem('adminToken');
+let currentSection = 'sermons';
+let editId = null;
+
+// ---------- AUTH ----------
+function handleLogin(e) {
+    e.preventDefault();
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    const errorEl = document.getElementById('loginError');
+
+    fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.token) {
+            token = data.token;
+            localStorage.setItem('adminToken', token);
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('dashboardPage').classList.add('show');
+            document.getElementById('adminUsername').textContent = data.admin.username;
+            loadStats();
+            loadSection('sermons');
+        } else {
+            errorEl.style.display = 'block';
+            setTimeout(() => errorEl.style.display = 'none', 3000);
+        }
+    })
+    .catch(() => {
+        errorEl.style.display = 'block';
+        setTimeout(() => errorEl.style.display = 'none', 3000);
+    });
+}
+
+function handleLogout() {
+    localStorage.removeItem('adminToken');
+    token = null;
+    document.getElementById('dashboardPage').classList.remove('show');
+    document.getElementById('loginPage').classList.remove('hidden');
+}
+
+// Check if already logged in
+if (token) {
+    document.getElementById('loginPage').classList.add('hidden');
+    document.getElementById('dashboardPage').classList.add('show');
+    loadStats();
+    loadSection('sermons');
+}
+
+// ---------- HELPERS ----------
+function getHeaders() {
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+}
+
+function showSection(section) {
+    currentSection = section;
+    document.querySelectorAll('.content-section').forEach(el => el.classList.remove('active'));
+    document.getElementById(`section-${section}`).classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+    document.querySelector(`[onclick="showSection('${section}')"]`).classList.add('active');
+    loadSection(section);
+}
+
+function loadSection(section) {
+    const map = {
+        'sermons': '/api/sermons',
+        'events': '/api/events',
+        'media': '/api/media',
+        'face': '/api/face-of-week',
+        'prayer': '/api/prayer-week',
+        'openheaven': '/api/open-heaven',
+        'sundayschool': '/api/sunday-school',
+        'requests': '/api/admin/prayer-requests',
+        'social': '/api/social-links',
+        'testimonies': '/api/testimonies'
+    };
+
+    const url = map[section];
+    if (!url) return;
+
+    const headers = section === 'requests' ? getHeaders() : {};
+    fetch(url, { headers })
+        .then(res => res.json())
+        .then(data => {
+            const tableId = `${section}Table`;
+            const tbody = document.getElementById(tableId);
+            if (!tbody) return;
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:#7a8a9a;">No items found</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => renderRow(section, item)).join('');
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById(`${section}Table`).innerHTML = 
+                `<tr><td colspan="10" style="text-align:center;color:#dc2626;">Error loading data</td></tr>`;
+        });
+}
+
+function renderRow(section, item) {
+    const actions = `
+        <div class="actions">
+            <button class="btn btn-warning btn-sm" onclick="editItem('${section}','${item._id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteItem('${section}','${item._id}')">Delete</button>
+        </div>
+    `;
+
+    switch(section) {
+        case 'sermons':
+            return `<tr><td>${item.title || 'Untitled'}</td><td>${item.preacher || 'Unknown'}</td><td>${new Date(item.date).toLocaleDateString()}</td><td>${actions}</td></tr>`;
+        case 'events':
+            return `<tr><td>${item.title || 'Untitled'}</td><td>${new Date(item.date).toLocaleDateString()}</td><td>${item.location || 'N/A'}</td><td>${actions}</td></tr>`;
+        case 'media':
+            return `<tr><td>${item.title || 'Untitled'}</td><td><span class="badge">${item.type || 'N/A'}</span></td><td>${actions}</td></tr>`;
+        case 'face':
+            return `<tr><td>${item.name || 'N/A'}</td><td>${item.title || 'N/A'}</td><td>${item.active ? '✅' : '❌'}</td><td>${actions}</td></tr>`;
+        case 'prayer':
+            return `<tr><td>${item.title || 'Untitled'}</td><td>${new Date(item.date).toLocaleDateString()}</td><td>${item.active ? '✅' : '❌'}</td><td>${actions}</td></tr>`;
+        case 'openheaven':
+            return `<tr><td>${item.title || 'Untitled'}</td><td>${new Date(item.date).toLocaleDateString()}</td><td>${actions}</td></tr>`;
+        case 'sundayschool':
+            return `<tr><td>${item.title || 'Untitled'}</td><td>${item.teacher || 'N/A'}</td><td>${new Date(item.date).toLocaleDateString()}</td><td>${actions}</td></tr>`;
+        case 'requests':
+            return `<tr><td>${item.name || 'N/A'}</td><td>${item.email || 'N/A'}</td><td><span class="badge">${item.status || 'pending'}</span></td><td>${actions}</td></tr>`;
+        case 'social':
+            return `<tr><td>${item.platform || 'N/A'}</td><td><a href="${item.url}" target="_blank">Link</a></td><td>${item.active ? '✅' : '❌'}</td><td>${actions}</td></tr>`;
+        case 'testimonies':
+            return `<tr><td>${item.title || 'Untitled'}</td><td>${item.author || 'Anonymous'}</td><td>${actions}</td></tr>`;
+        default:
+            return `<tr><td colspan="10">Unknown type</td></tr>`;
+    }
+}
+
+// ---------- STATS ----------
+function loadStats() {
+    fetch('/api/admin/stats', { headers: getHeaders() })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('statSermons').textContent = data.sermons || 0;
+            document.getElementById('statEvents').textContent = data.events || 0;
+            document.getElementById('statMedia').textContent = data.media || 0;
+            document.getElementById('statPrayers').textContent = data.prayerRequests || 0;
+        })
+        .catch(console.error);
+}
+
+// ---------- MODAL ----------
+function openModal(type, item = null) {
+    editId = item?._id || null;
+    const modal = document.getElementById('modal');
+    const title = document.getElementById('modalTitle');
+    const fields = document.getElementById('modalFields');
+
+    const typeNames = {
+        'sermon': 'Sermon',
+        'event': 'Event',
+        'media': 'Media',
+        'face': 'Face of the Week',
+        'prayer': 'Prayer for the Week',
+        'openheaven': 'Open Heaven',
+        'sundayschool': 'Sunday School',
+        'social': 'Social Link',
+        'testimony': 'Testimony'
+    };
+    title.textContent = `${editId ? 'Edit' : 'Add'} ${typeNames[type] || 'Item'}`;
+
+    const fieldConfigs = {
+        'sermon': `
+            <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
+            <div class="form-group"><label>Topic</label><input type="text" name="topic" value="${item?.topic || ''}"/></div>
+            <div class="form-group"><label>Preacher *</label><input type="text" name="preacher" value="${item?.preacher || ''}" required/></div>
+            <div class="form-group"><label>Preacher Title</label><input type="text" name="preacherTitle" value="${item?.preacherTitle || ''}"/></div>
+            <div class="form-group"><label>Description</label><textarea name="description">${item?.description || ''}</textarea></div>
+            <div class="form-group"><label>Message Text</label><textarea name="messageText">${item?.messageText || ''}</textarea></div>
+            <div class="form-group"><label>Main Scripture</label><input type="text" name="mainScripture" value="${item?.mainScripture || ''}"/></div>
+            <div class="form-group"><label>Date</label><input type="date" name="date" value="${item?.date ? new Date(item.date).toISOString().split('T')[0] : ''}"/></div>
+            <div class="form-group"><label>Category</label>
+                <select name="category">
+                    <option value="Sunday Service">Sunday Service</option>
+                    <option value="Midweek Service">Midweek Service</option>
+                    <option value="Prayer Meeting">Prayer Meeting</option>
+                    <option value="Youth Service">Youth Service</option>
+                    <option value="Conference">Conference</option>
+                    <option value="Revival">Revival</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Audio URL</label><input type="text" name="audioUrl" value="${item?.audioUrl || ''}"/></div>
+            <div class="form-group"><label>Video URL</label><input type="text" name="videoUrl" value="${item?.videoUrl || ''}"/></div>
+            <div class="form-group"><label>Image URL</label><input type="text" name="imageUrl" value="${item?.imageUrl || ''}"/></div>
+            <div class="form-group"><label>Featured</label><select name="featured"><option value="true">Yes</option><option value="false" ${item?.featured === false ? 'selected' : ''}>No</option></select></div>
+        `,
+        'event': `
+            <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
+            <div class="form-group"><label>Description</label><textarea name="description">${item?.description || ''}</textarea></div>
+            <div class="form-group"><label>Date *</label><input type="date" name="date" value="${item?.date ? new Date(item.date).toISOString().split('T')[0] : ''}" required/></div>
+            <div class="form-group"><label>Time</label><input type="text" name="time" value="${item?.time || ''}" placeholder="10:00 AM"/></div>
+            <div class="form-group"><label>Location *</label><input type="text" name="location" value="${item?.location || ''}" required/></div>
+            <div class="form-group"><label>Category</label>
+                <select name="category">
+                    <option value="Worship">Worship</option>
+                    <option value="Youth">Youth</option>
+                    <option value="Community">Community</option>
+                    <option value="Prayer">Prayer</option>
+                    <option value="Conference">Conference</option>
+                    <option value="Outreach">Outreach</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group"><label>Image URL</label><input type="text" name="imageUrl" value="${item?.imageUrl || ''}"/></div>
+            <div class="form-group"><label>Featured</label><select name="featured"><option value="true">Yes</option><option value="false" ${item?.featured === false ? 'selected' : ''}>No</option></select></div>
+        `,
+        'media': `
+            <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
+            <div class="form-group"><label>Type *</label>
+                <select name="type" required>
+                    <option value="photo" ${item?.type === 'photo' ? 'selected' : ''}>Photo</option>
+                    <option value="video" ${item?.type === 'video' ? 'selected' : ''}>Video</option>
+                    <option value="audio" ${item?.type === 'audio' ? 'selected' : ''}>Audio</option>
+                </select>
+            </div>
+            <div class="form-group"><label>URL *</label><input type="text" name="url" value="${item?.url || ''}" required/></div>
+            <div class="form-group"><label>Thumbnail URL</label><input type="text" name="thumbnail" value="${item?.thumbnail || ''}"/></div>
+            <div class="form-group"><label>Description</label><textarea name="description">${item?.description || ''}</textarea></div>
+        `,
+        'face': `
+            <div class="form-group"><label>Name *</label><input type="text" name="name" value="${item?.name || ''}" required/></div>
+            <div class="form-group"><label>Title</label><input type="text" name="title" value="${item?.title || ''}"/></div>
+            <div class="form-group"><label>Words *</label><textarea name="words" required>${item?.words || ''}</textarea></div>
+            <div class="form-group"><label>Occupation</label><input type="text" name="occupation" value="${item?.occupation || ''}"/></div>
+            <div class="form-group"><label>Image URL</label><input type="text" name="imageUrl" value="${item?.imageUrl || ''}"/></div>
+            <div class="form-group"><label>Active</label><select name="active"><option value="true">Yes</option><option value="false" ${item?.active === false ? 'selected' : ''}>No</option></select></div>
+        `,
+        'prayer': `
+            <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
+            <div class="form-group"><label>Prayer *</label><textarea name="prayer" required>${item?.prayer || ''}</textarea></div>
+            <div class="form-group"><label>Bible Verse</label><input type="text" name="bibleVerse" value="${item?.bibleVerse || ''}"/></div>
+            <div class="form-group"><label>Bible Reading</label><input type="text" name="bibleReading" value="${item?.bibleReading || ''}"/></div>
+            <div class="form-group"><label>Theme</label><input type="text" name="theme" value="${item?.theme || ''}"/></div>
+            <div class="form-group"><label>Active</label><select name="active"><option value="true">Yes</option><option value="false" ${item?.active === false ? 'selected' : ''}>No</option></select></div>
+        `,
+        'openheaven': `
+            <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
+            <div class="form-group"><label>Content *</label><textarea name="content" required>${item?.content || ''}</textarea></div>
+            <div class="form-group"><label>Bible Reading</label><input type="text" name="bibleReading" value="${item?.bibleReading || ''}"/></div>
+            <div class="form-group"><label>Memory Verse</label><input type="text" name="memoryVerse" value="${item?.memoryVerse || ''}"/></div>
+            <div class="form-group"><label>Prayer</label><textarea name="prayer">${item?.prayer || ''}</textarea></div>
+            <div class="form-group"><label>Date</label><input type="date" name="date" value="${item?.date ? new Date(item.date).toISOString().split('T')[0] : ''}"/></div>
+        `,
+        'sundayschool': `
+            <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
+            <div class="form-group"><label>Teacher *</label><input type="text" name="teacher" value="${item?.teacher || ''}" required/></div>
+            <div class="form-group"><label>Description</label><textarea name="description">${item?.description || ''}</textarea></div>
+            <div class="form-group"><label>Bible Reading</label><input type="text" name="bibleReading" value="${item?.bibleReading || ''}"/></div>
+            <div class="form-group"><label>Memory Verse</label><input type="text" name="memoryVerse" value="${item?.memoryVerse || ''}"/></div>
+            <div class="form-group"><label>Image URL</label><input type="text" name="imageUrl" value="${item?.imageUrl || ''}"/></div>
+            <div class="form-group"><label>Featured</label><select name="featured"><option value="true">Yes</option><option value="false" ${item?.featured === false ? 'selected' : ''}>No</option></select></div>
+        `,
+        'social': `
+            <div class="form-group"><label>Platform *</label><input type="text" name="platform" value="${item?.platform || ''}" required/></div>
+            <div class="form-group"><label>URL *</label><input type="text" name="url" value="${item?.url || ''}" required/></div>
+            <div class="form-group"><label>Icon *</label><input type="text" name="icon" value="${item?.icon || ''}" placeholder="fab fa-facebook" required/></div>
+            <div class="form-group"><label>Active</label><select name="active"><option value="true">Yes</option><option value="false" ${item?.active === false ? 'selected' : ''}>No</option></select></div>
+        `,
+        'testimony': `
+            <div class="form-group"><label>Title *</label><input type="text" name="title" value="${item?.title || ''}" required/></div>
+            <div class="form-group"><label>Content *</label><textarea name="content" required>${item?.content || ''}</textarea></div>
+            <div class="form-group"><label>Author</label><input type="text" name="author" value="${item?.author || ''}"/></div>
+            <div class="form-group"><label>Image URL</label><input type="text" name="imageUrl" value="${item?.imageUrl || ''}"/></div>
+            <div class="form-group"><label>Featured</label><select name="featured"><option value="true">Yes</option><option value="false" ${item?.featured === false ? 'selected' : ''}>No</option></select></div>
+            <div class="form-group"><label>Published</label><select name="isPublished"><option value="true">Yes</option><option value="false" ${item?.isPublished === false ? 'selected' : ''}>No</option></select></div>
+        `
+    };
+
+    fields.innerHTML = fieldConfigs[type] || '<p>Invalid type</p>';
+    modal.classList.add('show');
+    document.getElementById('modalForm').dataset.type = type;
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('show');
+    editId = null;
+}
+
+function handleModalSubmit(e) {
+    e.preventDefault();
+    const type = e.target.dataset.type;
+    const formData = new FormData(e.target);
+    const data = {};
+    formData.forEach((value, key) => data[key] = value);
+
+    // Convert boolean strings
+    ['featured', 'active', 'isPublished'].forEach(key => {
+        if (data[key] !== undefined) data[key] = data[key] === 'true';
+    });
+
+    const endpoints = {
+        'sermon': '/api/admin/sermons',
+        'event': '/api/admin/events',
+        'media': '/api/admin/media',
+        'face': '/api/admin/face-of-week',
+        'prayer': '/api/admin/prayer-week',
+        'openheaven': '/api/admin/open-heaven',
+        'sundayschool': '/api/admin/sunday-school',
+        'social': '/api/admin/social-links',
+        'testimony': '/api/admin/testimonies'
+    };
+
+    const url = endpoints[type];
+    if (!url) return;
+
+    const method = editId ? 'PUT' : 'POST';
+    const fullUrl = editId ? `${url}/${editId}` : url;
+
+    fetch(fullUrl, {
+        method,
+        headers: getHeaders(),
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(() => {
+        closeModal();
+        loadStats();
+        loadSection(currentSection);
+    })
+    .catch(console.error);
+}
+
+// ---------- CRUD OPERATIONS ----------
+function editItem(section, id) {
+    const endpoints = {
+        'sermons': '/api/sermons',
+        'events': '/api/events',
+        'media': '/api/media',
+        'face': '/api/face-of-week',
+        'prayer': '/api/prayer-week',
+        'openheaven': '/api/open-heaven',
+        'sundayschool': '/api/sunday-school',
+        'social': '/api/social-links',
+        'testimonies': '/api/testimonies'
+    };
+
+    const typeMap = {
+        'sermons': 'sermon',
+        'events': 'event',
+        'media': 'media',
+        'face': 'face',
+        'prayer': 'prayer',
+        'openheaven': 'openheaven',
+        'sundayschool': 'sundayschool',
+        'social': 'social',
+        'testimonies': 'testimony'
+    };
+
+    fetch(`${endpoints[section]}/${id}`)
+        .then(res => res.json())
+        .then(item => openModal(typeMap[section], item))
+        .catch(console.error);
+}
+
+function deleteItem(section, id) {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+
+    const endpoints = {
+        'sermons': '/api/admin/sermons',
+        'events': '/api/admin/events',
+        'media': '/api/admin/media',
+        'face': '/api/admin/face-of-week',
+        'prayer': '/api/admin/prayer-week',
+        'openheaven': '/api/admin/open-heaven',
+        'sundayschool': '/api/admin/sunday-school',
+        'requests': '/api/admin/prayer-requests',
+        'social': '/api/admin/social-links',
+        'testimonies': '/api/admin/testimonies'
+    };
+
+    fetch(`${endpoints[section]}/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+    })
+    .then(res => res.json())
+    .then(() => {
+        loadStats();
+        loadSection(currentSection);
+    })
+    .catch(console.error);
+}
+
+function deleteAll(section) {
+    if (!confirm(`⚠️ Are you sure you want to delete ALL ${section}? This action cannot be undone!`)) return;
+
+    const endpoints = {
+        'sermons': '/api/admin/sermons',
+        'events': '/api/admin/events',
+        'media': '/api/admin/media',
+        'face': '/api/admin/face-of-week',
+        'prayer': '/api/admin/prayer-week',
+        'openheaven': '/api/admin/open-heaven',
+        'sundayschool': '/api/admin/sunday-school',
+        'requests': '/api/admin/prayer-requests',
+        'social': '/api/admin/social-links',
+        'testimonies': '/api/admin/testimonies'
+    };
+
+    fetch(endpoints[section], {
+        method: 'DELETE',
+        headers: getHeaders()
+    })
+    .then(res => res.json())
+    .then(() => {
+        loadStats();
+        loadSection(currentSection);
+    })
+    .catch(console.error);
+}
+
+// Close modal on outside click
+document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+
+// Keyboard shortcut: Escape to close modal
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
