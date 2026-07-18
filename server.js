@@ -45,7 +45,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ 
     storage, 
-    limits: { fileSize: 10 * 1024 * 1024 },
+    limits: { fileSize: 50 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
         const allowed = ['image/jpeg', 'image/png', 'image/webp', 'audio/mpeg', 'video/mp4'];
         if (allowed.includes(file.mimetype)) cb(null, true);
@@ -60,8 +60,7 @@ const upload = multer({
 // User
 const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: { type: String, default: 'admin' }
+    password: { type: String, required: true }
 });
 const User = mongoose.model('User', UserSchema);
 
@@ -95,7 +94,7 @@ const Event = mongoose.model('Event', EventSchema);
 // Media
 const MediaSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    type: { type: String, enum: ['photo', 'video', 'audio', 'document'], required: true },
+    type: { type: String, enum: ['photo', 'video', 'audio'], required: true },
     url: { type: String, required: true },
     thumbnail: String,
     description: String,
@@ -122,7 +121,7 @@ const PrayerRequestSchema = new mongoose.Schema({
 }, { timestamps: true });
 const PrayerRequest = mongoose.model('PrayerRequest', PrayerRequestSchema);
 
-// ===== NEW: Prayer for the Week =====
+// Prayer for the Week
 const PrayerWeekSchema = new mongoose.Schema({
     title: { type: String, required: true },
     prayer: { type: String, required: true },
@@ -132,7 +131,7 @@ const PrayerWeekSchema = new mongoose.Schema({
 }, { timestamps: true });
 const PrayerWeek = mongoose.model('PrayerWeek', PrayerWeekSchema);
 
-// ===== NEW: Open Heaven =====
+// Open Heaven
 const OpenHeavenSchema = new mongoose.Schema({
     title: { type: String, required: true },
     content: { type: String, required: true },
@@ -143,6 +142,17 @@ const OpenHeavenSchema = new mongoose.Schema({
     featured: { type: Boolean, default: false }
 }, { timestamps: true });
 const OpenHeaven = mongoose.model('OpenHeaven', OpenHeavenSchema);
+
+// ===== NEW: Face of the Week =====
+const FaceOfWeekSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    title: { type: String, required: true },
+    words: { type: String, required: true },
+    imageUrl: { type: String, required: true },
+    date: { type: Date, default: Date.now },
+    active: { type: Boolean, default: true }
+}, { timestamps: true });
+const FaceOfWeek = mongoose.model('FaceOfWeek', FaceOfWeekSchema);
 
 // ============================================================
 // AUTH MIDDLEWARE
@@ -178,10 +188,8 @@ const initAdmin = async () => {
 initAdmin();
 
 // ============================================================
-// API ROUTES
+// API ROUTES - AUTH
 // ============================================================
-
-// ----- AUTH -----
 app.post('/api/admin/login', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -196,30 +204,33 @@ app.post('/api/admin/login', async (req, res) => {
     }
 });
 
-app.post('/api/admin/verify', authMiddleware, async (req, res) => {
+app.post('/api/admin/verify', authMiddleware, (req, res) => {
     res.json({ valid: true, username: req.user.username });
 });
 
-// ----- DASHBOARD STATS -----
+// ============================================================
+// API ROUTES - DASHBOARD STATS
+// ============================================================
 app.get('/api/admin/stats', authMiddleware, async (req, res) => {
     try {
-        const [sermons, events, media, testimonies, prayers, prayerWeek, openHeaven] = await Promise.all([
+        const [sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek] = await Promise.all([
             Sermon.countDocuments(),
             Event.countDocuments(),
             Media.countDocuments(),
             Testimony.countDocuments(),
             PrayerRequest.countDocuments(),
             PrayerWeek.countDocuments(),
-            OpenHeaven.countDocuments()
+            OpenHeaven.countDocuments(),
+            FaceOfWeek.countDocuments()
         ]);
-        res.json({ sermons, events, media, testimonies, prayers, prayerWeek, openHeaven });
+        res.json({ sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
 // ============================================================
-// SERMONS API
+// API ROUTES - SERMONS
 // ============================================================
 app.get('/api/sermons', async (req, res) => {
     try {
@@ -286,7 +297,7 @@ app.delete('/api/admin/sermons/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// EVENTS API
+// API ROUTES - EVENTS
 // ============================================================
 app.get('/api/events', async (req, res) => {
     try {
@@ -339,7 +350,7 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// MEDIA API
+// API ROUTES - MEDIA (with file upload)
 // ============================================================
 app.get('/api/media', async (req, res) => {
     try {
@@ -353,9 +364,32 @@ app.get('/api/media', async (req, res) => {
 app.post('/api/admin/media', authMiddleware, upload.single('file'), async (req, res) => {
     try {
         const data = JSON.parse(req.body.data || '{}');
-        if (req.file) data.url = '/uploads/' + req.file.filename;
+        if (req.file) {
+            data.url = '/uploads/' + req.file.filename;
+            // Auto-detect type from mime
+            if (req.file.mimetype.startsWith('image/')) data.type = 'photo';
+            else if (req.file.mimetype.startsWith('video/')) data.type = 'video';
+            else if (req.file.mimetype.startsWith('audio/')) data.type = 'audio';
+        }
         const media = await Media.create(data);
         res.status(201).json(media);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/admin/media/:id', authMiddleware, upload.single('file'), async (req, res) => {
+    try {
+        const data = JSON.parse(req.body.data || '{}');
+        if (req.file) {
+            data.url = '/uploads/' + req.file.filename;
+            if (req.file.mimetype.startsWith('image/')) data.type = 'photo';
+            else if (req.file.mimetype.startsWith('video/')) data.type = 'video';
+            else if (req.file.mimetype.startsWith('audio/')) data.type = 'audio';
+        }
+        const media = await Media.findByIdAndUpdate(req.params.id, data, { new: true });
+        if (!media) return res.status(404).json({ error: 'Media not found' });
+        res.json(media);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -371,7 +405,7 @@ app.delete('/api/admin/media/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// TESTIMONIES API
+// API ROUTES - TESTIMONIES
 // ============================================================
 app.get('/api/testimonies', async (req, res) => {
     try {
@@ -424,7 +458,7 @@ app.delete('/api/admin/testimonies/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// PRAYER REQUESTS API
+// API ROUTES - PRAYER REQUESTS
 // ============================================================
 app.post('/api/prayer-requests', async (req, res) => {
     try {
@@ -468,7 +502,7 @@ app.delete('/api/admin/prayer-requests/:id', authMiddleware, async (req, res) =>
 });
 
 // ============================================================
-// PRAYER FOR THE WEEK API
+// API ROUTES - PRAYER FOR THE WEEK
 // ============================================================
 app.get('/api/prayer-week', async (req, res) => {
     try {
@@ -490,7 +524,6 @@ app.get('/api/admin/prayer-week', authMiddleware, async (req, res) => {
 
 app.post('/api/admin/prayer-week', authMiddleware, async (req, res) => {
     try {
-        // Deactivate old prayers
         await PrayerWeek.updateMany({ active: true }, { active: false });
         const prayer = await PrayerWeek.create(req.body);
         res.status(201).json(prayer);
@@ -519,7 +552,7 @@ app.delete('/api/admin/prayer-week/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// OPEN HEAVEN API
+// API ROUTES - OPEN HEAVEN
 // ============================================================
 app.get('/api/open-heaven', async (req, res) => {
     try {
@@ -550,7 +583,6 @@ app.get('/api/admin/open-heaven', authMiddleware, async (req, res) => {
 
 app.post('/api/admin/open-heaven', authMiddleware, async (req, res) => {
     try {
-        // If featured, remove featured from others
         if (req.body.featured) {
             await OpenHeaven.updateMany({ featured: true }, { featured: false });
         }
@@ -584,7 +616,61 @@ app.delete('/api/admin/open-heaven/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// FILE UPLOAD (Admin Only)
+// API ROUTES - FACE OF THE WEEK (NEW)
+// ============================================================
+app.get('/api/face-of-week', async (req, res) => {
+    try {
+        const face = await FaceOfWeek.findOne({ active: true }).sort({ date: -1 });
+        res.json(face);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/admin/face-of-week', authMiddleware, async (req, res) => {
+    try {
+        const faces = await FaceOfWeek.find().sort({ date: -1 });
+        res.json(faces);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/admin/face-of-week', authMiddleware, upload.single('image'), async (req, res) => {
+    try {
+        const data = JSON.parse(req.body.data || '{}');
+        if (req.file) data.imageUrl = '/uploads/' + req.file.filename;
+        await FaceOfWeek.updateMany({ active: true }, { active: false });
+        const face = await FaceOfWeek.create(data);
+        res.status(201).json(face);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/admin/face-of-week/:id', authMiddleware, upload.single('image'), async (req, res) => {
+    try {
+        const data = JSON.parse(req.body.data || '{}');
+        if (req.file) data.imageUrl = '/uploads/' + req.file.filename;
+        const face = await FaceOfWeek.findByIdAndUpdate(req.params.id, data, { new: true });
+        if (!face) return res.status(404).json({ error: 'Face not found' });
+        res.json(face);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/api/admin/face-of-week/:id', authMiddleware, async (req, res) => {
+    try {
+        await FaceOfWeek.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Face deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============================================================
+// FILE UPLOAD (General)
 // ============================================================
 app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req, res) => {
     try {
@@ -596,7 +682,7 @@ app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req,
 });
 
 // ============================================================
-// SERVE HTML PAGES (NO ADMIN LINKS)
+// SERVE HTML PAGES
 // ============================================================
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -624,7 +710,7 @@ app.get('/contact', (req, res) => {
 
 // SECRET ADMIN ROUTE
 app.get('/admin-panel', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 // ============================================================
