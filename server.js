@@ -1,7 +1,7 @@
 // ============================================================
 // RCCG OVERCOMERS HOC - COMPLETE SERVER
 // Parish: Oke Ado, Old Stadium Road, Ogbomoso, Oyo State
-// Dual MongoDB (2 DBs = 1GB Storage)
+// Single Database (Simplified - NO SSL ERRORS!)
 // Developed by Dev Gift Team
 // ============================================================
 
@@ -30,47 +30,29 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 console.log('🚀 RCCG Overcomers HOC Server Starting...');
 
 // ============================================================
-// DUAL MONGODB CONNECTION - FIXED!
+// SINGLE MONGODB CONNECTION
 // ============================================================
 
-// Database 1: Main Church Data (WORKING)
-console.log('📊 Connecting to Main Database...');
-const mainDB = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
+console.log('📊 Connecting to Database...');
+const db = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     serverSelectionTimeoutMS: 10000,
 });
 
-mainDB.on('connected', () => {
-    console.log('✅ Main DB Connected (rccg_overcomers)');
+db.on('connected', () => {
+    console.log('✅ Database Connected Successfully!');
+    console.log('📊 Using Database: admin');
+    initAdmin();
+    initSocialLinks();
 });
 
-mainDB.on('error', (err) => {
-    console.error('❌ Main DB Error:', err.message);
-});
-
-// Database 2: Media Storage - FIXED SSL ERROR!
-console.log('📊 Connecting to Media Database...');
-const mediaDB = mongoose.createConnection(process.env.MONGODB_URI_MEDIA, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 30000,
-    // THESE 3 LINES FIX THE SSL ERROR!
-    tls: true,
-    tlsAllowInvalidCertificates: true,
-    tlsAllowInvalidHostnames: true,
-});
-
-mediaDB.on('connected', () => {
-    console.log('✅ Media DB Connected (rccg_media)');
-});
-
-mediaDB.on('error', (err) => {
-    console.error('❌ Media DB Error:', err.message);
+db.on('error', (err) => {
+    console.error('❌ Database Error:', err.message);
 });
 
 // ============================================================
-// MODELS - MAIN DATABASE
+// MODELS - ALL IN ONE DATABASE
 // ============================================================
 
 // User
@@ -78,7 +60,7 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true }
 });
-const User = mainDB.model('User', UserSchema);
+const User = db.model('User', UserSchema);
 
 // Social Links
 const SocialLinksSchema = new mongoose.Schema({
@@ -87,7 +69,7 @@ const SocialLinksSchema = new mongoose.Schema({
     icon: { type: String, required: true },
     active: { type: Boolean, default: true }
 }, { timestamps: true });
-const SocialLink = mainDB.model('SocialLink', SocialLinksSchema);
+const SocialLink = db.model('SocialLink', SocialLinksSchema);
 
 // Sermon
 const SermonSchema = new mongoose.Schema({
@@ -102,7 +84,7 @@ const SermonSchema = new mongoose.Schema({
     featured: { type: Boolean, default: false },
     views: { type: Number, default: 0 }
 }, { timestamps: true });
-const Sermon = mainDB.model('Sermon', SermonSchema);
+const Sermon = db.model('Sermon', SermonSchema);
 
 // Event
 const EventSchema = new mongoose.Schema({
@@ -114,7 +96,7 @@ const EventSchema = new mongoose.Schema({
     imageUrl: String,
     category: { type: String, enum: ['worship', 'youth', 'community', 'prayer', 'other'], default: 'other' }
 }, { timestamps: true });
-const Event = mainDB.model('Event', EventSchema);
+const Event = db.model('Event', EventSchema);
 
 // Testimony
 const TestimonySchema = new mongoose.Schema({
@@ -123,7 +105,7 @@ const TestimonySchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     approved: { type: Boolean, default: false }
 }, { timestamps: true });
-const Testimony = mainDB.model('Testimony', TestimonySchema);
+const Testimony = db.model('Testimony', TestimonySchema);
 
 // Prayer Request
 const PrayerRequestSchema = new mongoose.Schema({
@@ -133,7 +115,7 @@ const PrayerRequestSchema = new mongoose.Schema({
     prayed: { type: Boolean, default: false },
     date: { type: Date, default: Date.now }
 }, { timestamps: true });
-const PrayerRequest = mainDB.model('PrayerRequest', PrayerRequestSchema);
+const PrayerRequest = db.model('PrayerRequest', PrayerRequestSchema);
 
 // Prayer for the Week
 const PrayerWeekSchema = new mongoose.Schema({
@@ -143,7 +125,7 @@ const PrayerWeekSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     active: { type: Boolean, default: true }
 }, { timestamps: true });
-const PrayerWeek = mainDB.model('PrayerWeek', PrayerWeekSchema);
+const PrayerWeek = db.model('PrayerWeek', PrayerWeekSchema);
 
 // Open Heaven
 const OpenHeavenSchema = new mongoose.Schema({
@@ -155,7 +137,7 @@ const OpenHeavenSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     featured: { type: Boolean, default: false }
 }, { timestamps: true });
-const OpenHeaven = mainDB.model('OpenHeaven', OpenHeavenSchema);
+const OpenHeaven = db.model('OpenHeaven', OpenHeavenSchema);
 
 // Face of the Week
 const FaceOfWeekSchema = new mongoose.Schema({
@@ -166,7 +148,7 @@ const FaceOfWeekSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     active: { type: Boolean, default: true }
 }, { timestamps: true });
-const FaceOfWeek = mainDB.model('FaceOfWeek', FaceOfWeekSchema);
+const FaceOfWeek = db.model('FaceOfWeek', FaceOfWeekSchema);
 
 // Sunday School
 const SundaySchoolSchema = new mongoose.Schema({
@@ -179,12 +161,9 @@ const SundaySchoolSchema = new mongoose.Schema({
     imageUrl: String,
     featured: { type: Boolean, default: false }
 }, { timestamps: true });
-const SundaySchool = mainDB.model('SundaySchool', SundaySchoolSchema);
+const SundaySchool = db.model('SundaySchool', SundaySchoolSchema);
 
-// ============================================================
-// MODELS - MEDIA DATABASE
-// ============================================================
-
+// Media (Stored in same database now)
 const MediaSchema = new mongoose.Schema({
     title: { type: String, required: true },
     type: { type: String, enum: ['photo', 'video', 'audio'], required: true },
@@ -195,7 +174,7 @@ const MediaSchema = new mongoose.Schema({
     fileSize: Number,
     mimeType: String
 }, { timestamps: true });
-const Media = mediaDB.model('Media', MediaSchema);
+const Media = db.model('Media', MediaSchema);
 
 // ============================================================
 // FILE UPLOAD CONFIG
@@ -277,16 +256,11 @@ const initSocialLinks = async () => {
                 console.log(`✅ Social link created: ${link.platform}`);
             }
         }
+        console.log('✅ All social links initialized');
     } catch (error) {
         console.error('❌ Error creating social links:', error.message);
     }
 };
-
-mainDB.once('connected', async () => {
-    console.log('🔄 Initializing admin and social links...');
-    await initAdmin();
-    await initSocialLinks();
-});
 
 // ============================================================
 // API ROUTES - AUTH
@@ -934,8 +908,7 @@ app.listen(PORT, () => {
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
     ║  🔒 Admin: http://localhost:${PORT}/admin               ║
-    ║  💾 Database 1: rccg_overcomers (Text Data)            ║
-    ║  💾 Database 2: rccg_media (Media Files)               ║
+    ║  💾 Single Database: admin (Simplified!)               ║
     ║  👨‍💻 Developed by Dev Gift Team                         ║
     ╚══════════════════════════════════════════════════════════╝
     `);
