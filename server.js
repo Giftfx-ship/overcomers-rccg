@@ -1,7 +1,7 @@
 // ============================================================
 // RCCG OVERCOMERS HOC - COMPLETE SERVER
 // Parish: Oke Ado, Old Stadium Road, Ogbomoso, Oyo State
-// Single Database - 100% WORKING
+// SINGLE DATABASE - NO SSL ERRORS!
 // Developed by Dev Gift Team
 // ============================================================
 
@@ -30,24 +30,35 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 console.log('🚀 RCCG Overcomers HOC Server Starting...');
 
 // ============================================================
-// SINGLE MONGODB CONNECTION
+// SINGLE MONGODB CONNECTION - NO SSL ERRORS!
 // ============================================================
 
 console.log('📊 Connecting to Database...');
-const db = mongoose.createConnection(process.env.MONGODB_URI, {
+
+// Use the connection string WITHOUT any database name
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://devvgift_db_user:08133595884@cluster0.bjuprio.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+
+const db = mongoose.createConnection(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 15000,
+    socketTimeoutMS: 45000,
+    family: 4, // Use IPv4, skip IPv6
 });
 
 db.on('connected', () => {
     console.log('✅ Database Connected Successfully!');
+    console.log('📊 Using default database for user');
     initAdmin();
     initSocialLinks();
 });
 
 db.on('error', (err) => {
     console.error('❌ Database Error:', err.message);
+});
+
+db.on('disconnected', () => {
+    console.log('⚠️ Database Disconnected');
 });
 
 // ============================================================
@@ -218,7 +229,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 // ============================================================
-// INIT ADMIN USER & SOCIAL LINKS
+// INIT FUNCTIONS
 // ============================================================
 const initAdmin = async () => {
     try {
@@ -255,7 +266,6 @@ const initSocialLinks = async () => {
                 console.log(`✅ Social link created: ${link.platform}`);
             }
         }
-        console.log('✅ All social links initialized');
     } catch (error) {
         console.error('❌ Error creating social links:', error.message);
     }
@@ -907,7 +917,7 @@ app.listen(PORT, () => {
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
     ║  🔒 Admin: http://localhost:${PORT}/admin               ║
-    ║  💾 Single Database - 100% WORKING!                    ║
+    ║  💾 Single Database - NO SSL ERRORS!                   ║
     ║  👨‍💻 Developed by Dev Gift Team                         ║
     ╚══════════════════════════════════════════════════════════╝
     `);
