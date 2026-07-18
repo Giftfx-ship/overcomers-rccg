@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>About - RCCG Overcomers HOC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Loading */
+        .loader-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a3a5c;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* Navbar */
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .navbar .logo img { height: 50px; width: auto; }
+        .navbar .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a3a5c;
+            line-height: 1.2;
+        }
+        .navbar .logo-text small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: #5a7a9a;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1a3a5c;
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: #1a3a5c; }
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #1a3a5c;
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            color: #fff;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
+        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
+
+        .section { padding: 60px 0; }
+        .section-light { background: #ffffff; }
+        .section-gray { background: #f5f7fa; }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a3a5c;
+            margin-bottom: 15px;
+        }
+        .section-subtitle {
+            color: #5a7a9a;
+            font-size: 1.05rem;
+            margin-bottom: 30px;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        .about-grid img {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .about-grid .content p { color: #5a6a7a; margin-bottom: 15px; }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .value-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .value-card:hover { transform: translateY(-5px); }
+        .value-card i { font-size: 2.5rem; color: #ffd700; margin-bottom: 10px; }
+        .value-card h3 { color: #1a3a5c; font-size: 1.1rem; }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .btn-primary {
+            background: #ffd700;
+            color: #1a3a5c;
+        }
+        .btn-primary:hover {
+            background: #f0c800;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255,215,0,0.4);
+        }
+
+        .footer {
+            background: #1a3a5c;
+            color: #fff;
+            padding: 40px 0;
+            margin-top: 40px;
+        }
+        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
+        .footer a:hover { opacity: 1; }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
+        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
+        .footer .dev-credit {
+            text-align: center;
+            opacity: 0.3;
+            font-size: 0.7rem;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; text-align: center; }
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                padding: 20px 0;
+                gap: 15px;
+            }
+            .nav-links.open { display: flex; }
+            .hamburger { display: block; }
+            .page-hero h1 { font-size: 2rem; }
+            .section-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loader-wrapper" id="loaderWrapper">
+    <div class="loader"></div>
+    <div class="loader-text">RCCG Overcomers HOC</div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="logo">
+            <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.style.display='none'"/>
+            <span class="logo-text">
+                RCCG Overcomers HOC
+                <small>Oke Ado, Ogbomoso</small>
+            </span>
+        </a>
+        <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+            <i class="fas fa-bars"></i>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/sermons">Sermons</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/media">Media</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+    <div class="container">
+        <h1>About Us</h1>
+        <p>RCCG Overcomers HOC - Oke Ado, Ogbomoso</p>
+    </div>
+</section>
+
+<!-- ABOUT CONTENT -->
+<section class="section section-light">
+    <div class="container">
+        <div class="about-grid">
+            <div style="animation: fadeUp 0.8s ease forwards;">
+                <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.src='https://placehold.co/600x400/1a3a5c/fff?text=RCCG+Overcomers+HOC'"/>
+            </div>
+            <div class="content" style="animation: fadeUp 0.8s ease forwards; animation-delay: 0.2s;">
+                <h2 class="section-title">Our Story</h2>
+                <p>RCCG Overcomers HOC is a parish of the Redeemed Christian Church of God located at Oke Ado, Old Stadium Road, Ogbomoso, Oyo State.</p>
+                <p>We are a community of believers committed to winning souls for Christ, raising disciples, and transforming lives through the power of the Holy Spirit.</p>
+                <p>Our vision is to be a beacon of light in Ogbomoso and beyond, demonstrating God's love through worship, fellowship, and service.</p>
+                <a href="/contact" class="btn btn-primary" style="margin-top: 15px;">Visit Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OUR VALUES -->
+<section class="section section-gray">
+    <div class="container">
+        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Our Values</h2>
+        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">What we stand for</p>
+        <div class="values-grid">
+            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">
+                <i class="fas fa-cross"></i>
+                <h3>Faith in Christ</h3>
+                <p style="color: #5a6a7a; font-size: 0.9rem;">We believe in Jesus Christ as our Lord and Savior.</p>
+            </div>
+            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
+                <i class="fas fa-bible"></i>
+                <h3>Word of God</h3>
+                <p style="color: #5a6a7a; font-size: 0.9rem;">We stand firm on the truth of God's Word.</p>
+            </div>
+            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.3s;">
+                <i class="fas fa-hands-praying"></i>
+                <h3>Prayer</h3>
+                <p style="color: #5a6a7a; font-size: 0.9rem;">We are a house of prayer for all nations.</p>
+            </div>
+            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.4s;">
+                <i class="fas fa-users"></i>
+                <h3>Fellowship</h3>
+                <p style="color: #5a6a7a; font-size: 0.9rem;">We are family, united in love and purpose.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICE TIMES -->
+<section class="section section-light">
+    <div class="container">
+        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Service Times</h2>
+        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Come worship with us</p>
+        <div class="values-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));">
+            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">
+                <i class="fas fa-church" style="color: #1a3a5c;"></i>
+                <h3>Sunday Service</h3>
+                <p style="color: #5a6a7a; font-size: 0.9rem;">8:00 AM - 10:00 AM</p>
+            </div>
+            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
+                <i class="fas fa-pray" style="color: #1a3a5c;"></i>
+                <h3>Wednesday Bible Study</h3>
+                <p style="color: #5a6a7a; font-size: 0.9rem;">6:00 PM - 7:30 PM</p>
+            </div>
+            <div class="value-card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.3s;">
+                <i class="fas fa-users" style="color: #1a3a5c;"></i>
+                <h3>Friday Vigil</h3>
+                <p style="color: #5a6a7a; font-size: 0.9rem;">10:00 PM - 12:00 AM</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Quick Links</h4>
+                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
+                <div class="social" id="socialLinks">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
+        <div class="dev-credit">Developed by Dev Gift Team</div>
+    </div>
+</footer>
+
+<script>
+    // Hide loader
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            document.getElementById('loaderWrapper').classList.add('hidden');
+        }, 600);
+    });
+
+    // Load social links
+    fetch('/api/social-links')
+        .then(res => res.json())
+        .then(links => {
+            const container = document.getElementById('socialLinks');
+            container.innerHTML = '';
+            links.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link.url || '#';
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.innerHTML = `<i class="${link.icon}"></i>`;
+                container.appendChild(a);
+            });
+        })
+        .catch(() => {});
+</script>
+</body>
+</html>
