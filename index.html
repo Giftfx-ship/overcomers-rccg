@@ -81,7 +81,7 @@
         .navbar {
             background: #ffffff;
             box-shadow: 0 2px 20px rgba(0,0,0,0.08);
-            padding: 15px 0;
+            padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -95,16 +95,17 @@
         .navbar .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             text-decoration: none;
         }
         .navbar .logo img {
-            height: 50px;
+            height: 55px;
             width: auto;
+            border-radius: 8px;
         }
         .navbar .logo-text {
             font-weight: 700;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #1a3a5c;
             line-height: 1.2;
         }
@@ -151,10 +152,10 @@
         .hero {
             background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
             color: #fff;
-            padding: 100px 0 80px;
+            padding: 80px 0 70px;
             position: relative;
             overflow: hidden;
-            min-height: 500px;
+            min-height: 450px;
             display: flex;
             align-items: center;
         }
@@ -177,14 +178,14 @@
             align-items: center;
         }
         .hero-content h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 15px;
         }
         .hero-content h1 span { color: #ffd700; }
         .hero-content p {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             opacity: 0.9;
             margin-bottom: 25px;
             max-width: 500px;
@@ -192,7 +193,7 @@
         .hero-content .location {
             font-size: 0.95rem;
             opacity: 0.75;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         .hero-buttons {
             display: flex;
@@ -238,27 +239,32 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 25px rgba(44,95,138,0.4);
         }
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
         .hero-image img {
             max-width: 100%;
-            height: auto;
+            max-height: 300px;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.2);
         }
 
         /* Sections */
-        .section { padding: 70px 0; }
+        .section { padding: 60px 0; }
         .section-light { background: #ffffff; }
         .section-gray { background: #f5f7fa; }
         .section-title {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #1a3a5c;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .section-subtitle {
             color: #5a7a9a;
-            font-size: 1.05rem;
-            margin-bottom: 40px;
+            font-size: 1rem;
+            margin-bottom: 35px;
         }
 
         /* Cards */
@@ -315,28 +321,70 @@
             animation: fadeUp 0.6s ease forwards;
         }
         .face-card img {
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid #1a3a5c;
+            border: 4px solid #1a3a5c;
         }
         .face-card .face-content h3 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: #1a3a5c;
         }
         .face-card .face-content .title {
             color: #5a7a9a;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .face-card .face-content .words {
             font-style: italic;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #2c3e50;
             line-height: 1.8;
             border-left: 4px solid #ffd700;
             padding-left: 20px;
+        }
+
+        /* Sunday School Full Card */
+        .sunday-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            border-left: 5px solid #ffd700;
+        }
+        .sunday-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        .sunday-card .card-image {
+            height: 250px;
+        }
+        .sunday-card .card-body h3 {
+            font-size: 1.3rem;
+        }
+        .sunday-card .bible-reading {
+            background: #f5f7fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 8px 0;
+        }
+        .sunday-card .memory-verse {
+            font-style: italic;
+            color: #1a3a5c;
+            padding: 10px 15px;
+            border-left: 3px solid #ffd700;
+            margin: 8px 0;
+        }
+        .badge-featured {
+            display: inline-block;
+            padding: 3px 12px;
+            background: #ffd700;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #1a3a5c;
         }
 
         /* Skeleton Loading */
@@ -405,6 +453,7 @@
             }
             .hero-content p { margin: 0 auto 25px; }
             .hero-buttons { justify-content: center; }
+            .hero-image img { max-height: 200px; }
             .nav-links {
                 display: none;
                 width: 100%;
@@ -414,7 +463,7 @@
             }
             .nav-links.open { display: flex; }
             .hamburger { display: block; }
-            .section-title { font-size: 1.8rem; }
+            .section-title { font-size: 1.6rem; }
             .face-card {
                 flex-direction: column;
                 text-align: center;
@@ -425,6 +474,8 @@
                 padding-left: 0;
                 padding-top: 15px;
             }
+            .navbar .logo img { height: 40px; }
+            .navbar .logo-text { font-size: 1rem; }
         }
     </style>
 </head>
@@ -456,6 +507,7 @@
             <li><a href="/sermons">Sermons</a></li>
             <li><a href="/events">Events</a></li>
             <li><a href="/media">Media</a></li>
+            <li><a href="/sunday-school">Sunday School</a></li>
             <li><a href="/contact">Contact</a></li>
         </ul>
     </div>
@@ -487,9 +539,9 @@
         <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Face of the Week</h2>
         <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Celebrating God's work in our members</p>
         <div id="faceOfWeek" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-            <div style="display: flex; gap: 30px; align-items: center; background: #fff; border-radius: 16px; padding: 30px;">
-                <div class="skeleton" style="width:180px;height:180px;border-radius:50%;"></div>
-                <div style="flex:1;">
+            <div class="face-card">
+                <div class="skeleton" style="width:160px;height:160px;border-radius:50%;flex-shrink:0;"></div>
+                <div class="face-content" style="flex:1;">
                     <div class="skeleton-text" style="width:60%;height:24px;"></div>
                     <div class="skeleton-text" style="width:40%;height:16px;"></div>
                     <div class="skeleton-text" style="width:90%;height:60px;"></div>
@@ -553,15 +605,23 @@
     </div>
 </section>
 
-<!-- ===== SUNDAY SCHOOL ===== -->
+<!-- ===== SUNDAY SCHOOL (FULL CONTENT) ===== -->
 <section class="section section-light">
     <div class="container">
         <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Sunday School</h2>
         <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Growing in the knowledge of God's Word</p>
-        <div id="sundaySchool" class="card-grid">
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div></div></div>
+        <div id="sundaySchool" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
+            <div class="sunday-card">
+                <div class="skeleton-image" style="height:250px;"></div>
+                <div class="card-body">
+                    <div class="skeleton-text" style="width:60%;height:24px;"></div>
+                    <div class="skeleton-text" style="width:40%;height:16px;"></div>
+                    <div class="skeleton-text" style="width:90%;height:40px;"></div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/sunday-school" class="btn btn-secondary">View All Lessons</a>
         </div>
     </div>
 </section>
@@ -638,17 +698,17 @@
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/sunday-school">Sunday School</a></li>
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
             <div>
                 <h4 style="margin-bottom: 15px;">Connect With Us</h4>
                 <div class="social" id="socialLinks">
-                    <a href="#" class="social-link" data-platform="facebook"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="social-link" data-platform="youtube"><i class="fab fa-youtube"></i></a>
-                    <a href="#" class="social-link" data-platform="instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-link" data-platform="whatsapp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#" class="social-link" data-platform="twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
                 </div>
             </div>
         </div>
@@ -679,8 +739,6 @@
                 a.href = link.url || '#';
                 a.target = '_blank';
                 a.rel = 'noopener';
-                a.className = 'social-link';
-                a.dataset.platform = link.platform;
                 a.innerHTML = `<i class="${link.icon}"></i>`;
                 container.appendChild(a);
             });
@@ -695,7 +753,7 @@
             if (data) {
                 container.innerHTML = `
                     <div class="face-card">
-                        <img src="${data.imageUrl}" alt="${data.name}" onerror="this.src='https://placehold.co/180x180/1a3a5c/fff?text=${data.name.charAt(0)}'"/>
+                        <img src="${data.imageUrl}" alt="${data.name}" onerror="this.src='https://placehold.co/160x160/1a3a5c/fff?text=${data.name.charAt(0)}'"/>
                         <div class="face-content">
                             <h3>${data.name}</h3>
                             <div class="title">${data.title}</div>
@@ -845,7 +903,7 @@
             `;
         });
 
-    // ===== LOAD SUNDAY SCHOOL =====
+    // ===== LOAD SUNDAY SCHOOL (FULL CONTENT) =====
     fetch('/api/sunday-school')
         .then(res => res.json())
         .then(lessons => {
@@ -853,7 +911,7 @@
             if (lessons.length === 0) {
                 container.innerHTML = `
                     <div class="card">
-                        <div class="card-body" style="text-align: center; padding: 30px;">
+                        <div class="card-body" style="text-align: center; padding: 40px;">
                             <h3>No Sunday School lessons yet</h3>
                             <p style="color: #7a8a9a;">Check back soon for new lessons.</p>
                         </div>
@@ -861,23 +919,26 @@
                 `;
                 return;
             }
-            container.innerHTML = lessons.slice(0, 3).map((lesson, i) => `
-                <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i + 1) * 0.1}s;">
+            // Show latest lesson with FULL content
+            const lesson = lessons[0];
+            container.innerHTML = `
+                <div class="sunday-card" style="animation: fadeUp 0.6s ease forwards;">
                     ${lesson.imageUrl ? `<img src="${lesson.imageUrl}" alt="${lesson.title}" class="card-image"/>` : ''}
                     <div class="card-body">
                         <h3>${lesson.title}</h3>
-                        <p class="meta"><i class="fas fa-user"></i> ${lesson.teacher} &bull; ${new Date(lesson.date).toLocaleDateString()}</p>
-                        <p>${lesson.description || ''}</p>
-                        ${lesson.bibleReading ? `<p style="font-size: 0.9rem; color: #5a7a9a;"><i class="fas fa-bible"></i> ${lesson.bibleReading}</p>` : ''}
-                        ${lesson.memoryVerse ? `<p style="font-size: 0.9rem; font-style: italic; color: #1a3a5c;">"${lesson.memoryVerse}"</p>` : ''}
+                        <p class="meta"><i class="fas fa-user"></i> Teacher: ${lesson.teacher} &bull; ${new Date(lesson.date).toLocaleDateString()}</p>
+                        ${lesson.description ? `<p style="margin: 10px 0; font-size: 1rem;">${lesson.description}</p>` : ''}
+                        ${lesson.bibleReading ? `<div class="bible-reading"><strong>📖 Bible Reading:</strong> ${lesson.bibleReading}</div>` : ''}
+                        ${lesson.memoryVerse ? `<div class="memory-verse">"${lesson.memoryVerse}"</div>` : ''}
+                        ${lesson.featured ? `<div style="margin-top:10px;"><span class="badge-featured">⭐ Featured Lesson</span></div>` : ''}
                     </div>
                 </div>
-            `).join('');
+            `;
         })
         .catch(() => {
             document.getElementById('sundaySchool').innerHTML = `
                 <div class="card">
-                    <div class="card-body" style="text-align: center; padding: 30px;">
+                    <div class="card-body" style="text-align: center; padding: 40px;">
                         <h3>Unable to load Sunday School</h3>
                         <p style="color: #7a8a9a;">Please refresh the page.</p>
                     </div>
