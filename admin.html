@@ -3,54 +3,108 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Admin Panel - RCCG Overcomers HOC</title>
+    <title>Admin - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f0f4f9;
-            display: flex;
             min-height: 100vh;
+            display: flex;
         }
 
-        /* Loading */
+        /* ===== LOGIN PAGE ===== */
+        #loginPage {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            padding: 20px;
+        }
+        #loginPage.hidden { display: none; }
+        .login-box {
+            background: #fff;
+            padding: 45px 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 100%;
+            animation: fadeUp 0.8s ease forwards;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .login-box .logo { text-align: center; margin-bottom: 25px; }
+        .login-box .logo i { font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px; }
+        .login-box .logo h2 { color: #1a3a5c; font-size: 1.2rem; }
+        .login-box .logo p { color: #7a8a9a; font-size: 0.8rem; }
+        .login-box .form-group { margin-bottom: 18px; }
+        .login-box label { display: block; font-weight: 600; margin-bottom: 5px; color: #2c3e50; font-size: 0.9rem; }
+        .login-box input {
+            width: 100%;
+            padding: 11px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        .login-box input:focus { outline: none; border-color: #1a3a5c; }
+        .login-box .btn {
+            width: 100%;
+            padding: 13px;
+            background: #1a3a5c;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .login-box .btn:hover { background: #0f2a44; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,58,92,0.3); }
+        .login-box .error {
+            background: #fee2e2; color: #991b1b;
+            padding: 10px 15px; border-radius: 8px;
+            margin-bottom: 15px; display: none;
+            font-size: 0.9rem;
+        }
+        .login-box .dev-credit {
+            text-align: center; margin-top: 20px;
+            opacity: 0.3; font-size: 0.7rem;
+            letter-spacing: 1px; color: #5a6a7a;
+        }
+
+        /* ===== ADMIN DASHBOARD ===== */
+        #dashboardPage {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+        }
+        #dashboardPage.show { display: flex; }
+
         .loader-wrapper {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: #1a3a5c;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
             z-index: 99999;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
-        .loader-wrapper.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
+        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
         .loader {
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             border: 4px solid rgba(255,255,255,0.1);
             border-top: 4px solid #ffd700;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .loader-text {
-            color: #fff;
-            margin-top: 15px;
-            font-size: 0.8rem;
-            opacity: 0.6;
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
 
         .sidebar {
             width: 240px;
@@ -80,27 +134,16 @@
             gap: 12px;
             padding: 10px 14px;
             color: rgba(255,255,255,0.7);
-            text-decoration: none;
             border-radius: 8px;
             transition: all 0.3s ease;
             margin-bottom: 2px;
             cursor: pointer;
             font-size: 0.9rem;
         }
-        .sidebar .nav-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-        }
-        .sidebar .nav-item.active {
-            background: rgba(255,215,0,0.15);
-            color: #ffd700;
-        }
+        .sidebar .nav-item:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .sidebar .nav-item.active { background: rgba(255,215,0,0.15); color: #ffd700; }
         .sidebar .nav-item i { width: 20px; }
-        .sidebar .logout {
-            margin-top: auto;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 15px;
-        }
+        .sidebar .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
 
         .main {
             margin-left: 240px;
@@ -117,6 +160,7 @@
         }
         .header h1 { font-size: 1.6rem; color: #1a3a5c; }
         .header .user { color: #5a7a9a; font-size: 0.9rem; }
+        .header .user i { margin-right: 5px; }
 
         .stats {
             display: grid;
@@ -137,17 +181,8 @@
             letter-spacing: 0.5px;
             margin-bottom: 4px;
         }
-        .stat-card .number {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #1a3a5c;
-        }
-        .stat-card .icon {
-            float: right;
-            font-size: 1.5rem;
-            opacity: 0.15;
-            color: #1a3a5c;
-        }
+        .stat-card .number { font-size: 1.6rem; font-weight: 700; color: #1a3a5c; }
+        .stat-card .icon { float: right; font-size: 1.5rem; opacity: 0.15; color: #1a3a5c; }
 
         .card {
             background: #fff;
@@ -284,16 +319,6 @@
         .badge-warning { background: #fef3c7; color: #92400e; }
         .badge-info { background: #dbeafe; color: #1e40af; }
 
-        .status-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        .status-dot.active { background: #22c55e; }
-        .status-dot.inactive { background: #ef4444; }
-
         @media (max-width: 768px) {
             .sidebar { width: 60px; padding: 15px 8px; }
             .sidebar h2 span, .sidebar .nav-item span { display: none; }
@@ -316,203 +341,230 @@
     <div class="loader-text">Loading Admin Panel...</div>
 </div>
 
-<!-- ===== SIDEBAR ===== -->
-<div class="sidebar">
-    <h2><i class="fas fa-church"></i> <span>Admin</span></h2>
-    <div class="nav-item active" onclick="showSection('dashboard')">
-        <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-    </div>
-    <div class="nav-item" onclick="showSection('sermons')">
-        <i class="fas fa-bible"></i> <span>Sermons</span>
-    </div>
-    <div class="nav-item" onclick="showSection('events')">
-        <i class="fas fa-calendar"></i> <span>Events</span>
-    </div>
-    <div class="nav-item" onclick="showSection('media')">
-        <i class="fas fa-photo-video"></i> <span>Media</span>
-    </div>
-    <div class="nav-item" onclick="showSection('prayer-week')">
-        <i class="fas fa-pray"></i> <span>Prayer Week</span>
-    </div>
-    <div class="nav-item" onclick="showSection('open-heaven')">
-        <i class="fas fa-cloud"></i> <span>Open Heaven</span>
-    </div>
-    <div class="nav-item" onclick="showSection('face-of-week')">
-        <i class="fas fa-user-circle"></i> <span>Face of Week</span>
-    </div>
-    <div class="nav-item" onclick="showSection('sunday-school')">
-        <i class="fas fa-school"></i> <span>Sunday School</span>
-    </div>
-    <div class="nav-item" onclick="showSection('testimonies')">
-        <i class="fas fa-comment"></i> <span>Testimonies</span>
-    </div>
-    <div class="nav-item" onclick="showSection('prayers')">
-        <i class="fas fa-hands-praying"></i> <span>Prayer Requests</span>
-    </div>
-    <div class="nav-item" onclick="showSection('social-links')">
-        <i class="fas fa-share-alt"></i> <span>Social Links</span>
-    </div>
-    <div class="logout">
-        <div class="nav-item" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage">
+    <div class="login-box">
+        <div class="logo">
+            <i class="fas fa-lock"></i>
+            <h2>Admin Panel</h2>
+            <p>RCCG Overcomers HOC</p>
         </div>
+        <div id="loginError" class="error"><i class="fas fa-exclamation-circle"></i> Invalid credentials</div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter username" required/>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter password" required/>
+            </div>
+            <button type="submit" class="btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+        </form>
+        <div class="dev-credit">Developed by Dev Gift Team</div>
     </div>
 </div>
 
-<!-- ===== MAIN ===== -->
-<div class="main">
-    <div class="header">
-        <h1 id="pageTitle">Dashboard</h1>
-        <span class="user"><i class="fas fa-user"></i> <span id="adminName">Admin</span></span>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboardSection" class="section-page active">
-        <div class="stats" id="statsContainer">
-            <div class="stat-card"><h3>Sermons</h3><span class="number" id="statSermons">0</span><span class="icon"><i class="fas fa-bible"></i></span></div>
-            <div class="stat-card"><h3>Events</h3><span class="number" id="statEvents">0</span><span class="icon"><i class="fas fa-calendar"></i></span></div>
-            <div class="stat-card"><h3>Media</h3><span class="number" id="statMedia">0</span><span class="icon"><i class="fas fa-photo-video"></i></span></div>
-            <div class="stat-card"><h3>Testimonies</h3><span class="number" id="statTestimonies">0</span><span class="icon"><i class="fas fa-comment"></i></span></div>
-            <div class="stat-card"><h3>Prayer Req.</h3><span class="number" id="statPrayers">0</span><span class="icon"><i class="fas fa-hands-praying"></i></span></div>
-            <div class="stat-card"><h3>Prayer Week</h3><span class="number" id="statPrayerWeek">0</span><span class="icon"><i class="fas fa-pray"></i></span></div>
-            <div class="stat-card"><h3>Open Heaven</h3><span class="number" id="statOpenHeaven">0</span><span class="icon"><i class="fas fa-cloud"></i></span></div>
-            <div class="stat-card"><h3>Face of Week</h3><span class="number" id="statFaceOfWeek">0</span><span class="icon"><i class="fas fa-user-circle"></i></span></div>
-            <div class="stat-card"><h3>Sunday School</h3><span class="number" id="statSundaySchool">0</span><span class="icon"><i class="fas fa-school"></i></span></div>
+<!-- ===== DASHBOARD PAGE ===== -->
+<div id="dashboardPage">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2><i class="fas fa-church"></i> <span>Admin</span></h2>
+        <div class="nav-item active" onclick="showSection('dashboard')">
+            <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
         </div>
-        <div class="card">
-            <h2>Welcome to Admin Panel</h2>
-            <p style="color: #5a7a9a;">Manage all church content from one place. Select a section from the sidebar.</p>
+        <div class="nav-item" onclick="showSection('sermons')">
+            <i class="fas fa-bible"></i> <span>Sermons</span>
         </div>
-    </div>
-
-    <!-- SERMONS -->
-    <div id="sermonsSection" class="section-page">
-        <div class="card">
-            <div class="card-header">
-                <h2>Manage Sermons</h2>
-                <button class="btn btn-primary" onclick="openModal('sermon')"><i class="fas fa-plus"></i> Add Sermon</button>
-            </div>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Title</th><th>Preacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                <tbody id="sermonsBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
-            </div>
+        <div class="nav-item" onclick="showSection('events')">
+            <i class="fas fa-calendar"></i> <span>Events</span>
         </div>
-    </div>
-
-    <!-- EVENTS -->
-    <div id="eventsSection" class="section-page">
-        <div class="card">
-            <div class="card-header">
-                <h2>Manage Events</h2>
-                <button class="btn btn-primary" onclick="openModal('event')"><i class="fas fa-plus"></i> Add Event</button>
-            </div>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead>
-                <tbody id="eventsBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+        <div class="nav-item" onclick="showSection('media')">
+            <i class="fas fa-photo-video"></i> <span>Media</span>
+        </div>
+        <div class="nav-item" onclick="showSection('prayer-week')">
+            <i class="fas fa-pray"></i> <span>Prayer Week</span>
+        </div>
+        <div class="nav-item" onclick="showSection('open-heaven')">
+            <i class="fas fa-cloud"></i> <span>Open Heaven</span>
+        </div>
+        <div class="nav-item" onclick="showSection('face-of-week')">
+            <i class="fas fa-user-circle"></i> <span>Face of Week</span>
+        </div>
+        <div class="nav-item" onclick="showSection('sunday-school')">
+            <i class="fas fa-school"></i> <span>Sunday School</span>
+        </div>
+        <div class="nav-item" onclick="showSection('testimonies')">
+            <i class="fas fa-comment"></i> <span>Testimonies</span>
+        </div>
+        <div class="nav-item" onclick="showSection('prayers')">
+            <i class="fas fa-hands-praying"></i> <span>Prayer Requests</span>
+        </div>
+        <div class="nav-item" onclick="showSection('social-links')">
+            <i class="fas fa-share-alt"></i> <span>Social Links</span>
+        </div>
+        <div class="logout">
+            <div class="nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
             </div>
         </div>
     </div>
 
-    <!-- MEDIA -->
-    <div id="mediaSection" class="section-page">
-        <div class="card">
-            <div class="card-header">
-                <h2>Manage Media</h2>
-                <button class="btn btn-primary" onclick="openModal('media')"><i class="fas fa-plus"></i> Add Media</button>
+    <!-- Main Content -->
+    <div class="main">
+        <div class="header">
+            <h1 id="pageTitle">Dashboard</h1>
+            <span class="user"><i class="fas fa-user"></i> <span id="adminName">Admin</span></span>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="dashboardSection" class="section-page active">
+            <div class="stats" id="statsContainer">
+                <div class="stat-card"><h3>Sermons</h3><span class="number" id="statSermons">0</span><span class="icon"><i class="fas fa-bible"></i></span></div>
+                <div class="stat-card"><h3>Events</h3><span class="number" id="statEvents">0</span><span class="icon"><i class="fas fa-calendar"></i></span></div>
+                <div class="stat-card"><h3>Media</h3><span class="number" id="statMedia">0</span><span class="icon"><i class="fas fa-photo-video"></i></span></div>
+                <div class="stat-card"><h3>Testimonies</h3><span class="number" id="statTestimonies">0</span><span class="icon"><i class="fas fa-comment"></i></span></div>
+                <div class="stat-card"><h3>Prayer Req.</h3><span class="number" id="statPrayers">0</span><span class="icon"><i class="fas fa-hands-praying"></i></span></div>
+                <div class="stat-card"><h3>Prayer Week</h3><span class="number" id="statPrayerWeek">0</span><span class="icon"><i class="fas fa-pray"></i></span></div>
+                <div class="stat-card"><h3>Open Heaven</h3><span class="number" id="statOpenHeaven">0</span><span class="icon"><i class="fas fa-cloud"></i></span></div>
+                <div class="stat-card"><h3>Face of Week</h3><span class="number" id="statFaceOfWeek">0</span><span class="icon"><i class="fas fa-user-circle"></i></span></div>
+                <div class="stat-card"><h3>Sunday School</h3><span class="number" id="statSundaySchool">0</span><span class="icon"><i class="fas fa-school"></i></span></div>
             </div>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead>
-                <tbody id="mediaBody"><tr><td colspan="3" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+            <div class="card">
+                <h2>Welcome to Admin Panel</h2>
+                <p style="color: #5a7a9a;">Manage all church content from one place. Select a section from the sidebar.</p>
             </div>
         </div>
-    </div>
 
-    <!-- PRAYER WEEK -->
-    <div id="prayerWeekSection" class="section-page">
-        <div class="card">
-            <div class="card-header">
-                <h2>Prayer for the Week</h2>
-                <button class="btn btn-primary" onclick="openModal('prayer-week')"><i class="fas fa-plus"></i> Add Prayer</button>
-            </div>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Title</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
-                <tbody id="prayerWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+        <!-- SERMONS -->
+        <div id="sermonsSection" class="section-page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Manage Sermons</h2>
+                    <button class="btn btn-primary" onclick="openModal('sermon')"><i class="fas fa-plus"></i> Add Sermon</button>
+                </div>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Title</th><th>Preacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
+                    <tbody id="sermonsBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- OPEN HEAVEN -->
-    <div id="openHeavenSection" class="section-page">
-        <div class="card">
-            <div class="card-header">
-                <h2>Open Heaven</h2>
-                <button class="btn btn-primary" onclick="openModal('open-heaven')"><i class="fas fa-plus"></i> Add Open Heaven</button>
-            </div>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Title</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                <tbody id="openHeavenBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+        <!-- EVENTS -->
+        <div id="eventsSection" class="section-page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Manage Events</h2>
+                    <button class="btn btn-primary" onclick="openModal('event')"><i class="fas fa-plus"></i> Add Event</button>
+                </div>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead>
+                    <tbody id="eventsBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- FACE OF WEEK -->
-    <div id="faceOfWeekSection" class="section-page">
-        <div class="card">
-            <div class="card-header">
-                <h2>Face of the Week</h2>
-                <button class="btn btn-primary" onclick="openModal('face-of-week')"><i class="fas fa-plus"></i> Add Face</button>
-            </div>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Name</th><th>Title</th><th>Active</th><th>Actions</th></tr></thead>
-                <tbody id="faceOfWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+        <!-- MEDIA -->
+        <div id="mediaSection" class="section-page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Manage Media</h2>
+                    <button class="btn btn-primary" onclick="openModal('media')"><i class="fas fa-plus"></i> Add Media</button>
+                </div>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead>
+                    <tbody id="mediaBody"><tr><td colspan="3" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- SUNDAY SCHOOL -->
-    <div id="sundaySchoolSection" class="section-page">
-        <div class="card">
-            <div class="card-header">
-                <h2>Sunday School</h2>
-                <button class="btn btn-primary" onclick="openModal('sunday-school')"><i class="fas fa-plus"></i> Add Lesson</button>
-            </div>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Title</th><th>Teacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                <tbody id="sundaySchoolBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
-            </div>
-        </div>
-    </div>
-
-    <!-- TESTIMONIES -->
-    <div id="testimoniesSection" class="section-page">
-        <div class="card">
-            <h2>Testimonies (Pending Approval)</h2>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Name</th><th>Testimony</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="testimoniesBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+        <!-- PRAYER WEEK -->
+        <div id="prayerWeekSection" class="section-page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Prayer for the Week</h2>
+                    <button class="btn btn-primary" onclick="openModal('prayer-week')"><i class="fas fa-plus"></i> Add Prayer</button>
+                </div>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Title</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
+                    <tbody id="prayerWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- PRAYER REQUESTS -->
-    <div id="prayersSection" class="section-page">
-        <div class="card">
-            <h2>Prayer Requests</h2>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Name</th><th>Request</th><th>Date</th><th>Prayed</th><th>Actions</th></tr></thead>
-                <tbody id="prayersBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+        <!-- OPEN HEAVEN -->
+        <div id="openHeavenSection" class="section-page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Open Heaven</h2>
+                    <button class="btn btn-primary" onclick="openModal('open-heaven')"><i class="fas fa-plus"></i> Add Open Heaven</button>
+                </div>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Title</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
+                    <tbody id="openHeavenBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- SOCIAL LINKS -->
-    <div id="socialLinksSection" class="section-page">
-        <div class="card">
-            <h2>Social Links</h2>
-            <p style="color:#7a8a9a;margin-bottom:15px;">Update your social media links. These appear in the footer.</p>
-            <div class="table-wrapper">
-                <table><thead><tr><th>Platform</th><th>URL</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="socialLinksBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+        <!-- FACE OF WEEK -->
+        <div id="faceOfWeekSection" class="section-page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Face of the Week</h2>
+                    <button class="btn btn-primary" onclick="openModal('face-of-week')"><i class="fas fa-plus"></i> Add Face</button>
+                </div>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Name</th><th>Title</th><th>Active</th><th>Actions</th></tr></thead>
+                    <tbody id="faceOfWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUNDAY SCHOOL -->
+        <div id="sundaySchoolSection" class="section-page">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Sunday School</h2>
+                    <button class="btn btn-primary" onclick="openModal('sunday-school')"><i class="fas fa-plus"></i> Add Lesson</button>
+                </div>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Title</th><th>Teacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
+                    <tbody id="sundaySchoolBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TESTIMONIES -->
+        <div id="testimoniesSection" class="section-page">
+            <div class="card">
+                <h2>Testimonies (Pending Approval)</h2>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Name</th><th>Testimony</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="testimoniesBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRAYER REQUESTS -->
+        <div id="prayersSection" class="section-page">
+            <div class="card">
+                <h2>Prayer Requests</h2>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Name</th><th>Request</th><th>Date</th><th>Prayed</th><th>Actions</th></tr></thead>
+                    <tbody id="prayersBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOCIAL LINKS -->
+        <div id="socialLinksSection" class="section-page">
+            <div class="card">
+                <h2>Social Links</h2>
+                <p style="color:#7a8a9a;margin-bottom:15px;">Update your social media links. These appear in the footer.</p>
+                <div class="table-wrapper">
+                    <table><thead><tr><th>Platform</th><th>URL</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="socialLinksBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                </div>
             </div>
         </div>
     </div>
@@ -528,8 +580,14 @@
 // AUTH CHECK
 // ============================================================
 const token = localStorage.getItem('adminToken');
-if (!token) {
-    window.location.href = '/admin-panel';
+
+// Check if already logged in
+if (token) {
+    verifyAuth();
+} else {
+    document.getElementById('loginPage').classList.remove('hidden');
+    document.getElementById('dashboardPage').classList.remove('show');
+    document.getElementById('loaderWrapper').classList.add('hidden');
 }
 
 async function verifyAuth() {
@@ -537,26 +595,50 @@ async function verifyAuth() {
         const res = await fetch('/api/admin/verify', {
             headers: { 'Authorization': 'Bearer ' + token }
         });
-        if (!res.ok) {
-            localStorage.removeItem('adminToken');
-            window.location.href = '/admin-panel';
-        }
+        if (!res.ok) throw new Error();
         const data = await res.json();
         document.getElementById('adminName').textContent = data.username || 'Admin';
+        document.getElementById('loginPage').classList.add('hidden');
+        document.getElementById('dashboardPage').classList.add('show');
+        document.getElementById('loaderWrapper').classList.add('hidden');
+        loadDashboard();
     } catch {
         localStorage.removeItem('adminToken');
-        window.location.href = '/admin-panel';
+        document.getElementById('loginPage').classList.remove('hidden');
+        document.getElementById('dashboardPage').classList.remove('show');
+        document.getElementById('loaderWrapper').classList.add('hidden');
     }
 }
-verifyAuth();
 
 // ============================================================
-// HIDE LOADER
+// LOGIN
 // ============================================================
-window.addEventListener('load', function() {
-    setTimeout(function() {
-        document.getElementById('loaderWrapper').classList.add('hidden');
-    }, 600);
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMsg = document.getElementById('loginError');
+
+    errorMsg.style.display = 'none';
+
+    try {
+        const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (res.ok) {
+            localStorage.setItem('adminToken', data.token);
+            location.reload();
+        } else {
+            errorMsg.textContent = data.error || 'Invalid credentials';
+            errorMsg.style.display = 'block';
+        }
+    } catch (err) {
+        errorMsg.textContent = 'Network error. Please try again.';
+        errorMsg.style.display = 'block';
+    }
 });
 
 // ============================================================
@@ -760,19 +842,19 @@ function openModal(type, data = null) {
     
     // Form submissions
     if (type === 'sermon') {
-        document.getElementById('sermonForm').onsubmit = (e) => { e.preventDefault(); saveSermon(data?._id); };
+        document.getElementById('sermonForm').onsubmit = (e) => { e.preventDefault(); saveSermon(d?._id); };
     } else if (type === 'event') {
-        document.getElementById('eventForm').onsubmit = (e) => { e.preventDefault(); saveEvent(data?._id); };
+        document.getElementById('eventForm').onsubmit = (e) => { e.preventDefault(); saveEvent(d?._id); };
     } else if (type === 'media') {
-        document.getElementById('mediaForm').onsubmit = (e) => { e.preventDefault(); saveMedia(data?._id); };
+        document.getElementById('mediaForm').onsubmit = (e) => { e.preventDefault(); saveMedia(d?._id); };
     } else if (type === 'prayer-week') {
-        document.getElementById('prayerWeekForm').onsubmit = (e) => { e.preventDefault(); savePrayerWeek(data?._id); };
+        document.getElementById('prayerWeekForm').onsubmit = (e) => { e.preventDefault(); savePrayerWeek(d?._id); };
     } else if (type === 'open-heaven') {
-        document.getElementById('openHeavenForm').onsubmit = (e) => { e.preventDefault(); saveOpenHeaven(data?._id); };
+        document.getElementById('openHeavenForm').onsubmit = (e) => { e.preventDefault(); saveOpenHeaven(d?._id); };
     } else if (type === 'face-of-week') {
-        document.getElementById('faceOfWeekForm').onsubmit = (e) => { e.preventDefault(); saveFaceOfWeek(data?._id); };
+        document.getElementById('faceOfWeekForm').onsubmit = (e) => { e.preventDefault(); saveFaceOfWeek(d?._id); };
     } else if (type === 'sunday-school') {
-        document.getElementById('sundaySchoolForm').onsubmit = (e) => { e.preventDefault(); saveSundaySchool(data?._id); };
+        document.getElementById('sundaySchoolForm').onsubmit = (e) => { e.preventDefault(); saveSundaySchool(d?._id); };
     }
 }
 
@@ -780,9 +862,6 @@ function closeModal() {
     document.getElementById('modal').classList.remove('show');
 }
 
-// ============================================================
-// HELPER: FormData to JSON
-// ============================================================
 function formDataToJSON(formData) {
     const obj = {};
     for (let [key, value] of formData.entries()) {
@@ -791,6 +870,16 @@ function formDataToJSON(formData) {
         }
     }
     return obj;
+}
+
+// ============================================================
+// LOGOUT
+// ============================================================
+function logout() {
+    if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('adminToken');
+        location.reload();
+    }
 }
 
 // ============================================================
@@ -902,7 +991,7 @@ async function deleteEvent(id) {
 
 async function editEvent(id) {
     try {
-        const res = await fetch(`/api/events`);
+        const res = await fetch('/api/events');
         const events = await res.json();
         const data = events.find(e => e._id === id);
         openModal('event', data);
@@ -959,7 +1048,7 @@ async function deleteMedia(id) {
 
 async function editMedia(id) {
     try {
-        const res = await fetch(`/api/media`);
+        const res = await fetch('/api/media');
         const media = await res.json();
         const data = media.find(m => m._id === id);
         openModal('media', data);
@@ -1339,21 +1428,6 @@ async function toggleSocialLink(id, active) {
         else { alert('Error updating'); }
     } catch (err) { alert('Error updating'); }
 }
-
-// ============================================================
-// LOGOUT
-// ============================================================
-function logout() {
-    if (confirm('Are you sure you want to logout?')) {
-        localStorage.removeItem('adminToken');
-        window.location.href = '/admin-panel';
-    }
-}
-
-// ============================================================
-// LOAD DEFAULT DASHBOARD
-// ============================================================
-loadDashboard();
 </script>
 </body>
 </html>
