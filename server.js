@@ -1,8 +1,6 @@
 // ============================================
 // RCCG OVERCOMERS HOC - COMPLETE PROFESSIONAL SERVER
 // ============================================
-// Developed by Dev Gift Team | Powered by De Creative Mide
-// Version: 2.0.0
 
 require('dotenv').config();
 const express = require('express');
@@ -34,7 +32,7 @@ app.use(cors({
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100,
   message: 'Too many requests from this IP, please try again later.'
 });
@@ -42,7 +40,16 @@ app.use('/api/', limiter);
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+
+// ============================================
+// SERVE STATIC FILES - FIXED FOR ROOT FILES
+// ============================================
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// ✅ IMPORTANT: Serve files from root directory
+app.use(express.static(__dirname));
+
+// Also serve from public folder if it exists (for future use)
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ============================================
@@ -93,7 +100,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ 
   storage,
-  limits: { fileSize: 100 * 1024 * 1024 }, // 100MB
+  limits: { fileSize: 100 * 1024 * 1024 },
   fileFilter
 });
 
@@ -618,33 +625,11 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-app.post('/api/admin/change-password', authMiddleware, async (req, res) => {
-  try {
-    const { currentPassword, newPassword } = req.body;
-    
-    if (!currentPassword || !newPassword) {
-      return res.status(400).json({ error: 'Current and new password required' });
-    }
-
-    const admin = await Admin.findById(req.admin._id).select('+password');
-    const isMatch = await bcrypt.compare(currentPassword, admin.password);
-    
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Current password is incorrect' });
-    }
-
-    admin.password = await bcrypt.hash(newPassword, 10);
-    await admin.save();
-
-    res.json({ message: 'Password updated successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
 // ============================================
-// API ROUTES - SERMONS
+// API ROUTES - PUBLIC
 // ============================================
+
+// Sermons
 app.get('/api/sermons', async (req, res) => {
   try {
     const { featured, category, preacher, limit } = req.query;
@@ -685,9 +670,7 @@ app.get('/api/sermons/:id', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - EVENTS
-// ============================================
+// Events
 app.get('/api/events', async (req, res) => {
   try {
     const { category, featured, upcoming } = req.query;
@@ -726,9 +709,7 @@ app.get('/api/events/:id', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - MEDIA
-// ============================================
+// Media
 app.get('/api/media', async (req, res) => {
   try {
     const { type } = req.query;
@@ -752,9 +733,7 @@ app.get('/api/media/:id', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - FACE OF THE WEEK
-// ============================================
+// Face of the Week
 app.get('/api/face-of-week', async (req, res) => {
   try {
     const face = await FaceOfWeek.findOne({ active: true }).sort({ date: -1 });
@@ -764,9 +743,7 @@ app.get('/api/face-of-week', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - PRAYER WEEK
-// ============================================
+// Prayer Week
 app.get('/api/prayer-week', async (req, res) => {
   try {
     const prayer = await PrayerWeek.findOne({ active: true }).sort({ date: -1 });
@@ -776,9 +753,7 @@ app.get('/api/prayer-week', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - OPEN HEAVEN
-// ============================================
+// Open Heaven
 app.get('/api/open-heaven', async (req, res) => {
   try {
     const today = new Date();
@@ -800,9 +775,7 @@ app.get('/api/open-heaven', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - SUNDAY SCHOOL
-// ============================================
+// Sunday School
 app.get('/api/sunday-school', async (req, res) => {
   try {
     const { featured } = req.query;
@@ -816,9 +789,7 @@ app.get('/api/sunday-school', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - PRAYER REQUESTS
-// ============================================
+// Prayer Requests (Public)
 app.post('/api/prayer-requests', async (req, res) => {
   try {
     const prayerRequest = new PrayerRequest(req.body);
@@ -829,9 +800,7 @@ app.post('/api/prayer-requests', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - SOCIAL LINKS
-// ============================================
+// Social Links
 app.get('/api/social-links', async (req, res) => {
   try {
     const links = await SocialLink.find({ active: true }).sort({ order: 1 });
@@ -841,9 +810,7 @@ app.get('/api/social-links', async (req, res) => {
   }
 });
 
-// ============================================
-// API ROUTES - TESTIMONIES
-// ============================================
+// Testimonies
 app.get('/api/testimonies', async (req, res) => {
   try {
     const { featured } = req.query;
@@ -1447,6 +1414,13 @@ app.delete('/api/admin/testimonies', authMiddleware, async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// ============================================
+// CATCH-ALL ROUTE - Serve index.html
+// ============================================
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ============================================
