@@ -3,65 +3,79 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>RCCG Overcomers HOC - Ogbomoso</title>
+    <title>RCCG Overcomers HOC - Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
+        /* ============================================
+           CSS VARIABLES & RESET
+           ============================================ */
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2c5f8a;
+            --primary-dark: #0f2a44;
+            --secondary: #ffd700;
+            --secondary-hover: #f0c800;
+            --text: #2c3e50;
+            --text-light: #5a7a9a;
+            --text-lighter: #8a9aaa;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #2c3e50;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.7;
             overflow-x: hidden;
         }
 
-        /* ===== LOADING ANIMATION ===== */
+        /* ============================================
+           LOADING
+           ============================================ */
         .loader-wrapper {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #1a3a5c;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
             z-index: 9999;
             transition: opacity 0.8s ease, visibility 0.8s ease;
         }
-        .loader-wrapper.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
+        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
         .loader {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255,255,255,0.1);
-            border-top: 5px solid #ffd700;
+            width: 60px; height: 60px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         .loader-text {
             color: #fff;
             margin-top: 20px;
             font-size: 0.9rem;
             letter-spacing: 2px;
             opacity: 0.7;
-            text-align: center;
         }
         .loader-sub {
             color: rgba(255,255,255,0.4);
             font-size: 0.7rem;
             letter-spacing: 1px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
 
-        /* ===== ANIMATIONS ===== */
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
@@ -74,17 +88,32 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        /* Navbar */
+        /* ============================================
+           NAVBAR
+           ============================================ */
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
             padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
         }
         .navbar .container {
             display: flex;
@@ -99,34 +128,34 @@
             text-decoration: none;
         }
         .navbar .logo img {
-            height: 55px;
+            height: 50px;
             width: auto;
             border-radius: 8px;
         }
         .navbar .logo-text {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 1.2rem;
-            color: #1a3a5c;
+            color: var(--primary);
             line-height: 1.2;
         }
         .navbar .logo-text small {
             display: block;
             font-weight: 400;
             font-size: 0.7rem;
-            color: #5a7a9a;
+            color: var(--text-light);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 30px;
             list-style: none;
             align-items: center;
         }
         .nav-links a {
             text-decoration: none;
-            color: #2c3e50;
+            color: var(--text);
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
+            transition: var(--transition);
             position: relative;
         }
         .nav-links a::after {
@@ -136,26 +165,41 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #1a3a5c;
-            transition: width 0.3s ease;
+            background: var(--primary);
+            transition: var(--transition);
         }
         .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: #1a3a5c; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links .btn-nav {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .nav-links .btn-nav:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
+        }
+        .nav-links .btn-nav::after { display: none; }
         .hamburger {
             display: none;
             font-size: 1.8rem;
             cursor: pointer;
-            color: #1a3a5c;
+            color: var(--primary);
         }
 
-        /* Hero */
+        /* ============================================
+           HERO
+           ============================================ */
         .hero {
-            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: #fff;
             padding: 80px 0 70px;
             position: relative;
             overflow: hidden;
-            min-height: 450px;
+            min-height: 500px;
             display: flex;
             align-items: center;
         }
@@ -169,6 +213,16 @@
             background: rgba(255,255,255,0.04);
             transform: rotate(-15deg);
         }
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: var(--bg);
+            clip-path: ellipse(70% 100% at 50% 100%);
+        }
         .hero .container {
             position: relative;
             z-index: 1;
@@ -178,23 +232,25 @@
             align-items: center;
         }
         .hero-content h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            line-height: 1.2;
+            font-size: 3.2rem;
+            font-weight: 900;
+            line-height: 1.15;
             margin-bottom: 15px;
         }
-        .hero-content h1 span { color: #ffd700; }
+        .hero-content h1 span { color: var(--secondary); }
         .hero-content p {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             margin-bottom: 25px;
             max-width: 500px;
+            line-height: 1.8;
         }
         .hero-content .location {
             font-size: 0.95rem;
             opacity: 0.75;
             margin-bottom: 25px;
         }
+        .hero-content .location i { margin-right: 8px; }
         .hero-buttons {
             display: flex;
             gap: 15px;
@@ -202,21 +258,22 @@
         }
         .btn {
             display: inline-block;
-            padding: 12px 30px;
+            padding: 12px 32px;
             border-radius: 30px;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s ease;
+            transition: var(--transition);
             border: none;
             cursor: pointer;
             font-size: 0.95rem;
+            font-family: var(--font);
         }
         .btn-primary {
-            background: #ffd700;
-            color: #1a3a5c;
+            background: var(--secondary);
+            color: var(--primary);
         }
         .btn-primary:hover {
-            background: #f0c800;
+            background: var(--secondary-hover);
             transform: translateY(-3px);
             box-shadow: 0 6px 25px rgba(255,215,0,0.4);
         }
@@ -231,11 +288,11 @@
             transform: translateY(-3px);
         }
         .btn-secondary {
-            background: #2c5f8a;
+            background: var(--primary-light);
             color: #fff;
         }
         .btn-secondary:hover {
-            background: #1a4a6f;
+            background: var(--primary-dark);
             transform: translateY(-3px);
             box-shadow: 0 6px 25px rgba(44,95,138,0.4);
         }
@@ -243,81 +300,112 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            animation: float 6s ease-in-out infinite;
         }
         .hero-image img {
             max-width: 100%;
-            max-height: 300px;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-height: 350px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
         }
 
-        /* Sections */
-        .section { padding: 60px 0; }
-        .section-light { background: #ffffff; }
-        .section-gray { background: #f5f7fa; }
+        /* ============================================
+           SECTIONS
+           ============================================ */
+        .section { padding: 70px 0; }
+        .section-light { background: var(--white); }
+        .section-gray { background: var(--bg); }
         .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #1a3a5c;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary);
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
         .section-subtitle {
-            color: #5a7a9a;
-            font-size: 1rem;
-            margin-bottom: 35px;
+            color: var(--text-light);
+            font-size: 1.05rem;
+            margin-bottom: 40px;
+        }
+        .section-header-center {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 50px;
         }
 
-        /* Cards */
+        /* ============================================
+           CARDS
+           ============================================ */
         .card-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 30px;
         }
         .card {
-            background: #fff;
-            border-radius: 12px;
+            background: var(--white);
+            border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: all 0.4s ease;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
             animation: fadeUp 0.6s ease forwards;
             opacity: 0;
         }
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-hover);
         }
         .card-image {
             width: 100%;
-            height: 200px;
+            height: 220px;
             object-fit: cover;
             background: #eef2f7;
         }
-        .card-body { padding: 20px 25px; }
+        .card-body { padding: 24px 28px; }
         .card-body h3 {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             margin-bottom: 8px;
-            color: #1a3a5c;
+            color: var(--primary);
+            font-weight: 700;
         }
         .card-body .meta {
             font-size: 0.85rem;
-            color: #7a8a9a;
+            color: var(--text-lighter);
             margin-bottom: 10px;
         }
+        .card-body .meta i { margin-right: 4px; }
         .card-body p {
-            color: #5a6a7a;
+            color: var(--text-light);
             font-size: 0.95rem;
             margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        .card-body .badge {
+            display: inline-block;
+            padding: 3px 12px;
+            background: #eef2f7;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .card-body .badge-featured {
+            background: var(--secondary);
+            color: var(--primary);
         }
 
-        /* Face of Week */
+        /* ============================================
+           FACE OF THE WEEK
+           ============================================ */
         .face-card {
             display: flex;
-            gap: 30px;
+            gap: 35px;
             align-items: center;
-            background: #fff;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 35px;
+            box-shadow: var(--shadow);
             animation: fadeUp 0.6s ease forwards;
         }
         .face-card img {
@@ -325,69 +413,170 @@
             height: 160px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #1a3a5c;
+            border: 4px solid var(--primary);
+            flex-shrink: 0;
         }
         .face-card .face-content h3 {
-            font-size: 1.4rem;
-            color: #1a3a5c;
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-weight: 800;
         }
         .face-card .face-content .title {
-            color: #5a7a9a;
+            color: var(--text-light);
             font-weight: 600;
             margin-bottom: 8px;
         }
         .face-card .face-content .words {
             font-style: italic;
             font-size: 1.05rem;
-            color: #2c3e50;
+            color: var(--text);
             line-height: 1.8;
-            border-left: 4px solid #ffd700;
+            border-left: 4px solid var(--secondary);
             padding-left: 20px;
         }
 
-        /* Sunday School Full Card */
+        /* ============================================
+           PRAYER & OPEN HEAVEN CARDS
+           ============================================ */
+        .prayer-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: #fff;
+            border-radius: var(--radius-lg);
+            padding: 35px 40px;
+            animation: fadeUp 0.6s ease forwards;
+        }
+        .prayer-card h3 {
+            color: var(--secondary);
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .prayer-card .verse {
+            opacity: 0.9;
+            margin: 10px 0;
+            font-size: 0.95rem;
+        }
+        .prayer-card .verse strong { color: var(--secondary); }
+        .prayer-card .prayer-text {
+            margin: 15px 0;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        .prayer-card .date {
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
+
+        .openheaven-card {
+            border-left: 5px solid var(--secondary);
+            padding: 30px 35px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            animation: fadeUp 0.6s ease forwards;
+        }
+        .openheaven-card h3 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        .openheaven-card .reading {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        .openheaven-card .memory-verse {
+            color: var(--primary);
+            font-style: italic;
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+        .openheaven-card .content {
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+        .openheaven-card .prayer-box {
+            background: var(--bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .openheaven-card .prayer-box strong { color: var(--primary); }
+
+        /* ============================================
+           SUNDAY SCHOOL CARD
+           ============================================ */
         .sunday-card {
-            background: #fff;
-            border-radius: 12px;
+            background: var(--white);
+            border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: all 0.4s ease;
-            border-left: 5px solid #ffd700;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 5px solid var(--secondary);
         }
         .sunday-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-hover);
         }
         .sunday-card .card-image {
             height: 250px;
         }
-        .sunday-card .card-body h3 {
-            font-size: 1.3rem;
-        }
         .sunday-card .bible-reading {
-            background: #f5f7fa;
+            background: var(--bg);
             padding: 10px 15px;
             border-radius: 6px;
             margin: 8px 0;
+            font-size: 0.9rem;
         }
         .sunday-card .memory-verse {
             font-style: italic;
-            color: #1a3a5c;
+            color: var(--primary);
             padding: 10px 15px;
-            border-left: 3px solid #ffd700;
+            border-left: 3px solid var(--secondary);
             margin: 8px 0;
         }
-        .badge-featured {
-            display: inline-block;
-            padding: 3px 12px;
-            background: #ffd700;
-            border-radius: 12px;
-            font-size: 0.7rem;
+
+        /* ============================================
+           SERVICE TIMES
+           ============================================ */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        .service-card {
+            background: var(--white);
+            padding: 30px 25px;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .service-card i {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .service-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .service-card .time {
             font-weight: 600;
-            color: #1a3a5c;
+            color: var(--text);
+            margin: 5px 0;
+        }
+        .service-card .desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
         }
 
-        /* Skeleton Loading */
+        /* ============================================
+           SKELETON LOADING
+           ============================================ */
         .skeleton {
             background: #e2e8f0;
             border-radius: 8px;
@@ -401,59 +590,105 @@
             animation: pulse 1.5s ease-in-out infinite;
         }
         .skeleton-image {
-            height: 200px;
+            height: 220px;
             background: #e2e8f0;
             border-radius: 8px;
             animation: pulse 1.5s ease-in-out infinite;
         }
+        .skeleton-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            animation: pulse 1.5s ease-in-out infinite;
+            flex-shrink: 0;
+        }
 
-        /* Footer */
+        /* ============================================
+           FOOTER
+           ============================================ */
         .footer {
-            background: #1a3a5c;
+            background: var(--primary-dark);
             color: #fff;
-            padding: 40px 0;
-            margin-top: 40px;
+            padding: 50px 0 30px;
         }
         .footer a {
             color: #fff;
             text-decoration: none;
-            opacity: 0.8;
+            opacity: 0.7;
+            transition: var(--transition);
         }
         .footer a:hover { opacity: 1; }
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            gap: 40px;
         }
-        .footer hr {
-            border-color: rgba(255,255,255,0.1);
-            margin: 20px 0;
+        .footer h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
         }
+        .footer ul {
+            list-style: none;
+            opacity: 0.7;
+        }
+        .footer ul li { margin-bottom: 6px; }
         .footer .social {
             display: flex;
             gap: 15px;
-            font-size: 1.5rem;
+            font-size: 1.4rem;
+        }
+        .footer .social a {
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer .social a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        .footer hr {
+            border-color: rgba(255,255,255,0.08);
+            margin: 30px 0 20px;
+        }
+        .footer .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            opacity: 0.6;
+            font-size: 0.85rem;
         }
         .footer .dev-credit {
             text-align: center;
             opacity: 0.3;
             font-size: 0.7rem;
-            margin-top: 10px;
             letter-spacing: 1px;
+            margin-top: 10px;
         }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
 
-        @media (max-width: 768px) {
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 992px) {
             .hero .container {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
             .hero-content p { margin: 0 auto 25px; }
             .hero-buttons { justify-content: center; }
-            .hero-image img { max-height: 200px; }
+            .hero-image img { max-height: 250px; }
+            .face-card { flex-direction: column; text-align: center; }
+            .face-card .face-content .words {
+                border-left: none;
+                border-top: 4px solid var(--secondary);
+                padding-left: 0;
+                padding-top: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
             .nav-links {
                 display: none;
                 width: 100%;
@@ -463,32 +698,38 @@
             }
             .nav-links.open { display: flex; }
             .hamburger { display: block; }
+            .hero-content h1 { font-size: 2.2rem; }
             .section-title { font-size: 1.6rem; }
-            .face-card {
-                flex-direction: column;
-                text-align: center;
-            }
-            .face-card .face-content .words {
-                border-left: none;
-                border-top: 4px solid #ffd700;
-                padding-left: 0;
-                padding-top: 15px;
-            }
             .navbar .logo img { height: 40px; }
             .navbar .logo-text { font-size: 1rem; }
+            .footer .bottom { flex-direction: column; text-align: center; }
+            .prayer-card { padding: 25px 20px; }
+            .openheaven-card { padding: 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .hero { padding: 50px 0 40px; min-height: 400px; }
+            .hero-content h1 { font-size: 1.8rem; }
+            .card-grid { grid-template-columns: 1fr; }
+            .service-grid { grid-template-columns: 1fr 1fr; }
+            .face-card img { width: 120px; height: 120px; }
         }
     </style>
 </head>
 <body>
 
-<!-- ===== LOADING ===== -->
+<!-- ============================================
+LOADING
+============================================ -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">RCCG Overcomers HOC</div>
     <div class="loader-sub">Oke Ado, Ogbomoso</div>
 </div>
 
-<!-- ===== NAVBAR ===== -->
+<!-- ============================================
+NAVBAR
+============================================ -->
 <nav class="navbar">
     <div class="container">
         <a href="/" class="logo">
@@ -508,15 +749,17 @@
             <li><a href="/events">Events</a></li>
             <li><a href="/media">Media</a></li>
             <li><a href="/sunday-school">Sunday School</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/contact" class="btn-nav">Contact</a></li>
         </ul>
     </div>
 </nav>
 
-<!-- ===== HERO ===== -->
+<!-- ============================================
+HERO
+============================================ -->
 <section class="hero">
     <div class="container">
-        <div class="hero-content" style="animation: fadeUp 0.8s ease forwards;">
+        <div class="hero-content animate-fade-up">
             <h1>Welcome to <span>RCCG</span><br>Overcomers HOC</h1>
             <p>A place of worship, fellowship, and divine transformation. Winning souls for Christ through the power of the Holy Spirit.</p>
             <div class="location">
@@ -527,174 +770,159 @@
                 <a href="/sermons" class="btn btn-outline">Watch Sermons</a>
             </div>
         </div>
-        <div class="hero-image" style="animation: fadeIn 1s ease forwards; animation-delay: 0.2s;">
+        <div class="hero-image animate-fade-in delay-2">
             <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.src='https://placehold.co/500x400/1a3a5c/fff?text=RCCG+Overcomers+HOC'"/>
         </div>
     </div>
 </section>
 
-<!-- ===== FACE OF THE WEEK ===== -->
+<!-- ============================================
+FACE OF THE WEEK
+============================================ -->
 <section class="section section-light">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Face of the Week</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Celebrating God's work in our members</p>
-        <div id="faceOfWeek" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-            <div class="face-card">
-                <div class="skeleton" style="width:160px;height:160px;border-radius:50%;flex-shrink:0;"></div>
-                <div class="face-content" style="flex:1;">
-                    <div class="skeleton-text" style="width:60%;height:24px;"></div>
-                    <div class="skeleton-text" style="width:40%;height:16px;"></div>
-                    <div class="skeleton-text" style="width:90%;height:60px;"></div>
-                </div>
-            </div>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Face of the Week</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Celebrating God's work in our members</p>
+        </div>
+        <div id="faceOfWeek" class="animate-fade-up delay-2">
+            <!-- Loaded by JavaScript -->
         </div>
     </div>
 </section>
 
-<!-- ===== PRAYER FOR THE WEEK ===== -->
+<!-- ============================================
+PRAYER FOR THE WEEK
+============================================ -->
 <section class="section section-gray">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Prayer for the Week</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Join us in prayer as we seek God's face</p>
-        <div id="prayerWeek" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-            <div class="card">
-                <div class="card-body" style="background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%); color: #fff; border-radius: 12px; padding: 30px;">
-                    <div class="skeleton-text" style="width:40%;height:24px;background:rgba(255,255,255,0.2);"></div>
-                    <div class="skeleton-text" style="width:30%;height:16px;background:rgba(255,255,255,0.2);"></div>
-                    <div class="skeleton-text" style="width:80%;height:60px;background:rgba(255,255,255,0.2);"></div>
-                </div>
-            </div>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Prayer for the Week</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Join us in prayer as we seek God's face</p>
+        </div>
+        <div id="prayerWeek" class="animate-fade-up delay-2">
+            <!-- Loaded by JavaScript -->
         </div>
     </div>
 </section>
 
-<!-- ===== OPEN HEAVEN ===== -->
+<!-- ============================================
+OPEN HEAVEN
+============================================ -->
 <section class="section section-light">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Open Heaven</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Daily devotion and inspiration</p>
-        <div id="openHeaven" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-            <div class="card">
-                <div class="card-body" style="border-left: 5px solid #ffd700; padding: 25px 30px; background: #fff; border-radius: 12px;">
-                    <div class="skeleton-text" style="width:50%;height:24px;"></div>
-                    <div class="skeleton-text" style="width:70%;height:16px;"></div>
-                    <div class="skeleton-text" style="width:90%;height:60px;"></div>
-                </div>
-            </div>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Open Heaven</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Daily devotion and inspiration</p>
+        </div>
+        <div id="openHeaven" class="animate-fade-up delay-2">
+            <!-- Loaded by JavaScript -->
         </div>
     </div>
 </section>
 
-<!-- ===== FEATURED SERMON ===== -->
+<!-- ============================================
+FEATURED SERMON
+============================================ -->
 <section class="section section-gray">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Featured Sermon</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Listen to our latest message</p>
-        <div id="featuredSermon" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-            <div class="card">
-                <div style="display: grid; grid-template-columns: 300px 1fr; gap: 25px; align-items: center; padding: 20px;">
-                    <div class="skeleton-image" style="height:200px;"></div>
-                    <div>
-                        <div class="skeleton-text" style="width:60%;height:24px;"></div>
-                        <div class="skeleton-text" style="width:40%;height:16px;"></div>
-                        <div class="skeleton-text" style="width:80%;height:40px;"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Featured Sermon</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Listen to our latest message</p>
+        </div>
+        <div id="featuredSermon" class="animate-fade-up delay-2">
+            <!-- Loaded by JavaScript -->
         </div>
     </div>
 </section>
 
-<!-- ===== SUNDAY SCHOOL (FULL CONTENT) ===== -->
+<!-- ============================================
+SUNDAY SCHOOL
+============================================ -->
 <section class="section section-light">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Sunday School</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Growing in the knowledge of God's Word</p>
-        <div id="sundaySchool" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-            <div class="sunday-card">
-                <div class="skeleton-image" style="height:250px;"></div>
-                <div class="card-body">
-                    <div class="skeleton-text" style="width:60%;height:24px;"></div>
-                    <div class="skeleton-text" style="width:40%;height:16px;"></div>
-                    <div class="skeleton-text" style="width:90%;height:40px;"></div>
-                </div>
-            </div>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Sunday School</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Growing in the knowledge of God's Word</p>
         </div>
-        <div style="text-align: center; margin-top: 30px;">
+        <div id="sundaySchool" class="animate-fade-up delay-2">
+            <!-- Loaded by JavaScript -->
+        </div>
+        <div style="text-align:center;margin-top:30px;">
             <a href="/sunday-school" class="btn btn-secondary">View All Lessons</a>
         </div>
     </div>
 </section>
 
-<!-- ===== UPCOMING EVENTS ===== -->
+<!-- ============================================
+UPCOMING EVENTS
+============================================ -->
 <section class="section section-gray">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Upcoming Events</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Join us in fellowship</p>
-        <div id="upcomingEvents" class="card-grid">
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div></div></div>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Upcoming Events</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Join us in fellowship</p>
         </div>
-        <div style="text-align: center; margin-top: 30px;">
+        <div id="upcomingEvents" class="card-grid">
+            <!-- Loaded by JavaScript -->
+        </div>
+        <div style="text-align:center;margin-top:30px;">
             <a href="/events" class="btn btn-secondary">View All Events</a>
         </div>
     </div>
 </section>
 
-<!-- ===== SERVICE TIMES ===== -->
+<!-- ============================================
+SERVICE TIMES
+============================================ -->
 <section class="section section-light">
     <div class="container">
-        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Service Times</h2>
-        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Come worship with us</p>
-        <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
-            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">
-                <div class="card-body" style="text-align: center;">
-                    <i class="fas fa-church" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
-                    <h3>Sunday Service</h3>
-                    <p><strong>8:00 AM - 10:00 AM</strong></p>
-                    <p style="font-size: 0.9rem; color: #7a8a9a;">Morning Worship</p>
-                </div>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Service Times</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Come worship with us</p>
+        </div>
+        <div class="service-grid">
+            <div class="service-card animate-fade-up delay-1">
+                <i class="fas fa-church"></i>
+                <h3>Sunday Service</h3>
+                <div class="time">8:00 AM - 10:00 AM</div>
+                <div class="desc">Morning Worship</div>
             </div>
-            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
-                <div class="card-body" style="text-align: center;">
-                    <i class="fas fa-pray" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
-                    <h3>Wednesday Bible Study</h3>
-                    <p><strong>6:00 PM - 7:30 PM</strong></p>
-                    <p style="font-size: 0.9rem; color: #7a8a9a;">Midweek Service</p>
-                </div>
+            <div class="service-card animate-fade-up delay-2">
+                <i class="fas fa-pray"></i>
+                <h3>Wednesday Bible Study</h3>
+                <div class="time">6:00 PM - 7:30 PM</div>
+                <div class="desc">Midweek Service</div>
             </div>
-            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.3s;">
-                <div class="card-body" style="text-align: center;">
-                    <i class="fas fa-users" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
-                    <h3>Friday Vigil</h3>
-                    <p><strong>10:00 PM - 12:00 AM</strong></p>
-                    <p style="font-size: 0.9rem; color: #7a8a9a;">Prayer &amp; Intercession</p>
-                </div>
+            <div class="service-card animate-fade-up delay-3">
+                <i class="fas fa-users"></i>
+                <h3>Friday Vigil</h3>
+                <div class="time">10:00 PM - 12:00 AM</div>
+                <div class="desc">Prayer &amp; Intercession</div>
             </div>
-            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.4s;">
-                <div class="card-body" style="text-align: center;">
-                    <i class="fas fa-child" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
-                    <h3>Youth Fellowship</h3>
-                    <p><strong>4:00 PM - 6:00 PM</strong></p>
-                    <p style="font-size: 0.9rem; color: #7a8a9a;">Saturdays</p>
-                </div>
+            <div class="service-card animate-fade-up delay-4">
+                <i class="fas fa-child"></i>
+                <h3>Youth Fellowship</h3>
+                <div class="time">4:00 PM - 6:00 PM</div>
+                <div class="desc">Saturdays</div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ===== FOOTER ===== -->
+<!-- ============================================
+FOOTER
+============================================ -->
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
             <div>
-                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+                <h4>RCCG Overcomers HOC</h4>
+                <p style="opacity:0.7;font-size:0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Quick Links</h4>
-                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                <h4>Quick Links</h4>
+                <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/sermons">Sermons</a></li>
@@ -703,287 +931,308 @@
                 </ul>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
+                <h4>Connect With Us</h4>
                 <div class="social" id="socialLinks">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <!-- Loaded by JavaScript -->
                 </div>
             </div>
         </div>
         <hr/>
-        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">
-            &copy; 2026 RCCG Overcomers HOC. All rights reserved.
-        </p>
-        <div class="dev-credit">Developed by Dev Gift Team & Powered by De Creative Mide</div>
+        <div class="bottom">
+            <span>&copy; 2026 RCCG Overcomers HOC. All rights reserved.</span>
+            <span>Developed by Dev Gift Team</span>
+        </div>
+        <div class="dev-credit">Powered by De Creative Mide</div>
     </div>
 </footer>
 
+<!-- ============================================
+JAVASCRIPT
+============================================ -->
 <script>
-    // ===== HIDE LOADER =====
+    // ============================================
+    // HIDE LOADER
+    // ============================================
     window.addEventListener('load', function() {
         setTimeout(function() {
             document.getElementById('loaderWrapper').classList.add('hidden');
         }, 800);
     });
 
-    // ===== LOAD SOCIAL LINKS =====
+    // ============================================
+    // HELPER: Render Skeleton
+    // ============================================
+    function renderSkeleton(container, type) {
+        const skeletons = {
+            face: `
+                <div class="face-card">
+                    <div class="skeleton-circle"></div>
+                    <div class="face-content" style="flex:1;">
+                        <div class="skeleton-text" style="width:60%;height:28px;"></div>
+                        <div class="skeleton-text" style="width:40%;height:16px;"></div>
+                        <div class="skeleton-text" style="width:90%;height:60px;"></div>
+                    </div>
+                </div>
+            `,
+            prayer: `
+                <div class="prayer-card">
+                    <div class="skeleton-text" style="width:40%;height:28px;background:rgba(255,255,255,0.2);"></div>
+                    <div class="skeleton-text" style="width:30%;height:16px;background:rgba(255,255,255,0.2);"></div>
+                    <div class="skeleton-text" style="width:80%;height:60px;background:rgba(255,255,255,0.2);"></div>
+                </div>
+            `,
+            openheaven: `
+                <div class="openheaven-card">
+                    <div class="skeleton-text" style="width:50%;height:28px;"></div>
+                    <div class="skeleton-text" style="width:70%;height:16px;"></div>
+                    <div class="skeleton-text" style="width:90%;height:60px;"></div>
+                </div>
+            `,
+            sermon: `
+                <div class="card">
+                    <div class="skeleton-image"></div>
+                    <div class="card-body">
+                        <div class="skeleton-text" style="width:70%;height:24px;"></div>
+                        <div class="skeleton-text" style="width:40%;height:16px;"></div>
+                        <div class="skeleton-text" style="width:80%;height:40px;"></div>
+                    </div>
+                </div>
+            `,
+            event: `
+                <div class="card">
+                    <div class="skeleton-image"></div>
+                    <div class="card-body">
+                        <div class="skeleton-text" style="width:70%;height:24px;"></div>
+                        <div class="skeleton-text" style="width:50%;height:16px;"></div>
+                    </div>
+                </div>
+            `,
+            sunday: `
+                <div class="sunday-card">
+                    <div class="skeleton-image" style="height:250px;"></div>
+                    <div class="card-body">
+                        <div class="skeleton-text" style="width:60%;height:24px;"></div>
+                        <div class="skeleton-text" style="width:40%;height:16px;"></div>
+                        <div class="skeleton-text" style="width:90%;height:40px;"></div>
+                    </div>
+                </div>
+            `
+        };
+        container.innerHTML = skeletons[type] || '<div class="skeleton-text" style="height:100px;"></div>';
+    }
+
+    // ============================================
+    // LOAD SOCIAL LINKS
+    // ============================================
     fetch('/api/social-links')
         .then(res => res.json())
         .then(links => {
             const container = document.getElementById('socialLinks');
-            container.innerHTML = '';
-            links.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url || '#';
-                a.target = '_blank';
-                a.rel = 'noopener';
-                a.innerHTML = `<i class="${link.icon}"></i>`;
-                container.appendChild(a);
-            });
+            if (links && links.length) {
+                container.innerHTML = links.map(link => `
+                    <a href="${link.url}" target="_blank" rel="noopener">
+                        <i class="${link.icon}"></i>
+                    </a>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                `;
+            }
         })
         .catch(() => {});
 
-    // ===== LOAD FACE OF THE WEEK =====
+    // ============================================
+    // LOAD FACE OF THE WEEK
+    // ============================================
+    const faceContainer = document.getElementById('faceOfWeek');
+    renderSkeleton(faceContainer, 'face');
+
     fetch('/api/face-of-week')
         .then(res => res.json())
         .then(data => {
-            const container = document.getElementById('faceOfWeek');
             if (data) {
-                container.innerHTML = `
+                faceContainer.innerHTML = `
                     <div class="face-card">
-                        <img src="${data.imageUrl}" alt="${data.name}" onerror="this.src='https://placehold.co/160x160/1a3a5c/fff?text=${data.name.charAt(0)}'"/>
+                        <img src="${data.imageUrl || 'https://placehold.co/160x160/1a3a5c/fff?text=' + (data.name ? data.name.charAt(0) : '')}" 
+                             alt="${data.name}" 
+                             onerror="this.src='https://placehold.co/160x160/1a3a5c/fff?text=${data.name ? data.name.charAt(0) : '?'}'"/>
                         <div class="face-content">
-                            <h3>${data.name}</h3>
-                            <div class="title">${data.title}</div>
-                            <div class="words">"${data.words}"</div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="card">
-                        <div class="card-body" style="text-align: center; padding: 30px;">
-                            <h3>Face of the Week</h3>
-                            <p style="color: #7a8a9a;">Check back soon to meet our featured member.</p>
+                            <h3>${data.name || 'Member'}</h3>
+                            <div class="title">${data.title || 'Faithful Member'}</div>
+                            <div class="words">"${data.words || 'God is faithful!'}"</div>
                         </div>
                     </div>
                 `;
             }
         })
-        .catch(() => {
-            document.getElementById('faceOfWeek').innerHTML = `
-                <div class="card">
-                    <div class="card-body" style="text-align: center; padding: 30px;">
-                        <h3>Face of the Week</h3>
-                        <p style="color: #7a8a9a;">Unable to load. Please refresh.</p>
-                    </div>
-                </div>
-            `;
-        });
+        .catch(() => {});
 
-    // ===== LOAD PRAYER FOR THE WEEK =====
+    // ============================================
+    // LOAD PRAYER FOR THE WEEK
+    // ============================================
+    const prayerContainer = document.getElementById('prayerWeek');
+    renderSkeleton(prayerContainer, 'prayer');
+
     fetch('/api/prayer-week')
         .then(res => res.json())
         .then(data => {
-            const container = document.getElementById('prayerWeek');
             if (data) {
-                container.innerHTML = `
-                    <div class="card" style="animation: fadeUp 0.6s ease forwards;">
-                        <div class="card-body" style="background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%); color: #fff; border-radius: 12px; padding: 30px;">
-                            <h3 style="color: #ffd700; font-size: 1.4rem;">${data.title || 'Prayer for the Week'}</h3>
-                            ${data.bibleVerse ? `<p style="opacity: 0.9; margin: 10px 0;"><strong>📖 ${data.bibleVerse}</strong></p>` : ''}
-                            <p style="margin: 15px 0; font-size: 1.05rem; line-height: 1.8;">${data.prayer}</p>
-                            <p style="opacity: 0.6; font-size: 0.85rem;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                        </div>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="card">
-                        <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
-                            <h3>Prayer for the Week</h3>
-                            <p style="color: #7a8a9a;">Check back soon for this week's prayer.</p>
-                        </div>
+                prayerContainer.innerHTML = `
+                    <div class="prayer-card">
+                        <h3>${data.title || 'Prayer for the Week'}</h3>
+                        ${data.bibleVerse ? `<div class="verse"><strong>📖 ${data.bibleVerse}</strong></div>` : ''}
+                        <div class="prayer-text">${data.prayer || 'Pray without ceasing.'}</div>
+                        <div class="date">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
                     </div>
                 `;
             }
         })
-        .catch(() => {
-            document.getElementById('prayerWeek').innerHTML = `
-                <div class="card">
-                    <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
-                        <h3>Prayer for the Week</h3>
-                        <p style="color: #7a8a9a;">Unable to load prayer. Please refresh.</p>
-                    </div>
-                </div>
-            `;
-        });
+        .catch(() => {});
 
-    // ===== LOAD OPEN HEAVEN =====
+    // ============================================
+    // LOAD OPEN HEAVEN
+    // ============================================
+    const openHeavenContainer = document.getElementById('openHeaven');
+    renderSkeleton(openHeavenContainer, 'openheaven');
+
     fetch('/api/open-heaven')
         .then(res => res.json())
         .then(data => {
-            const container = document.getElementById('openHeaven');
             if (data) {
-                container.innerHTML = `
-                    <div class="card" style="animation: fadeUp 0.6s ease forwards;">
-                        <div class="card-body" style="border-left: 5px solid #ffd700; padding: 25px 30px; background: #fff; border-radius: 12px;">
-                            <h3 style="color: #1a3a5c; font-size: 1.4rem;">${data.title || 'Open Heaven'}</h3>
-                            ${data.bibleReading ? `<p style="color: #5a7a9a; font-size: 0.95rem;"><strong>📖 Reading:</strong> ${data.bibleReading}</p>` : ''}
-                            ${data.memoryVerse ? `<p style="color: #1a3a5c; font-style: italic; margin: 10px 0;">"${data.memoryVerse}"</p>` : ''}
-                            <p style="margin: 15px 0; line-height: 1.8;">${data.content}</p>
-                            ${data.prayer ? `<div style="background: #f5f7fa; padding: 15px 20px; border-radius: 8px; margin-top: 10px;"><strong>🙏 Prayer:</strong> ${data.prayer}</div>` : ''}
-                            <p style="opacity: 0.6; font-size: 0.85rem; margin-top: 10px;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                        </div>
-                    </div>
-                `;
-            } else {
-                container.innerHTML = `
-                    <div class="card">
-                        <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
-                            <h3>Open Heaven</h3>
-                            <p style="color: #7a8a9a;">Check back soon for today's devotion.</p>
+                openHeavenContainer.innerHTML = `
+                    <div class="openheaven-card">
+                        <h3>${data.title || 'Open Heaven'}</h3>
+                        ${data.bibleReading ? `<div class="reading"><strong>📖 Reading:</strong> ${data.bibleReading}</div>` : ''}
+                        ${data.memoryVerse ? `<div class="memory-verse">"${data.memoryVerse}"</div>` : ''}
+                        <div class="content">${data.content || 'Seek the Lord while He may be found.'}</div>
+                        ${data.prayer ? `<div class="prayer-box"><strong>🙏 Prayer:</strong> ${data.prayer}</div>` : ''}
+                        <div style="opacity:0.6;font-size:0.85rem;margin-top:10px;">
+                            ${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </div>
                     </div>
                 `;
             }
         })
-        .catch(() => {
-            document.getElementById('openHeaven').innerHTML = `
-                <div class="card">
-                    <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
-                        <h3>Open Heaven</h3>
-                        <p style="color: #7a8a9a;">Unable to load devotion. Please refresh.</p>
-                    </div>
-                </div>
-            `;
-        });
+        .catch(() => {});
 
-    // ===== LOAD FEATURED SERMON =====
+    // ============================================
+    // LOAD FEATURED SERMON
+    // ============================================
+    const sermonContainer = document.getElementById('featuredSermon');
+    renderSkeleton(sermonContainer, 'sermon');
+
     fetch('/api/sermons/featured')
         .then(res => res.json())
-        .then(sermon => {
-            const container = document.getElementById('featuredSermon');
-            if (sermon) {
-                container.innerHTML = `
-                    <div class="card" style="animation: fadeUp 0.6s ease forwards;">
-                        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 25px; align-items: center; padding: 20px;">
-                            ${sermon.imageUrl ? `<img src="${sermon.imageUrl}" alt="${sermon.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;"/>` : ''}
-                            <div>
-                                <h3 style="color: #1a3a5c;">${sermon.title}</h3>
-                                <p class="meta"><i class="fas fa-user"></i> ${sermon.preacher} &bull; ${new Date(sermon.date).toLocaleDateString()}</p>
-                                <p>${sermon.description || 'Listen to this powerful message from God\'s Word.'}</p>
-                                ${sermon.audioUrl ? `<a href="${sermon.audioUrl}" class="btn btn-primary" style="margin-top: 10px; display: inline-block;"><i class="fas fa-play"></i> Listen</a>` : ''}
-                                ${sermon.videoUrl ? `<a href="${sermon.videoUrl}" class="btn btn-secondary" style="margin-top: 10px; display: inline-block; margin-left: 10px;" target="_blank"><i class="fas fa-video"></i> Watch</a>` : ''}
+        .then(data => {
+            if (data) {
+                sermonContainer.innerHTML = `
+                    <div class="card">
+                        ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.title}" class="card-image"/>` : ''}
+                        <div class="card-body">
+                            <h3>${data.title || 'Featured Sermon'}</h3>
+                            <p class="meta"><i class="fas fa-user"></i> ${data.preacher || 'Unknown'} &bull; ${new Date(data.date).toLocaleDateString()}</p>
+                            <p>${data.description || 'Listen to this powerful message from God\'s Word.'}</p>
+                            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+                                ${data.audioUrl ? `<a href="${data.audioUrl}" class="btn btn-primary" target="_blank"><i class="fas fa-play"></i> Listen</a>` : ''}
+                                ${data.videoUrl ? `<a href="${data.videoUrl}" class="btn btn-secondary" target="_blank"><i class="fas fa-video"></i> Watch</a>` : ''}
                             </div>
                         </div>
                     </div>
                 `;
             } else {
-                container.innerHTML = `
+                sermonContainer.innerHTML = `
                     <div class="card">
-                        <div class="card-body" style="text-align: center; padding: 30px;">
+                        <div class="card-body" style="text-align:center;padding:40px;">
                             <h3>No featured sermon yet</h3>
-                            <p style="color: #7a8a9a;">Check back soon for our latest message.</p>
+                            <p style="color:var(--text-light);">Check back soon for our latest message.</p>
                         </div>
                     </div>
                 `;
             }
         })
-        .catch(() => {
-            document.getElementById('featuredSermon').innerHTML = `
-                <div class="card">
-                    <div class="card-body" style="text-align: center; padding: 30px;">
-                        <h3>Unable to load sermon</h3>
-                        <p style="color: #7a8a9a;">Please refresh the page.</p>
-                    </div>
-                </div>
-            `;
-        });
+        .catch(() => {});
 
-    // ===== LOAD SUNDAY SCHOOL (FULL CONTENT) =====
+    // ============================================
+    // LOAD SUNDAY SCHOOL
+    // ============================================
+    const sundayContainer = document.getElementById('sundaySchool');
+    renderSkeleton(sundayContainer, 'sunday');
+
     fetch('/api/sunday-school')
         .then(res => res.json())
         .then(lessons => {
-            const container = document.getElementById('sundaySchool');
-            if (lessons.length === 0) {
-                container.innerHTML = `
-                    <div class="card">
-                        <div class="card-body" style="text-align: center; padding: 40px;">
-                            <h3>No Sunday School lessons yet</h3>
-                            <p style="color: #7a8a9a;">Check back soon for new lessons.</p>
+            if (lessons && lessons.length) {
+                const lesson = lessons[0];
+                sundayContainer.innerHTML = `
+                    <div class="sunday-card">
+                        ${lesson.imageUrl ? `<img src="${lesson.imageUrl}" alt="${lesson.title}" class="card-image"/>` : ''}
+                        <div class="card-body">
+                            <h3>${lesson.title || 'Sunday School Lesson'}</h3>
+                            <p class="meta"><i class="fas fa-user"></i> Teacher: ${lesson.teacher || 'N/A'} &bull; ${new Date(lesson.date).toLocaleDateString()}</p>
+                            ${lesson.description ? `<p>${lesson.description}</p>` : ''}
+                            ${lesson.bibleReading ? `<div class="bible-reading"><strong>📖 Bible Reading:</strong> ${lesson.bibleReading}</div>` : ''}
+                            ${lesson.memoryVerse ? `<div class="memory-verse">"${lesson.memoryVerse}"</div>` : ''}
+                            ${lesson.featured ? `<div style="margin-top:10px;"><span class="badge badge-featured">⭐ Featured Lesson</span></div>` : ''}
                         </div>
                     </div>
                 `;
-                return;
+            } else {
+                sundayContainer.innerHTML = `
+                    <div class="card">
+                        <div class="card-body" style="text-align:center;padding:40px;">
+                            <h3>No Sunday School lessons yet</h3>
+                            <p style="color:var(--text-light);">Check back soon for new lessons.</p>
+                        </div>
+                    </div>
+                `;
             }
-            // Show latest lesson with FULL content
-            const lesson = lessons[0];
-            container.innerHTML = `
-                <div class="sunday-card" style="animation: fadeUp 0.6s ease forwards;">
-                    ${lesson.imageUrl ? `<img src="${lesson.imageUrl}" alt="${lesson.title}" class="card-image"/>` : ''}
-                    <div class="card-body">
-                        <h3>${lesson.title}</h3>
-                        <p class="meta"><i class="fas fa-user"></i> Teacher: ${lesson.teacher} &bull; ${new Date(lesson.date).toLocaleDateString()}</p>
-                        ${lesson.description ? `<p style="margin: 10px 0; font-size: 1rem;">${lesson.description}</p>` : ''}
-                        ${lesson.bibleReading ? `<div class="bible-reading"><strong>📖 Bible Reading:</strong> ${lesson.bibleReading}</div>` : ''}
-                        ${lesson.memoryVerse ? `<div class="memory-verse">"${lesson.memoryVerse}"</div>` : ''}
-                        ${lesson.featured ? `<div style="margin-top:10px;"><span class="badge-featured">⭐ Featured Lesson</span></div>` : ''}
-                    </div>
-                </div>
-            `;
         })
-        .catch(() => {
-            document.getElementById('sundaySchool').innerHTML = `
-                <div class="card">
-                    <div class="card-body" style="text-align: center; padding: 40px;">
-                        <h3>Unable to load Sunday School</h3>
-                        <p style="color: #7a8a9a;">Please refresh the page.</p>
-                    </div>
-                </div>
-            `;
-        });
+        .catch(() => {});
 
-    // ===== LOAD UPCOMING EVENTS =====
+    // ============================================
+    // LOAD UPCOMING EVENTS
+    // ============================================
+    const eventsContainer = document.getElementById('upcomingEvents');
+    eventsContainer.innerHTML = Array(3).fill(`
+        <div class="card">
+            <div class="skeleton-image"></div>
+            <div class="card-body">
+                <div class="skeleton-text" style="width:70%;"></div>
+                <div class="skeleton-text" style="width:50%;"></div>
+            </div>
+        </div>
+    `).join('');
+
     fetch('/api/events/upcoming')
         .then(res => res.json())
         .then(events => {
-            const container = document.getElementById('upcomingEvents');
-            if (events.length === 0) {
-                container.innerHTML = `
-                    <div class="card">
-                        <div class="card-body" style="text-align: center; padding: 30px;">
-                            <h3>No upcoming events</h3>
-                            <p style="color: #7a8a9a;">Check back soon for new events.</p>
+            if (events && events.length) {
+                eventsContainer.innerHTML = events.map((event, i) => `
+                    <div class="card" style="animation-delay:${(i + 1) * 0.1}s;">
+                        ${event.imageUrl ? `<img src="${event.imageUrl}" alt="${event.title}" class="card-image"/>` : ''}
+                        <div class="card-body">
+                            <h3>${event.title || 'Event'}</h3>
+                            <p class="meta"><i class="fas fa-calendar"></i> ${new Date(event.date).toLocaleDateString()} ${event.time ? '• ' + event.time : ''}</p>
+                            <p>${event.description || ''}</p>
+                            ${event.location ? `<p style="font-size:0.9rem;color:var(--text-light);"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>` : ''}
+                            <span class="badge">${event.category || 'Other'}</span>
                         </div>
                     </div>
+                `).join('');
+            } else {
+                eventsContainer.innerHTML = `
+                    <div class="card" style="grid-column:1/-1;text-align:center;padding:40px;">
+                        <h3>No upcoming events</h3>
+                        <p style="color:var(--text-light);">Check back soon for new events.</p>
+                    </div>
                 `;
-                return;
             }
-            container.innerHTML = events.map((event, i) => `
-                <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i + 1) * 0.1}s;">
-                    ${event.imageUrl ? `<img src="${event.imageUrl}" alt="${event.title}" class="card-image"/>` : ''}
-                    <div class="card-body">
-                        <h3>${event.title}</h3>
-                        <p class="meta"><i class="fas fa-calendar"></i> ${new Date(event.date).toLocaleDateString()} ${event.time ? '• ' + event.time : ''}</p>
-                        <p>${event.description || ''}</p>
-                        ${event.location ? `<p style="font-size: 0.9rem; color: #7a8a9a;"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>` : ''}
-                    </div>
-                </div>
-            `).join('');
         })
-        .catch(() => {
-            document.getElementById('upcomingEvents').innerHTML = `
-                <div class="card">
-                    <div class="card-body" style="text-align: center; padding: 30px;">
-                        <h3>Unable to load events</h3>
-                        <p style="color: #7a8a9a;">Please refresh the page.</p>
-                    </div>
-                </div>
-            `;
-        });
+        .catch(() => {});
 </script>
 </body>
 </html>
