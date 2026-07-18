@@ -14,7 +14,26 @@
             display: flex;
         }
 
-        /* ===== LOGIN PAGE ===== */
+        .loader-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a3a5c;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 99999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+
         #loginPage {
             display: flex;
             width: 100%;
@@ -79,33 +98,12 @@
             letter-spacing: 1px; color: #5a6a7a;
         }
 
-        /* ===== ADMIN DASHBOARD ===== */
         #dashboardPage {
             display: none;
             width: 100%;
             min-height: 100vh;
         }
         #dashboardPage.show { display: flex; }
-
-        .loader-wrapper {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a3a5c;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            z-index: 99999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
-        .loader {
-            width: 50px; height: 50px;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffd700;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
 
         .sidebar {
             width: 240px;
@@ -174,16 +172,38 @@
             padding: 18px 20px;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: relative;
+            min-height: 80px;
+            border-left: 4px solid #1a3a5c;
         }
         .stat-card h3 {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #7a8a9a;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 4px;
+            font-weight: 600;
         }
-        .stat-card .number { font-size: 1.6rem; font-weight: 700; color: #1a3a5c; }
-        .stat-card .icon { float: right; font-size: 1.5rem; opacity: 0.15; color: #1a3a5c; }
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1a3a5c;
+            display: block;
+        }
+        .stat-card .icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.8rem;
+            opacity: 0.1;
+            color: #1a3a5c;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
 
         .card {
             background: #fff;
@@ -336,13 +356,11 @@
 </head>
 <body>
 
-<!-- ===== LOADING ===== -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">Loading Admin Panel...</div>
 </div>
 
-<!-- ===== LOGIN PAGE ===== -->
 <div id="loginPage">
     <div class="login-box">
         <div class="logo">
@@ -366,9 +384,7 @@
     </div>
 </div>
 
-<!-- ===== DASHBOARD PAGE ===== -->
 <div id="dashboardPage">
-    <!-- Sidebar -->
     <div class="sidebar">
         <h2><i class="fas fa-church"></i> <span>Admin</span></h2>
         <div class="nav-item active" onclick="showSection('dashboard')">
@@ -411,25 +427,59 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main">
         <div class="header">
             <h1 id="pageTitle">Dashboard</h1>
             <span class="user"><i class="fas fa-user"></i> <span id="adminName">Admin</span></span>
         </div>
 
-        <!-- DASHBOARD -->
         <div id="dashboardSection" class="section-page active">
-            <div class="stats" id="statsContainer">
-                <div class="stat-card"><h3>Sermons</h3><span class="number" id="statSermons">0</span><span class="icon"><i class="fas fa-bible"></i></span></div>
-                <div class="stat-card"><h3>Events</h3><span class="number" id="statEvents">0</span><span class="icon"><i class="fas fa-calendar"></i></span></div>
-                <div class="stat-card"><h3>Media</h3><span class="number" id="statMedia">0</span><span class="icon"><i class="fas fa-photo-video"></i></span></div>
-                <div class="stat-card"><h3>Testimonies</h3><span class="number" id="statTestimonies">0</span><span class="icon"><i class="fas fa-comment"></i></span></div>
-                <div class="stat-card"><h3>Prayer Req.</h3><span class="number" id="statPrayers">0</span><span class="icon"><i class="fas fa-hands-praying"></i></span></div>
-                <div class="stat-card"><h3>Prayer Week</h3><span class="number" id="statPrayerWeek">0</span><span class="icon"><i class="fas fa-pray"></i></span></div>
-                <div class="stat-card"><h3>Open Heaven</h3><span class="number" id="statOpenHeaven">0</span><span class="icon"><i class="fas fa-cloud"></i></span></div>
-                <div class="stat-card"><h3>Face of Week</h3><span class="number" id="statFaceOfWeek">0</span><span class="icon"><i class="fas fa-user-circle"></i></span></div>
-                <div class="stat-card"><h3>Sunday School</h3><span class="number" id="statSundaySchool">0</span><span class="icon"><i class="fas fa-school"></i></span></div>
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Sermons</h3>
+                    <span class="number" id="statSermons">0</span>
+                    <span class="icon"><i class="fas fa-bible"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Events</h3>
+                    <span class="number" id="statEvents">0</span>
+                    <span class="icon"><i class="fas fa-calendar"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Media</h3>
+                    <span class="number" id="statMedia">0</span>
+                    <span class="icon"><i class="fas fa-photo-video"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Testimonies</h3>
+                    <span class="number" id="statTestimonies">0</span>
+                    <span class="icon"><i class="fas fa-comment"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Prayer Req.</h3>
+                    <span class="number" id="statPrayers">0</span>
+                    <span class="icon"><i class="fas fa-hands-praying"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Prayer Week</h3>
+                    <span class="number" id="statPrayerWeek">0</span>
+                    <span class="icon"><i class="fas fa-pray"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Open Heaven</h3>
+                    <span class="number" id="statOpenHeaven">0</span>
+                    <span class="icon"><i class="fas fa-cloud"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Face of Week</h3>
+                    <span class="number" id="statFaceOfWeek">0</span>
+                    <span class="icon"><i class="fas fa-user-circle"></i></span>
+                </div>
+                <div class="stat-card">
+                    <h3>Sunday School</h3>
+                    <span class="number" id="statSundaySchool">0</span>
+                    <span class="icon"><i class="fas fa-school"></i></span>
+                </div>
             </div>
             <div class="card">
                 <h2>Welcome to Admin Panel</h2>
@@ -437,7 +487,6 @@
             </div>
         </div>
 
-        <!-- SERMONS -->
         <div id="sermonsSection" class="section-page">
             <div class="card">
                 <div class="card-header">
@@ -446,12 +495,11 @@
                 </div>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Title</th><th>Preacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                    <tbody id="sermonsBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="sermonsBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No sermons found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- EVENTS -->
         <div id="eventsSection" class="section-page">
             <div class="card">
                 <div class="card-header">
@@ -460,12 +508,11 @@
                 </div>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Title</th><th>Date</th><th>Location</th><th>Actions</th></tr></thead>
-                    <tbody id="eventsBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="eventsBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No events found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- MEDIA -->
         <div id="mediaSection" class="section-page">
             <div class="card">
                 <div class="card-header">
@@ -474,12 +521,11 @@
                 </div>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Title</th><th>Type</th><th>Actions</th></tr></thead>
-                    <tbody id="mediaBody"><tr><td colspan="3" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="mediaBody"><tr><td colspan="3" style="text-align:center;color:#7a8a9a;">No media found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- PRAYER WEEK -->
         <div id="prayerWeekSection" class="section-page">
             <div class="card">
                 <div class="card-header">
@@ -488,12 +534,11 @@
                 </div>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Title</th><th>Date</th><th>Active</th><th>Actions</th></tr></thead>
-                    <tbody id="prayerWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="prayerWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No prayers found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- OPEN HEAVEN -->
         <div id="openHeavenSection" class="section-page">
             <div class="card">
                 <div class="card-header">
@@ -502,12 +547,11 @@
                 </div>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Title</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                    <tbody id="openHeavenBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="openHeavenBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No entries found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- FACE OF WEEK -->
         <div id="faceOfWeekSection" class="section-page">
             <div class="card">
                 <div class="card-header">
@@ -516,12 +560,11 @@
                 </div>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Name</th><th>Title</th><th>Active</th><th>Actions</th></tr></thead>
-                    <tbody id="faceOfWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="faceOfWeekBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No faces found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- SUNDAY SCHOOL -->
         <div id="sundaySchoolSection" class="section-page">
             <div class="card">
                 <div class="card-header">
@@ -530,57 +573,49 @@
                 </div>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Title</th><th>Teacher</th><th>Date</th><th>Featured</th><th>Actions</th></tr></thead>
-                    <tbody id="sundaySchoolBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="sundaySchoolBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No lessons found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- TESTIMONIES -->
         <div id="testimoniesSection" class="section-page">
             <div class="card">
                 <h2>Testimonies (Pending Approval)</h2>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Name</th><th>Testimony</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody id="testimoniesBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="testimoniesBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No testimonies found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- PRAYER REQUESTS -->
         <div id="prayersSection" class="section-page">
             <div class="card">
                 <h2>Prayer Requests</h2>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Name</th><th>Request</th><th>Date</th><th>Prayed</th><th>Actions</th></tr></thead>
-                    <tbody id="prayersBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="prayersBody"><tr><td colspan="5" style="text-align:center;color:#7a8a9a;">No prayer requests found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
 
-        <!-- SOCIAL LINKS -->
         <div id="socialLinksSection" class="section-page">
             <div class="card">
                 <h2>Social Links</h2>
                 <p style="color:#7a8a9a;margin-bottom:15px;">Update your social media links. These appear in the footer.</p>
                 <div class="table-wrapper">
                     <table><thead><tr><th>Platform</th><th>URL</th><th>Status</th><th>Actions</th></tr></thead>
-                    <tbody id="socialLinksBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Loading...</td></tr></tbody></table>
+                    <tbody id="socialLinksBody"><tr><td colspan="4" style="text-align:center;color:#7a8a9a;">No social links found</td></tr></tbody></table>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ===== MODAL ===== -->
 <div class="modal" id="modal">
     <div class="modal-content" id="modalContent"></div>
 </div>
 
 <script>
-// ============================================================
-// ADMIN PANEL - COMPLETE FIXED JAVASCRIPT
-// ============================================================
-
 // ============================================================
 // AUTH CHECK
 // ============================================================
@@ -607,6 +642,15 @@ async function verifyAuth() {
         document.getElementById('loaderWrapper').classList.add('hidden');
         loadDashboard();
         loadSermons();
+        loadEvents();
+        loadMedia();
+        loadPrayerWeek();
+        loadOpenHeaven();
+        loadFaceOfWeek();
+        loadSundaySchool();
+        loadTestimonies();
+        loadPrayers();
+        loadSocialLinks();
     } catch {
         localStorage.removeItem('adminToken');
         document.getElementById('loginPage').classList.remove('hidden');
@@ -616,7 +660,7 @@ async function verifyAuth() {
 }
 
 // ============================================================
-// LOGIN - FIXED
+// LOGIN
 // ============================================================
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -636,15 +680,10 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             body: JSON.stringify({ username, password })
         });
         const data = await res.json();
-        
+
         if (res.ok) {
             localStorage.setItem('adminToken', data.token);
-            document.getElementById('loginPage').classList.add('hidden');
-            document.getElementById('dashboardPage').classList.add('show');
-            document.getElementById('loaderWrapper').classList.add('hidden');
-            document.getElementById('adminName').textContent = data.username || 'Admin';
-            loadDashboard();
-            loadSermons();
+            location.reload();
         } else {
             errorMsg.textContent = data.error || 'Invalid credentials';
             errorMsg.style.display = 'block';
@@ -675,10 +714,10 @@ function logout() {
 function showSection(section) {
     document.querySelectorAll('.sidebar .nav-item').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.section-page').forEach(el => el.classList.remove('active'));
-    
+
     document.getElementById(section + 'Section').classList.add('active');
     document.querySelector(`.sidebar .nav-item[onclick*="${section}"]`)?.classList.add('active');
-    
+
     const titles = {
         dashboard: 'Dashboard',
         sermons: 'Manage Sermons',
@@ -693,7 +732,7 @@ function showSection(section) {
         'social-links': 'Social Links'
     };
     document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
-    
+
     if (section === 'dashboard') loadDashboard();
     else if (section === 'sermons') loadSermons();
     else if (section === 'events') loadEvents();
@@ -737,7 +776,7 @@ function openModal(type, data = null) {
     const modal = document.getElementById('modal');
     const content = document.getElementById('modalContent');
     const d = data || {};
-    
+
     let html = '';
     if (type === 'sermon') {
         html = `
@@ -835,7 +874,7 @@ function openModal(type, data = null) {
             <h2>${d._id ? 'Edit' : 'Add'} Face of the Week</h2>
             <form id="faceOfWeekForm">
                 <input type="text" name="name" placeholder="Full Name" value="${d.name || ''}" required/>
-                <input type="text" name="title" placeholder="Title (e.g. Worship Leader)" value="${d.title || ''}" required/>
+                <input type="text" name="title" placeholder="Title" value="${d.title || ''}" required/>
                 <textarea name="words" placeholder="Words / Testimony" required>${d.words || ''}</textarea>
                 <input type="file" name="image" accept="image/*" ${d._id ? '' : 'required'}/>
                 <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active</label>
@@ -864,11 +903,10 @@ function openModal(type, data = null) {
             </form>
         `;
     }
-    
+
     content.innerHTML = html;
     modal.classList.add('show');
-    
-    // Form submissions
+
     if (type === 'sermon') {
         document.getElementById('sermonForm').onsubmit = (e) => { e.preventDefault(); saveSermon(d?._id); };
     } else if (type === 'event') {
@@ -925,7 +963,7 @@ async function loadSermons() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('sermonsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('sermonsBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading sermons</td></tr>`;
     }
 }
 
@@ -982,7 +1020,7 @@ async function loadEvents() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('eventsBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('eventsBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading events</td></tr>`;
     }
 }
 
@@ -1039,7 +1077,7 @@ async function loadMedia() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('mediaBody').innerHTML = `<tr><td colspan="3" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('mediaBody').innerHTML = `<tr><td colspan="3" style="text-align:center;color:#7a8a9a;">Error loading media</td></tr>`;
     }
 }
 
@@ -1097,7 +1135,7 @@ async function loadPrayerWeek() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('prayerWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('prayerWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading prayer week</td></tr>`;
     }
 }
 
@@ -1154,7 +1192,7 @@ async function loadOpenHeaven() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('openHeavenBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('openHeavenBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading open heaven</td></tr>`;
     }
 }
 
@@ -1211,7 +1249,7 @@ async function loadFaceOfWeek() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('faceOfWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('faceOfWeekBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading face of week</td></tr>`;
     }
 }
 
@@ -1270,7 +1308,7 @@ async function loadSundaySchool() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('sundaySchoolBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('sundaySchoolBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading Sunday School</td></tr>`;
     }
 }
 
@@ -1329,7 +1367,7 @@ async function loadTestimonies() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('testimoniesBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('testimoniesBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading testimonies</td></tr>`;
     }
 }
 
@@ -1373,7 +1411,7 @@ async function loadPrayers() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('prayersBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('prayersBody').innerHTML = `<tr><td colspan="5" style="text-align:center;color:#7a8a9a;">Error loading prayer requests</td></tr>`;
     }
 }
 
@@ -1418,7 +1456,7 @@ async function loadSocialLinks() {
             </tr>
         `).join('');
     } catch (err) {
-        document.getElementById('socialLinksBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading</td></tr>`;
+        document.getElementById('socialLinksBody').innerHTML = `<tr><td colspan="4" style="text-align:center;color:#7a8a9a;">Error loading social links</td></tr>`;
     }
 }
 
