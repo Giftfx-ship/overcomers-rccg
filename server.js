@@ -24,8 +24,6 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Serve static files from root directory
 app.use(express.static(__dirname));
-
-// Serve uploads folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ============================================
@@ -41,7 +39,7 @@ mongoose.connect(MONGODB_URI, {
 .catch(err => console.error('❌ MongoDB error:', err));
 
 // ============================================
-// FILE UPLOAD SETUP
+// FILE UPLOAD
 // ============================================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -60,13 +58,10 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ 
-  storage,
-  limits: { fileSize: 100 * 1024 * 1024 }
-});
+const upload = multer({ storage, limits: { fileSize: 100 * 1024 * 1024 } });
 
 // ============================================
-// DATABASE MODELS
+// MODELS
 // ============================================
 
 const AdminSchema = new mongoose.Schema({
@@ -75,28 +70,22 @@ const AdminSchema = new mongoose.Schema({
   email: String,
   role: { type: String, default: 'admin' },
   isActive: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const SermonSchema = new mongoose.Schema({
   title: { type: String, required: true },
   topic: String,
   preacher: { type: String, required: true },
-  preacherTitle: String,
   description: String,
-  messageText: String,
-  mainScripture: String,
   date: { type: Date, default: Date.now },
   audioUrl: String,
   videoUrl: String,
   imageUrl: String,
-  pdfUrl: String,
   featured: { type: Boolean, default: false },
   category: { type: String, default: 'Sunday Service' },
   isPublished: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const EventSchema = new mongoose.Schema({
@@ -109,8 +98,7 @@ const EventSchema = new mongoose.Schema({
   imageUrl: String,
   featured: { type: Boolean, default: false },
   isPublished: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const MediaSchema = new mongoose.Schema({
@@ -119,8 +107,7 @@ const MediaSchema = new mongoose.Schema({
   url: { type: String, required: true },
   thumbnail: String,
   description: String,
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const FaceOfWeekSchema = new mongoose.Schema({
@@ -130,8 +117,7 @@ const FaceOfWeekSchema = new mongoose.Schema({
   imageUrl: String,
   active: { type: Boolean, default: true },
   date: { type: Date, default: Date.now },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const PrayerWeekSchema = new mongoose.Schema({
@@ -140,8 +126,7 @@ const PrayerWeekSchema = new mongoose.Schema({
   bibleVerse: String,
   active: { type: Boolean, default: true },
   date: { type: Date, default: Date.now },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const OpenHeavenSchema = new mongoose.Schema({
@@ -151,8 +136,7 @@ const OpenHeavenSchema = new mongoose.Schema({
   memoryVerse: String,
   prayer: String,
   date: { type: Date, default: Date.now },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const SundaySchoolSchema = new mongoose.Schema({
@@ -164,8 +148,7 @@ const SundaySchoolSchema = new mongoose.Schema({
   imageUrl: String,
   date: { type: Date, default: Date.now },
   featured: { type: Boolean, default: false },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const PrayerRequestSchema = new mongoose.Schema({
@@ -176,8 +159,7 @@ const PrayerRequestSchema = new mongoose.Schema({
   category: { type: String, default: 'Other' },
   status: { type: String, enum: ['pending', 'answered', 'archived'], default: 'pending' },
   response: String,
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const SocialLinkSchema = new mongoose.Schema({
@@ -186,8 +168,7 @@ const SocialLinkSchema = new mongoose.Schema({
   icon: { type: String, required: true },
   active: { type: Boolean, default: true },
   order: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const TestimonySchema = new mongoose.Schema({
@@ -198,8 +179,7 @@ const TestimonySchema = new mongoose.Schema({
   date: { type: Date, default: Date.now },
   featured: { type: Boolean, default: false },
   isPublished: { type: Boolean, default: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now }
 });
 
 const Admin = mongoose.model('Admin', AdminSchema);
@@ -215,7 +195,7 @@ const SocialLink = mongoose.model('SocialLink', SocialLinkSchema);
 const Testimony = mongoose.model('Testimony', TestimonySchema);
 
 // ============================================
-// AUTHENTICATION MIDDLEWARE
+// AUTH MIDDLEWARE
 // ============================================
 const authMiddleware = async (req, res, next) => {
   try {
@@ -227,7 +207,7 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const admin = await Admin.findById(decoded.id).select('-password');
     if (!admin || !admin.isActive) {
-      return res.status(401).json({ error: 'Invalid token or account disabled' });
+      return res.status(401).json({ error: 'Invalid token' });
     }
 
     req.admin = admin;
@@ -252,9 +232,9 @@ const initializeAdmin = async () => {
         role: 'superadmin'
       });
       await admin.save();
-      console.log('✅ Admin user created successfully');
+      console.log('✅ Admin user created');
     } else {
-      console.log('✅ Admin user already exists');
+      console.log('✅ Admin user exists');
     }
   } catch (error) {
     console.error('❌ Error initializing admin:', error);
@@ -281,9 +261,6 @@ app.post('/api/admin/login', async (req, res) => {
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-
-    admin.lastLogin = new Date();
-    await admin.save();
 
     const token = jwt.sign(
       { id: admin._id, username: admin.username, role: admin.role },
@@ -450,15 +427,7 @@ app.get('/api/testimonies', async (req, res) => {
 // Stats
 app.get('/api/admin/stats', authMiddleware, async (req, res) => {
   try {
-    const [
-      totalSermons,
-      totalEvents,
-      totalMedia,
-      totalPrayerRequests,
-      totalFaces,
-      totalLessons,
-      totalTestimonies
-    ] = await Promise.all([
+    const [sermons, events, media, prayerRequests, faces, lessons, testimonies] = await Promise.all([
       Sermon.countDocuments(),
       Event.countDocuments(),
       Media.countDocuments(),
@@ -468,15 +437,7 @@ app.get('/api/admin/stats', authMiddleware, async (req, res) => {
       Testimony.countDocuments()
     ]);
 
-    res.json({
-      sermons: totalSermons,
-      events: totalEvents,
-      media: totalMedia,
-      prayerRequests: totalPrayerRequests,
-      facesOfWeek: totalFaces,
-      sundaySchool: totalLessons,
-      testimonies: totalTestimonies
-    });
+    res.json({ sermons, events, media, prayerRequests, facesOfWeek: faces, sundaySchool: lessons, testimonies });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -530,7 +491,7 @@ app.delete('/api/admin/sermons/:id', authMiddleware, async (req, res) => {
   try {
     const sermon = await Sermon.findByIdAndDelete(req.params.id);
     if (!sermon) return res.status(404).json({ error: 'Sermon not found' });
-    res.json({ message: 'Sermon deleted successfully' });
+    res.json({ message: 'Sermon deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -582,7 +543,7 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
   try {
     const event = await Event.findByIdAndDelete(req.params.id);
     if (!event) return res.status(404).json({ error: 'Event not found' });
-    res.json({ message: 'Event deleted successfully' });
+    res.json({ message: 'Event deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -658,7 +619,7 @@ app.delete('/api/admin/media/:id', authMiddleware, async (req, res) => {
   try {
     const media = await Media.findByIdAndDelete(req.params.id);
     if (!media) return res.status(404).json({ error: 'Media not found' });
-    res.json({ message: 'Media deleted successfully' });
+    res.json({ message: 'Media deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -713,7 +674,7 @@ app.delete('/api/admin/face-of-week/:id', authMiddleware, async (req, res) => {
   try {
     const face = await FaceOfWeek.findByIdAndDelete(req.params.id);
     if (!face) return res.status(404).json({ error: 'Face not found' });
-    res.json({ message: 'Face deleted successfully' });
+    res.json({ message: 'Face deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -764,7 +725,7 @@ app.delete('/api/admin/prayer-week/:id', authMiddleware, async (req, res) => {
   try {
     const prayer = await PrayerWeek.findByIdAndDelete(req.params.id);
     if (!prayer) return res.status(404).json({ error: 'Prayer not found' });
-    res.json({ message: 'Prayer deleted successfully' });
+    res.json({ message: 'Prayer deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -810,7 +771,7 @@ app.delete('/api/admin/open-heaven/:id', authMiddleware, async (req, res) => {
   try {
     const openHeaven = await OpenHeaven.findByIdAndDelete(req.params.id);
     if (!openHeaven) return res.status(404).json({ error: 'Open Heaven not found' });
-    res.json({ message: 'Open Heaven deleted successfully' });
+    res.json({ message: 'Open Heaven deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -862,7 +823,7 @@ app.delete('/api/admin/sunday-school/:id', authMiddleware, async (req, res) => {
   try {
     const lesson = await SundaySchool.findByIdAndDelete(req.params.id);
     if (!lesson) return res.status(404).json({ error: 'Lesson not found' });
-    res.json({ message: 'Lesson deleted successfully' });
+    res.json({ message: 'Lesson deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -872,13 +833,13 @@ app.delete('/api/admin/sunday-school/:id', authMiddleware, async (req, res) => {
 app.delete('/api/admin/sunday-school', authMiddleware, async (req, res) => {
   try {
     const result = await SundaySchool.deleteMany({});
-    res.json({ message: `Deleted ${result.deletedCount} Sunday School lessons` });
+    res.json({ message: `Deleted ${result.deletedCount} lessons` });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// GET Prayer Requests (Admin)
+// GET Prayer Requests
 app.get('/api/admin/prayer-requests', authMiddleware, async (req, res) => {
   try {
     const requests = await PrayerRequest.find().sort({ createdAt: -1 });
@@ -913,7 +874,7 @@ app.delete('/api/admin/prayer-requests/:id', authMiddleware, async (req, res) =>
   try {
     const request = await PrayerRequest.findByIdAndDelete(req.params.id);
     if (!request) return res.status(404).json({ error: 'Prayer request not found' });
-    res.json({ message: 'Prayer request deleted successfully' });
+    res.json({ message: 'Prayer request deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -959,7 +920,7 @@ app.delete('/api/admin/social-links/:id', authMiddleware, async (req, res) => {
   try {
     const link = await SocialLink.findByIdAndDelete(req.params.id);
     if (!link) return res.status(404).json({ error: 'Social link not found' });
-    res.json({ message: 'Social link deleted successfully' });
+    res.json({ message: 'Social link deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1011,7 +972,7 @@ app.delete('/api/admin/testimonies/:id', authMiddleware, async (req, res) => {
   try {
     const testimony = await Testimony.findByIdAndDelete(req.params.id);
     if (!testimony) return res.status(404).json({ error: 'Testimony not found' });
-    res.json({ message: 'Testimony deleted successfully' });
+    res.json({ message: 'Testimony deleted' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -1028,48 +989,23 @@ app.delete('/api/admin/testimonies', authMiddleware, async (req, res) => {
 });
 
 // ============================================
-// SERVE INDEX.HTML FOR ALL OTHER ROUTES
+// SERVE HTML PAGES
 // ============================================
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, 'about.html'));
-});
-
-app.get('/sermons', (req, res) => {
-  res.sendFile(path.join(__dirname, 'sermons.html'));
-});
-
-app.get('/events', (req, res) => {
-  res.sendFile(path.join(__dirname, 'events.html'));
-});
-
-app.get('/media', (req, res) => {
-  res.sendFile(path.join(__dirname, 'media.html'));
-});
-
-app.get('/sunday-school', (req, res) => {
-  res.sendFile(path.join(__dirname, 'sunday-school.html'));
-});
-
-app.get('/contact', (req, res) => {
-  res.sendFile(path.join(__dirname, 'contact.html'));
-});
-
-app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
-});
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('/about', (req, res) => res.sendFile(path.join(__dirname, 'about.html')));
+app.get('/sermons', (req, res) => res.sendFile(path.join(__dirname, 'sermons.html')));
+app.get('/events', (req, res) => res.sendFile(path.join(__dirname, 'events.html')));
+app.get('/media', (req, res) => res.sendFile(path.join(__dirname, 'media.html')));
+app.get('/sunday-school', (req, res) => res.sendFile(path.join(__dirname, 'sunday-school.html')));
+app.get('/contact', (req, res) => res.sendFile(path.join(__dirname, 'contact.html')));
+app.get('/admin.html', (req, res) => res.sendFile(path.join(__dirname, 'admin.html')));
 
 // ============================================
 // ERROR HANDLING
 // ============================================
 app.use((err, req, res, next) => {
   console.error('Error:', err);
-  res.status(err.status || 500).json({
-    error: err.message || 'Internal server error'
-  });
+  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
 });
 
 // ============================================
