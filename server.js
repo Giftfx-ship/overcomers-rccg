@@ -23,7 +23,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static('uploads'));
-app.use(express.static('public'));
+app.use('/images', express.static('images'));
 
 // ============================================================
 // DUAL MONGODB CONNECTION
@@ -226,7 +226,7 @@ const initAdmin = async () => {
     if (!adminExists) {
         const hashedPassword = await bcrypt.hash(adminPassword, 10);
         await User.create({ username: adminUsername, password: hashedPassword });
-        console.log(`✅ Admin created: ${adminUsername}`);
+        console.log(`✅ Admin created`);
     }
 };
 
@@ -275,7 +275,7 @@ app.post('/api/admin/verify', authMiddleware, (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - SOCIAL LINKS (Admin can edit)
+// API ROUTES - SOCIAL LINKS
 // ============================================================
 app.get('/api/social-links', async (req, res) => {
     try {
@@ -849,16 +849,8 @@ app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req,
 });
 
 // ============================================================
-// SERVE HTML PAGES - FIXED
+// SERVE HTML PAGES
 // ============================================================
-// ============================================================
-// SERVE HTML PAGES - FIXED FOR ROOT DIRECTORY
-// ============================================================
-
-// Serve static files from root (not public folder)
-app.use(express.static(__dirname));
-
-// Serve HTML pages from root directory
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -883,18 +875,13 @@ app.get('/contact', (req, res) => {
     res.sendFile(path.join(__dirname, 'contact.html'));
 });
 
-app.get('/admin-panel', (req, res) => {
-    res.sendFile(path.join(__dirname, 'admin.html'));
+app.get('/sunday-school', (req, res) => {
+    res.sendFile(path.join(__dirname, 'sunday-school.html'));
 });
 
-// Catch-all route for any other routes
-app.get('*', (req, res) => {
-    // Don't interfere with API routes
-    if (req.path.startsWith('/api/')) {
-        return res.status(404).json({ error: 'API endpoint not found' });
-    }
-    // For any other route, serve index.html
-    res.sendFile(path.join(__dirname, 'index.html'));
+// SECRET ADMIN ROUTE - ONE FILE WITH LOGIN + DASHBOARD
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
 // ============================================================
@@ -906,7 +893,7 @@ app.listen(PORT, () => {
     ║  🏛️  RCCG OVERCOMERS HOC                                ║
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
-    ║  🔒 Admin: http://localhost:${PORT}/admin-panel         ║
+    ║  🔒 Admin: http://localhost:${PORT}/admin               ║
     ║  💾 Dual MongoDB (2 DBs = 1GB Storage)                 ║
     ║  👨‍💻 Developed by Dev Gift Team                         ║
     ╚══════════════════════════════════════════════════════════╝
