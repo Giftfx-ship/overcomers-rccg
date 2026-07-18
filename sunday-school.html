@@ -5,13 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Sunday School - RCCG Overcomers HOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
+        :root {
+            --primary: #1a3a5c;
+            --primary-light: #2c5f8a;
+            --primary-dark: #0f2a44;
+            --secondary: #ffd700;
+            --secondary-hover: #f0c800;
+            --text: #2c3e50;
+            --text-light: #5a7a9a;
+            --text-lighter: #8a9aaa;
+            --bg: #f5f7fa;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #2c3e50;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.7;
             overflow-x: hidden;
         }
@@ -19,7 +38,7 @@
         .loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #1a3a5c;
+            background: var(--primary);
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 9999;
@@ -27,14 +46,15 @@
         }
         .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
         .loader {
-            width: 50px; height: 50px;
+            width: 60px; height: 60px;
             border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid #ffd700;
+            border-top: 4px solid var(--secondary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+        .loader-text { color: #fff; margin-top: 20px; font-size: 0.9rem; letter-spacing: 2px; opacity: 0.7; }
+        .loader-sub { color: rgba(255,255,255,0.4); font-size: 0.7rem; letter-spacing: 1px; }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(40px); }
@@ -50,14 +70,21 @@
         }
 
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .animate-fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; }
+        .animate-fade-in { animation: fadeIn 0.8s ease forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
 
+        /* ===== NAVBAR ===== */
         .navbar {
-            background: #ffffff;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            background: var(--white);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
             padding: 12px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
         }
         .navbar .container {
             display: flex;
@@ -71,35 +98,31 @@
             gap: 14px;
             text-decoration: none;
         }
-        .navbar .logo img {
-            height: 55px;
-            width: auto;
-            border-radius: 8px;
-        }
+        .navbar .logo img { height: 50px; width: auto; border-radius: 8px; }
         .navbar .logo-text {
-            font-weight: 700;
+            font-weight: 800;
             font-size: 1.2rem;
-            color: #1a3a5c;
+            color: var(--primary);
             line-height: 1.2;
         }
         .navbar .logo-text small {
             display: block;
             font-weight: 400;
             font-size: 0.7rem;
-            color: #5a7a9a;
+            color: var(--text-light);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 30px;
             list-style: none;
             align-items: center;
         }
         .nav-links a {
             text-decoration: none;
-            color: #2c3e50;
+            color: var(--text);
             font-weight: 500;
             font-size: 0.95rem;
-            transition: color 0.3s ease;
+            transition: var(--transition);
             position: relative;
         }
         .nav-links a::after {
@@ -109,116 +132,230 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: #1a3a5c;
-            transition: width 0.3s ease;
+            background: var(--primary);
+            transition: var(--transition);
         }
         .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: #1a3a5c; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links .btn-nav {
+            background: var(--primary);
+            color: #fff !important;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: var(--transition);
+        }
+        .nav-links .btn-nav:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
+        }
+        .nav-links .btn-nav::after { display: none; }
         .hamburger {
             display: none;
             font-size: 1.8rem;
             cursor: pointer;
-            color: #1a3a5c;
+            color: var(--primary);
         }
 
+        /* ===== PAGE HERO ===== */
         .page-hero {
-            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: #fff;
-            padding: 60px 0;
+            padding: 60px 0 50px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
-        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
-        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
+        .page-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: var(--bg);
+            clip-path: ellipse(70% 100% at 50% 100%);
+        }
+        .page-hero .container { position: relative; z-index: 1; }
+        .page-hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+        .page-hero h1 i { color: var(--secondary); margin-right: 10px; }
+        .page-hero p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+            margin-top: 8px;
+        }
 
-        .section { padding: 60px 0; }
-        .section-gray { background: #f5f7fa; }
-
-        .card-grid {
+        /* ===== LESSONS GRID ===== */
+        .section { padding: 50px 0 70px; }
+        .lessons-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 30px;
         }
-        .card {
-            background: #fff;
-            border-radius: 12px;
+
+        .lesson-card {
+            background: var(--white);
+            border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            transition: all 0.4s ease;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
             animation: fadeUp 0.6s ease forwards;
             opacity: 0;
+            border-left: 5px solid var(--secondary);
         }
-        .card:hover {
+        .lesson-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-hover);
         }
-        .card-image {
+        .lesson-card .card-image {
             width: 100%;
             height: 220px;
             object-fit: cover;
             background: #eef2f7;
         }
-        .card-body { padding: 20px 25px; }
-        .card-body h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            color: #1a3a5c;
-        }
-        .card-body .meta {
-            font-size: 0.85rem;
-            color: #7a8a9a;
-            margin-bottom: 10px;
-        }
-        .card-body p { color: #5a6a7a; font-size: 0.95rem; margin-bottom: 12px; }
-        .bible-reading {
-            background: #f5f7fa;
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin: 8px 0;
-            font-size: 0.9rem;
-        }
-        .memory-verse {
-            font-style: italic;
-            color: #1a3a5c;
-            padding: 10px 15px;
-            border-left: 3px solid #ffd700;
-            margin: 8px 0;
-            font-size: 0.95rem;
-        }
-        .badge-featured {
+        .lesson-card .card-body { padding: 24px 28px; }
+        .lesson-card .card-body .badge {
             display: inline-block;
-            padding: 3px 12px;
-            background: #ffd700;
-            border-radius: 12px;
+            padding: 3px 14px;
+            border-radius: 20px;
             font-size: 0.7rem;
             font-weight: 600;
-            color: #1a3a5c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--secondary);
+            color: var(--primary);
         }
-        .skeleton-image { height: 220px; background: #e2e8f0; border-radius: 8px; animation: pulse 1.5s ease-in-out infinite; }
-        .skeleton-text { height: 12px; margin: 8px 0; background: #e2e8f0; border-radius: 4px; animation: pulse 1.5s ease-in-out infinite; }
+        .lesson-card .card-body h3 {
+            font-size: 1.2rem;
+            margin: 8px 0 4px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .lesson-card .card-body .meta {
+            font-size: 0.85rem;
+            color: var(--text-lighter);
+            margin-bottom: 10px;
+        }
+        .lesson-card .card-body .meta i { margin-right: 4px; }
+        .lesson-card .card-body .description {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .lesson-card .card-body .bible-reading {
+            background: var(--bg);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        .lesson-card .card-body .bible-reading i { color: var(--primary); }
+        .lesson-card .card-body .memory-verse {
+            font-style: italic;
+            color: var(--primary);
+            padding: 12px 16px;
+            border-left: 4px solid var(--secondary);
+            margin: 10px 0;
+            font-size: 0.95rem;
+            background: #fefce8;
+            border-radius: 0 8px 8px 0;
+        }
+        .lesson-card .card-body .lesson-number {
+            font-size: 0.8rem;
+            color: var(--text-lighter);
+        }
+        .lesson-card .card-body .teacher {
+            display: inline-block;
+            padding: 4px 14px;
+            background: #eef2f7;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
 
-        .footer {
-            background: #1a3a5c;
-            color: #fff;
-            padding: 40px 0;
-            margin-top: 40px;
+        .skeleton-image {
+            height: 220px;
+            background: #e2e8f0;
+            border-radius: 8px;
+            animation: pulse 1.5s ease-in-out infinite;
         }
-        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
+        .skeleton-text {
+            height: 12px;
+            margin: 8px 0;
+            background: #e2e8f0;
+            border-radius: 4px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--primary-dark);
+            color: #fff;
+            padding: 50px 0 30px;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
         .footer a:hover { opacity: 1; }
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
+            gap: 40px;
         }
-        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
-        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
+        .footer h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .footer ul {
+            list-style: none;
+            opacity: 0.7;
+        }
+        .footer ul li { margin-bottom: 6px; }
+        .footer .social {
+            display: flex;
+            gap: 15px;
+            font-size: 1.4rem;
+        }
+        .footer .social a {
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+        .footer .social a:hover {
+            opacity: 1;
+            transform: translateY(-3px);
+        }
+        .footer hr {
+            border-color: rgba(255,255,255,0.08);
+            margin: 30px 0 20px;
+        }
+        .footer .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
         .footer .dev-credit {
             text-align: center;
             opacity: 0.3;
             font-size: 0.7rem;
-            margin-top: 10px;
             letter-spacing: 1px;
+            margin-top: 10px;
         }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -230,19 +367,29 @@
             .nav-links.open { display: flex; }
             .hamburger { display: block; }
             .page-hero h1 { font-size: 2rem; }
-            .card-grid { grid-template-columns: 1fr; }
+            .lessons-grid { grid-template-columns: 1fr; }
             .navbar .logo img { height: 40px; }
             .navbar .logo-text { font-size: 1rem; }
+            .footer .bottom { flex-direction: column; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero { padding: 40px 0 30px; }
+            .page-hero h1 { font-size: 1.6rem; }
+            .lesson-card .card-body { padding: 18px 20px; }
         }
     </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">RCCG Overcomers HOC</div>
+    <div class="loader-sub">Loading Sunday School...</div>
 </div>
 
+<!-- NAVBAR -->
 <nav class="navbar">
     <div class="container">
         <a href="/" class="logo">
@@ -261,39 +408,42 @@
             <li><a href="/sermons">Sermons</a></li>
             <li><a href="/events">Events</a></li>
             <li><a href="/media">Media</a></li>
-            <li><a href="/sunday-school">Sunday School</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/sunday-school" class="active" style="color:var(--primary);">Sunday School</a></li>
+            <li><a href="/contact" class="btn-nav">Contact</a></li>
         </ul>
     </div>
 </nav>
 
-<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+<!-- PAGE HERO -->
+<section class="page-hero">
     <div class="container">
-        <h1>Sunday School</h1>
-        <p>Growing in the knowledge of God's Word</p>
+        <h1 class="animate-fade-in"><i class="fas fa-school"></i> Sunday School</h1>
+        <p class="animate-fade-in delay-1">Growing in the knowledge of God's Word together</p>
     </div>
 </section>
 
-<section class="section section-gray">
+<!-- LESSONS LIST -->
+<section class="section">
     <div class="container">
-        <div id="sundaySchoolContainer" class="card-grid">
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
-            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+        <div id="lessonsContainer" class="lessons-grid">
+            <div class="lesson-card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;height:20px;"></div><div class="skeleton-text" style="width:40%;"></div><div class="skeleton-text" style="width:80%;"></div><div class="skeleton-text" style="width:60%;"></div></div></div>
+            <div class="lesson-card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;height:20px;"></div><div class="skeleton-text" style="width:40%;"></div><div class="skeleton-text" style="width:80%;"></div><div class="skeleton-text" style="width:60%;"></div></div></div>
+            <div class="lesson-card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;height:20px;"></div><div class="skeleton-text" style="width:40%;"></div><div class="skeleton-text" style="width:80%;"></div><div class="skeleton-text" style="width:60%;"></div></div></div>
         </div>
     </div>
 </section>
 
+<!-- FOOTER -->
 <footer class="footer">
     <div class="container">
         <div class="footer-grid">
             <div>
-                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
-                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+                <h4>RCCG Overcomers HOC</h4>
+                <p style="opacity:0.7;font-size:0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Quick Links</h4>
-                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                <h4>Quick Links</h4>
+                <ul>
                     <li><a href="/">Home</a></li>
                     <li><a href="/about">About</a></li>
                     <li><a href="/sermons">Sermons</a></li>
@@ -302,79 +452,96 @@
                 </ul>
             </div>
             <div>
-                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
-                <div class="social" id="socialLinks">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                </div>
+                <h4>Connect With Us</h4>
+                <div class="social" id="socialLinks"></div>
             </div>
         </div>
         <hr/>
-        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
-        <div class="dev-credit">Developed by Dev Gift Team & Powered by De Creative Mide</div>
+        <div class="bottom">
+            <span>&copy; 2026 RCCG Overcomers HOC. All rights reserved.</span>
+            <span>Developed by Dev Gift Team</span>
+        </div>
+        <div class="dev-credit">Powered by De Creative Mide</div>
     </div>
 </footer>
 
 <script>
     window.addEventListener('load', function() {
-        setTimeout(() => {
+        setTimeout(function() {
             document.getElementById('loaderWrapper').classList.add('hidden');
-        }, 600);
+        }, 800);
     });
 
-    fetch('/api/sunday-school')
-        .then(res => res.json())
-        .then(lessons => {
-            const container = document.getElementById('sundaySchoolContainer');
-            if (lessons.length === 0) {
-                container.innerHTML = `
-                    <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                        <h3>No Sunday School lessons yet</h3>
-                        <p style="color: #7a8a9a;">Check back soon for new lessons.</p>
-                    </div>
-                `;
-                return;
-            }
-            container.innerHTML = lessons.map((lesson, i) => `
-                <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i % 3) * 0.1}s;">
-                    ${lesson.imageUrl ? `<img src="${lesson.imageUrl}" alt="${lesson.title}" class="card-image"/>` : ''}
-                    <div class="card-body">
-                        <h3>${lesson.title}</h3>
-                        <p class="meta"><i class="fas fa-user"></i> Teacher: ${lesson.teacher} &bull; ${new Date(lesson.date).toLocaleDateString()}</p>
-                        ${lesson.description ? `<p>${lesson.description}</p>` : ''}
-                        ${lesson.bibleReading ? `<div class="bible-reading"><strong>📖 Bible Reading:</strong> ${lesson.bibleReading}</div>` : ''}
-                        ${lesson.memoryVerse ? `<div class="memory-verse">"${lesson.memoryVerse}"</div>` : ''}
-                        ${lesson.featured ? `<div style="margin-top:10px;"><span class="badge-featured">⭐ Featured Lesson</span></div>` : ''}
-                    </div>
-                </div>
-            `).join('');
-        })
-        .catch(() => {
-            document.getElementById('sundaySchoolContainer').innerHTML = `
-                <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
-                    <h3>Unable to load Sunday School</h3>
-                    <p style="color: #7a8a9a;">Please refresh the page.</p>
-                </div>
-            `;
-        });
-
+    // Social Links
     fetch('/api/social-links')
         .then(res => res.json())
         .then(links => {
             const container = document.getElementById('socialLinks');
-            container.innerHTML = '';
-            links.forEach(link => {
-                const a = document.createElement('a');
-                a.href = link.url || '#';
-                a.target = '_blank';
-                a.rel = 'noopener';
-                a.innerHTML = `<i class="${link.icon}"></i>`;
-                container.appendChild(a);
-            });
+            if (links && links.length) {
+                container.innerHTML = links.map(link => `
+                    <a href="${link.url}" target="_blank" rel="noopener">
+                        <i class="${link.icon}"></i>
+                    </a>
+                `).join('');
+            } else {
+                container.innerHTML = `
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                `;
+            }
         })
         .catch(() => {});
+
+    // Load Sunday School Lessons
+    function renderLessons(lessons) {
+        const container = document.getElementById('lessonsContainer');
+        if (!lessons || lessons.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);">
+                    <i class="fas fa-book-open" style="font-size:3rem;color:var(--text-lighter);margin-bottom:15px;"></i>
+                    <h3 style="color:var(--text-light);">No Sunday School lessons yet</h3>
+                    <p style="color:var(--text-lighter);">Check back soon for new lessons from God's Word.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = lessons.map((lesson, i) => `
+            <div class="lesson-card" style="animation-delay:${(i % 6) * 0.08}s;">
+                ${lesson.imageUrl ? `<img src="${lesson.imageUrl}" alt="${lesson.title}" class="card-image" onerror="this.style.display='none'"/>` : ''}
+                <div class="card-body">
+                    ${lesson.featured ? `<span class="badge">⭐ Featured</span>` : ''}
+                    <h3>${lesson.title || 'Untitled Lesson'}</h3>
+                    <p class="meta">
+                        <i class="fas fa-user"></i> Teacher: ${lesson.teacher || 'N/A'} 
+                        &bull; ${new Date(lesson.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                    </p>
+                    ${lesson.lessonNumber ? `<div class="lesson-number">📖 Lesson ${lesson.lessonNumber}${lesson.quarter ? ' - ' + lesson.quarter : ''}</div>` : ''}
+                    ${lesson.description ? `<div class="description">${lesson.description}</div>` : ''}
+                    ${lesson.bibleReading ? `<div class="bible-reading"><i class="fas fa-bible"></i> ${lesson.bibleReading}</div>` : ''}
+                    ${lesson.memoryVerse ? `<div class="memory-verse">"${lesson.memoryVerse}"</div>` : ''}
+                    <span class="teacher"><i class="fas fa-chalkboard-teacher"></i> ${lesson.teacher || 'N/A'}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    fetch('/api/sunday-school')
+        .then(res => res.json())
+        .then(data => {
+            renderLessons(data || []);
+        })
+        .catch(() => {
+            document.getElementById('lessonsContainer').innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;padding:60px 20px;background:var(--white);border-radius:var(--radius);">
+                    <i class="fas fa-exclamation-triangle" style="font-size:3rem;color:#dc2626;margin-bottom:15px;"></i>
+                    <h3 style="color:var(--text-light);">Unable to load Sunday School</h3>
+                    <p style="color:var(--text-lighter);">Please refresh the page.</p>
+                </div>
+            `;
+        });
 </script>
 </body>
 </html>
