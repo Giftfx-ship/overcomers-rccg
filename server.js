@@ -18,35 +18,60 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// ============================================================
+// MIDDLEWARE
+// ============================================================
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static('uploads'));
-app.use('/images', express.static('images'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+console.log('🚀 RCCG Overcomers HOC Server Starting...');
+console.log('📁 Current Directory:', __dirname);
 
 // ============================================================
 // DUAL MONGODB CONNECTION
 // ============================================================
 
-// Database 1: Main Church Data
+// Database 1: Main Church Data (Text content)
+console.log('📊 Connecting to Main Database (rccg_overcomers)...');
 const mainDB = mongoose.createConnection(process.env.MONGODB_URI_MAIN, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 10000,
 });
-mainDB.on('connected', () => console.log('✅ Main DB Connected (rccg_overcomers)'));
-mainDB.on('error', err => console.error('❌ Main DB Error:', err));
 
-// Database 2: Media Storage
+mainDB.on('connected', () => {
+    console.log('✅ Main DB Connected Successfully!');
+    console.log('📊 Database: rccg_overcomers (Text Data)');
+    console.log('💾 Storage: Up to 500MB');
+});
+
+mainDB.on('error', (err) => {
+    console.error('❌ Main DB Error:', err.message);
+});
+
+// Database 2: Media Storage (Photos, Videos, Audio)
+console.log('📊 Connecting to Media Database (rccg_media)...');
 const mediaDB = mongoose.createConnection(process.env.MONGODB_URI_MEDIA, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 10000,
 });
-mediaDB.on('connected', () => console.log('✅ Media DB Connected (rccg_media)'));
-mediaDB.on('error', err => console.error('❌ Media DB Error:', err));
+
+mediaDB.on('connected', () => {
+    console.log('✅ Media DB Connected Successfully!');
+    console.log('📊 Database: rccg_media (Media Files)');
+    console.log('💾 Storage: Up to 500MB');
+});
+
+mediaDB.on('error', (err) => {
+    console.error('❌ Media DB Error:', err.message);
+});
 
 // ============================================================
-// MODELS - MAIN DATABASE
+// MODELS - MAIN DATABASE (Text Data)
 // ============================================================
 
 // User
@@ -158,7 +183,7 @@ const SundaySchoolSchema = new mongoose.Schema({
 const SundaySchool = mainDB.model('SundaySchool', SundaySchoolSchema);
 
 // ============================================================
-// MODELS - MEDIA DATABASE
+// MODELS - MEDIA DATABASE (Photos, Videos, Audio)
 // ============================================================
 
 const MediaSchema = new mongoose.Schema({
@@ -219,36 +244,48 @@ const authMiddleware = async (req, res, next) => {
 // INIT ADMIN USER & SOCIAL LINKS
 // ============================================================
 const initAdmin = async () => {
-    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    try {
+        const adminUsername = process.env.ADMIN_USERNAME || 'devgift';
+        const adminPassword = process.env.ADMIN_PASSWORD || 'mide';
 
-    const adminExists = await User.findOne({ username: adminUsername });
-    if (!adminExists) {
-        const hashedPassword = await bcrypt.hash(adminPassword, 10);
-        await User.create({ username: adminUsername, password: hashedPassword });
-        console.log(`✅ Admin created - username: ${adminUsername}`);
+        const adminExists = await User.findOne({ username: adminUsername });
+        if (!adminExists) {
+            const hashedPassword = await bcrypt.hash(adminPassword, 10);
+            await User.create({ username: adminUsername, password: hashedPassword });
+            console.log(`✅ Admin created - username: ${adminUsername}`);
+        } else {
+            console.log('✅ Admin already exists');
+        }
+    } catch (error) {
+        console.error('❌ Error creating admin:', error.message);
     }
 };
 
 const initSocialLinks = async () => {
-    const defaultLinks = [
-        { platform: 'facebook', url: 'https://facebook.com/rccgovercomers', icon: 'fab fa-facebook', active: true },
-        { platform: 'youtube', url: 'https://youtube.com/rccgovercomers', icon: 'fab fa-youtube', active: true },
-        { platform: 'instagram', url: 'https://instagram.com/rccgovercomers', icon: 'fab fa-instagram', active: true },
-        { platform: 'whatsapp', url: 'https://wa.me/2348000000000', icon: 'fab fa-whatsapp', active: true },
-        { platform: 'twitter', url: 'https://twitter.com/rccgovercomers', icon: 'fab fa-twitter', active: true }
-    ];
+    try {
+        const defaultLinks = [
+            { platform: 'facebook', url: 'https://facebook.com/rccgovercomers', icon: 'fab fa-facebook', active: true },
+            { platform: 'youtube', url: 'https://youtube.com/rccgovercomers', icon: 'fab fa-youtube', active: true },
+            { platform: 'instagram', url: 'https://instagram.com/rccgovercomers', icon: 'fab fa-instagram', active: true },
+            { platform: 'whatsapp', url: 'https://wa.me/2348000000000', icon: 'fab fa-whatsapp', active: true },
+            { platform: 'twitter', url: 'https://twitter.com/rccgovercomers', icon: 'fab fa-twitter', active: true }
+        ];
 
-    for (const link of defaultLinks) {
-        const exists = await SocialLink.findOne({ platform: link.platform });
-        if (!exists) {
-            await SocialLink.create(link);
-            console.log(`✅ Social link created: ${link.platform}`);
+        for (const link of defaultLinks) {
+            const exists = await SocialLink.findOne({ platform: link.platform });
+            if (!exists) {
+                await SocialLink.create(link);
+                console.log(`✅ Social link created: ${link.platform}`);
+            }
         }
+    } catch (error) {
+        console.error('❌ Error creating social links:', error.message);
     }
 };
 
+// Wait for DB connection
 mainDB.once('connected', async () => {
+    console.log('🔄 Initializing admin and social links...');
     await initAdmin();
     await initSocialLinks();
 });
@@ -327,6 +364,7 @@ app.get('/api/admin/stats', authMiddleware, async (req, res) => {
         ]);
         res.json({ sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek, sundaySchool });
     } catch (error) {
+        console.error('❌ Stats error:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
@@ -452,7 +490,7 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - MEDIA (FIXED)
+// API ROUTES - MEDIA (Stored in Media Database)
 // ============================================================
 app.get('/api/media', async (req, res) => {
     try {
@@ -510,7 +548,7 @@ app.delete('/api/admin/media/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - TESTIMONIES (FIXED)
+// API ROUTES - TESTIMONIES
 // ============================================================
 app.get('/api/testimonies', async (req, res) => {
     try {
@@ -563,7 +601,7 @@ app.delete('/api/admin/testimonies/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// API ROUTES - PRAYER REQUESTS (FIXED)
+// API ROUTES - PRAYER REQUESTS
 // ============================================================
 app.post('/api/prayer-requests', async (req, res) => {
     try {
@@ -849,8 +887,10 @@ app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req,
 });
 
 // ============================================================
-// SERVE HTML PAGES
+// SERVE HTML PAGES (Serving from root directory)
 // ============================================================
+
+// Serve static HTML files from root
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -879,8 +919,14 @@ app.get('/sunday-school', (req, res) => {
     res.sendFile(path.join(__dirname, 'sunday-school.html'));
 });
 
+// SECRET ADMIN ROUTE
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+// Catch-all route - serve index for any unknown route
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ============================================================
@@ -893,7 +939,8 @@ app.listen(PORT, () => {
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
     ║  🔒 Admin: http://localhost:${PORT}/admin               ║
-    ║  💾 Dual MongoDB (2 DBs = 1GB Storage)                 ║
+    ║  💾 Database 1: rccg_overcomers (Text Data)            ║
+    ║  💾 Database 2: rccg_media (Media Files)               ║
     ║  👨‍💻 Developed by Dev Gift Team                         ║
     ╚══════════════════════════════════════════════════════════╝
     `);
