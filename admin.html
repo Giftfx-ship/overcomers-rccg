@@ -148,7 +148,7 @@
         .sidebar .nav-item i { width: 20px; }
         .sidebar .logout { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
 
-        /* ===== MAIN CONTENT ===== */
+        /* ===== MAIN ===== */
         .main {
             margin-left: 240px;
             padding: 25px 30px;
@@ -166,7 +166,7 @@
         .header .user { color: #5a7a9a; font-size: 0.9rem; }
         .header .user i { margin-right: 5px; }
 
-        /* ===== STATS CARDS ===== */
+        /* ===== STATS ===== */
         .stats {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -367,10 +367,6 @@
             margin-bottom: 10px;
             display: block;
         }
-        .empty-state h3 {
-            color: #1a3a5c;
-            margin-bottom: 5px;
-        }
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
@@ -395,7 +391,7 @@
     <div class="loader-text">Loading Admin Panel...</div>
 </div>
 
-<!-- ===== LOGIN PAGE ===== -->
+<!-- ===== LOGIN ===== -->
 <div id="loginPage">
     <div class="login-box">
         <div class="logo">
@@ -471,7 +467,7 @@
             <span class="user"><i class="fas fa-user"></i> <span id="adminName">Admin</span></span>
         </div>
 
-        <!-- ===== DASHBOARD SECTION ===== -->
+        <!-- ===== DASHBOARD ===== -->
         <div id="dashboardSection" class="section-page active">
             <div class="stats">
                 <div class="stat-card"><h3>Sermons</h3><span class="number" id="statSermons">0</span><span class="icon"><i class="fas fa-bible"></i></span></div>
@@ -486,7 +482,7 @@
             </div>
             <div class="card">
                 <h2>Welcome to Admin Panel</h2>
-                <p style="color: #5a7a9a;">Manage all church content from one place. Select a section from the sidebar to get started.</p>
+                <p style="color: #5a7a9a;">Manage all church content from one place. Select a section from the sidebar.</p>
             </div>
         </div>
 
@@ -660,7 +656,7 @@
 
 <script>
 // ============================================================
-// AUTH CHECK - FIXED
+// AUTH CHECK
 // ============================================================
 const token = localStorage.getItem('adminToken');
 
@@ -703,7 +699,7 @@ async function verifyAuth() {
 }
 
 // ============================================================
-// LOGIN - FIXED
+// LOGIN
 // ============================================================
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -847,11 +843,11 @@ function openModal(type, data = null) {
                 <input type="text" name="preacher" placeholder="Preacher Name*" value="${d.preacher || ''}" required/>
                 <input type="date" name="date" value="${d.date ? new Date(d.date).toISOString().split('T')[0] : ''}"/>
                 <textarea name="description" placeholder="Description">${d.description || ''}</textarea>
-                <input type="text" name="audioUrl" placeholder="Audio URL (e.g. https://example.com/audio.mp3)" value="${d.audioUrl || ''}"/>
-                <input type="text" name="videoUrl" placeholder="Video URL (e.g. https://youtube.com/watch?v=...)" value="${d.videoUrl || ''}"/>
-                <input type="text" name="pdfUrl" placeholder="PDF URL (e.g. https://example.com/notes.pdf)" value="${d.pdfUrl || ''}"/>
+                <input type="text" name="audioUrl" placeholder="Audio URL" value="${d.audioUrl || ''}"/>
+                <input type="text" name="videoUrl" placeholder="Video URL" value="${d.videoUrl || ''}"/>
+                <input type="text" name="pdfUrl" placeholder="PDF URL" value="${d.pdfUrl || ''}"/>
                 <input type="file" name="image" accept="image/*"/>
-                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured (shows on homepage)</label>
+                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
@@ -908,9 +904,9 @@ function openModal(type, data = null) {
             <p style="color:#7a8a9a;margin-bottom:15px;">Set the weekly prayer. Only one prayer can be active at a time.</p>
             <form id="prayerWeekForm">
                 <input type="text" name="title" placeholder="Prayer Title*" value="${d.title || ''}" required/>
-                <input type="text" name="bibleVerse" placeholder="Bible Verse (e.g. Philippians 4:6)" value="${d.bibleVerse || ''}"/>
+                <input type="text" name="bibleVerse" placeholder="Bible Verse" value="${d.bibleVerse || ''}"/>
                 <textarea name="prayer" placeholder="Prayer Text*" required>${d.prayer || ''}</textarea>
-                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active (shows on homepage)</label>
+                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
@@ -927,7 +923,7 @@ function openModal(type, data = null) {
                 <input type="text" name="memoryVerse" placeholder="Memory Verse" value="${d.memoryVerse || ''}"/>
                 <textarea name="content" placeholder="Content*" required>${d.content || ''}</textarea>
                 <textarea name="prayer" placeholder="Prayer">${d.prayer || ''}</textarea>
-                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured (shows on homepage)</label>
+                <label><input type="checkbox" name="featured" ${d.featured ? 'checked' : ''}/> Featured</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
@@ -943,7 +939,7 @@ function openModal(type, data = null) {
                 <input type="text" name="title" placeholder="Title (e.g. Worship Leader)" value="${d.title || ''}" required/>
                 <textarea name="words" placeholder="Words / Testimony*" required>${d.words || ''}</textarea>
                 <input type="file" name="image" accept="image/*" ${d._id ? '' : 'required'}/>
-                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active (shows on homepage)</label>
+                <label><input type="checkbox" name="active" ${d.active !== undefined ? (d.active ? 'checked' : '') : 'checked'}/> Active</label>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
                     <button type="submit" class="btn btn-primary">${d._id ? 'Update' : 'Save'}</button>
