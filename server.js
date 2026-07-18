@@ -122,6 +122,28 @@ const PrayerRequestSchema = new mongoose.Schema({
 }, { timestamps: true });
 const PrayerRequest = mongoose.model('PrayerRequest', PrayerRequestSchema);
 
+// ===== NEW: Prayer for the Week =====
+const PrayerWeekSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    prayer: { type: String, required: true },
+    bibleVerse: String,
+    date: { type: Date, default: Date.now },
+    active: { type: Boolean, default: true }
+}, { timestamps: true });
+const PrayerWeek = mongoose.model('PrayerWeek', PrayerWeekSchema);
+
+// ===== NEW: Open Heaven =====
+const OpenHeavenSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    bibleReading: String,
+    memoryVerse: String,
+    prayer: String,
+    date: { type: Date, default: Date.now },
+    featured: { type: Boolean, default: false }
+}, { timestamps: true });
+const OpenHeaven = mongoose.model('OpenHeaven', OpenHeavenSchema);
+
 // ============================================================
 // AUTH MIDDLEWARE
 // ============================================================
@@ -140,7 +162,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 // ============================================================
-// INIT ADMIN USER (from .env)
+// INIT ADMIN USER
 // ============================================================
 const initAdmin = async () => {
     const adminUsername = process.env.ADMIN_USERNAME || 'admin';
@@ -150,7 +172,7 @@ const initAdmin = async () => {
     if (!adminExists) {
         const hashedPassword = await bcrypt.hash(adminPassword, 10);
         await User.create({ username: adminUsername, password: hashedPassword });
-        console.log(`✅ Admin created - username: ${adminUsername}, password: ${adminPassword}`);
+        console.log(`✅ Admin created`);
     }
 };
 initAdmin();
@@ -165,16 +187,10 @@ app.post('/api/admin/login', async (req, res) => {
         const { username, password } = req.body;
         const user = await User.findOne({ username });
         if (!user) return res.status(401).json({ error: 'Invalid credentials' });
-        
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
-        
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-        res.json({ 
-            token, 
-            username: user.username,
-            message: 'Login successful'
-        });
+        res.json({ token, username: user.username });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -187,20 +203,24 @@ app.post('/api/admin/verify', authMiddleware, async (req, res) => {
 // ----- DASHBOARD STATS -----
 app.get('/api/admin/stats', authMiddleware, async (req, res) => {
     try {
-        const [sermons, events, media, testimonies, prayers] = await Promise.all([
+        const [sermons, events, media, testimonies, prayers, prayerWeek, openHeaven] = await Promise.all([
             Sermon.countDocuments(),
             Event.countDocuments(),
             Media.countDocuments(),
             Testimony.countDocuments(),
-            PrayerRequest.countDocuments()
+            PrayerRequest.countDocuments(),
+            PrayerWeek.countDocuments(),
+            OpenHeaven.countDocuments()
         ]);
-        res.json({ sermons, events, media, testimonies, prayers });
+        res.json({ sermons, events, media, testimonies, prayers, prayerWeek, openHeaven });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// ----- SERMONS -----
+// ============================================================
+// SERMONS API
+// ============================================================
 app.get('/api/sermons', async (req, res) => {
     try {
         const sermons = await Sermon.find().sort({ date: -1 });
@@ -265,7 +285,9 @@ app.delete('/api/admin/sermons/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- EVENTS -----
+// ============================================================
+// EVENTS API
+// ============================================================
 app.get('/api/events', async (req, res) => {
     try {
         const events = await Event.find().sort({ date: 1 });
@@ -316,7 +338,9 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- MEDIA -----
+// ============================================================
+// MEDIA API
+// ============================================================
 app.get('/api/media', async (req, res) => {
     try {
         const media = await Media.find().sort({ createdAt: -1 });
@@ -346,7 +370,9 @@ app.delete('/api/admin/media/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- TESTIMONIES -----
+// ============================================================
+// TESTIMONIES API
+// ============================================================
 app.get('/api/testimonies', async (req, res) => {
     try {
         const testimonies = await Testimony.find({ approved: true }).sort({ date: -1 });
@@ -397,7 +423,9 @@ app.delete('/api/admin/testimonies/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- PRAYER REQUESTS -----
+// ============================================================
+// PRAYER REQUESTS API
+// ============================================================
 app.post('/api/prayer-requests', async (req, res) => {
     try {
         const prayer = await PrayerRequest.create(req.body);
@@ -439,7 +467,125 @@ app.delete('/api/admin/prayer-requests/:id', authMiddleware, async (req, res) =>
     }
 });
 
-// ----- FILE UPLOAD (General) -----
+// ============================================================
+// PRAYER FOR THE WEEK API
+// ============================================================
+app.get('/api/prayer-week', async (req, res) => {
+    try {
+        const prayer = await PrayerWeek.findOne({ active: true }).sort({ date: -1 });
+        res.json(prayer);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/admin/prayer-week', authMiddleware, async (req, res) => {
+    try {
+        const prayers = await PrayerWeek.find().sort({ date: -1 });
+        res.json(prayers);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/admin/prayer-week', authMiddleware, async (req, res) => {
+    try {
+        // Deactivate old prayers
+        await PrayerWeek.updateMany({ active: true }, { active: false });
+        const prayer = await PrayerWeek.create(req.body);
+        res.status(201).json(prayer);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/admin/prayer-week/:id', authMiddleware, async (req, res) => {
+    try {
+        const prayer = await PrayerWeek.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!prayer) return res.status(404).json({ error: 'Prayer not found' });
+        res.json(prayer);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/api/admin/prayer-week/:id', authMiddleware, async (req, res) => {
+    try {
+        await PrayerWeek.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Prayer deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============================================================
+// OPEN HEAVEN API
+// ============================================================
+app.get('/api/open-heaven', async (req, res) => {
+    try {
+        const openHeaven = await OpenHeaven.findOne({ featured: true }).sort({ date: -1 });
+        res.json(openHeaven);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/open-heaven/all', async (req, res) => {
+    try {
+        const openHeaven = await OpenHeaven.find().sort({ date: -1 });
+        res.json(openHeaven);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/admin/open-heaven', authMiddleware, async (req, res) => {
+    try {
+        const openHeaven = await OpenHeaven.find().sort({ date: -1 });
+        res.json(openHeaven);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/admin/open-heaven', authMiddleware, async (req, res) => {
+    try {
+        // If featured, remove featured from others
+        if (req.body.featured) {
+            await OpenHeaven.updateMany({ featured: true }, { featured: false });
+        }
+        const openHeaven = await OpenHeaven.create(req.body);
+        res.status(201).json(openHeaven);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/admin/open-heaven/:id', authMiddleware, async (req, res) => {
+    try {
+        if (req.body.featured) {
+            await OpenHeaven.updateMany({ featured: true }, { featured: false });
+        }
+        const openHeaven = await OpenHeaven.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!openHeaven) return res.status(404).json({ error: 'Open Heaven not found' });
+        res.json(openHeaven);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.delete('/api/admin/open-heaven/:id', authMiddleware, async (req, res) => {
+    try {
+        await OpenHeaven.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Open Heaven deleted' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============================================================
+// FILE UPLOAD (Admin Only)
+// ============================================================
 app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req, res) => {
     try {
         if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
@@ -450,7 +596,7 @@ app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req,
 });
 
 // ============================================================
-// SERVE HTML PAGES
+// SERVE HTML PAGES (NO ADMIN LINKS)
 // ============================================================
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -476,12 +622,9 @@ app.get('/contact', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'contact.html'));
 });
 
-app.get('/admin', (req, res) => {
+// SECRET ADMIN ROUTE
+app.get('/admin-panel', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
-});
-
-app.get('/admin/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
 });
 
 // ============================================================
@@ -493,8 +636,7 @@ app.listen(PORT, () => {
     ║  🏛️  RCCG OVERCOMERS HOC                                ║
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
-    ║  🔑 Admin Login: ${process.env.ADMIN_USERNAME}          ║
-    ║  🔐 Admin Password: ${process.env.ADMIN_PASSWORD}       ║
+    ║  🔒 Admin: http://localhost:${PORT}/admin-panel         ║
     ╚══════════════════════════════════════════════════════════╝
     `);
 });
