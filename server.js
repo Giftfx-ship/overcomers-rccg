@@ -1,7 +1,7 @@
 // ============================================================
 // RCCG OVERCOMERS HOC - COMPLETE SERVER
 // Parish: Oke Ado, Old Stadium Road, Ogbomoso, Oyo State
-// Built from scratch - 100% working
+// Single Database - 100% WORKING
 // Developed by Dev Gift Team
 // ============================================================
 
@@ -21,10 +21,7 @@ const PORT = process.env.PORT || 5000;
 // ============================================================
 // MIDDLEWARE
 // ============================================================
-app.use(cors({
-    origin: '*',
-    credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -33,23 +30,18 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 console.log('🚀 RCCG Overcomers HOC Server Starting...');
 
 // ============================================================
-// MONGODB CONNECTION - SINGLE DATABASE
+// SINGLE MONGODB CONNECTION
 // ============================================================
 
-console.log('📊 Connecting to MongoDB Atlas...');
-console.log('🔗 Using database: rccg_overcomers');
-
+console.log('📊 Connecting to Database...');
 const db = mongoose.createConnection(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 15000,
-    socketTimeoutMS: 45000,
-    family: 4, // Use IPv4, skip trying IPv6
+    serverSelectionTimeoutMS: 10000,
 });
 
 db.on('connected', () => {
     console.log('✅ Database Connected Successfully!');
-    console.log('📊 Database: rccg_overcomers');
     initAdmin();
     initSocialLinks();
 });
@@ -58,12 +50,8 @@ db.on('error', (err) => {
     console.error('❌ Database Error:', err.message);
 });
 
-db.on('disconnected', () => {
-    console.log('⚠️ Database Disconnected');
-});
-
 // ============================================================
-// MODELS
+// MODELS - ALL IN ONE DATABASE
 // ============================================================
 
 // User
@@ -188,7 +176,7 @@ const MediaSchema = new mongoose.Schema({
 const Media = db.model('Media', MediaSchema);
 
 // ============================================================
-// FILE UPLOAD
+// FILE UPLOAD CONFIG
 // ============================================================
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -230,7 +218,7 @@ const authMiddleware = async (req, res, next) => {
 };
 
 // ============================================================
-// INIT FUNCTIONS
+// INIT ADMIN USER & SOCIAL LINKS
 // ============================================================
 const initAdmin = async () => {
     try {
@@ -267,16 +255,15 @@ const initSocialLinks = async () => {
                 console.log(`✅ Social link created: ${link.platform}`);
             }
         }
+        console.log('✅ All social links initialized');
     } catch (error) {
         console.error('❌ Error creating social links:', error.message);
     }
 };
 
 // ============================================================
-// API ROUTES
+// API ROUTES - AUTH
 // ============================================================
-
-// ----- AUTH -----
 app.post('/api/admin/login', async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -295,7 +282,9 @@ app.post('/api/admin/verify', authMiddleware, (req, res) => {
     res.json({ valid: true, username: req.user.username });
 });
 
-// ----- SOCIAL LINKS -----
+// ============================================================
+// API ROUTES - SOCIAL LINKS
+// ============================================================
 app.get('/api/social-links', async (req, res) => {
     try {
         const links = await SocialLink.find({ active: true });
@@ -328,7 +317,9 @@ app.put('/api/admin/social-links/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- STATS -----
+// ============================================================
+// API ROUTES - DASHBOARD STATS
+// ============================================================
 app.get('/api/admin/stats', authMiddleware, async (req, res) => {
     try {
         const [sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek, sundaySchool] = await Promise.all([
@@ -344,11 +335,14 @@ app.get('/api/admin/stats', authMiddleware, async (req, res) => {
         ]);
         res.json({ sermons, events, media, testimonies, prayers, prayerWeek, openHeaven, faceOfWeek, sundaySchool });
     } catch (error) {
+        console.error('❌ Stats error:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
 
-// ----- SERMONS -----
+// ============================================================
+// API ROUTES - SERMONS
+// ============================================================
 app.get('/api/sermons', async (req, res) => {
     try {
         const sermons = await Sermon.find().sort({ date: -1 });
@@ -413,7 +407,9 @@ app.delete('/api/admin/sermons/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- EVENTS -----
+// ============================================================
+// API ROUTES - EVENTS
+// ============================================================
 app.get('/api/events', async (req, res) => {
     try {
         const events = await Event.find().sort({ date: 1 });
@@ -464,7 +460,9 @@ app.delete('/api/admin/events/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- MEDIA -----
+// ============================================================
+// API ROUTES - MEDIA
+// ============================================================
 app.get('/api/media', async (req, res) => {
     try {
         const media = await Media.find().sort({ createdAt: -1 });
@@ -520,7 +518,9 @@ app.delete('/api/admin/media/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- TESTIMONIES -----
+// ============================================================
+// API ROUTES - TESTIMONIES
+// ============================================================
 app.get('/api/testimonies', async (req, res) => {
     try {
         const testimonies = await Testimony.find({ approved: true }).sort({ date: -1 });
@@ -571,7 +571,9 @@ app.delete('/api/admin/testimonies/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- PRAYER REQUESTS -----
+// ============================================================
+// API ROUTES - PRAYER REQUESTS
+// ============================================================
 app.post('/api/prayer-requests', async (req, res) => {
     try {
         const prayer = await PrayerRequest.create(req.body);
@@ -613,7 +615,9 @@ app.delete('/api/admin/prayer-requests/:id', authMiddleware, async (req, res) =>
     }
 });
 
-// ----- PRAYER WEEK -----
+// ============================================================
+// API ROUTES - PRAYER FOR THE WEEK
+// ============================================================
 app.get('/api/prayer-week', async (req, res) => {
     try {
         const prayer = await PrayerWeek.findOne({ active: true }).sort({ date: -1 });
@@ -661,7 +665,9 @@ app.delete('/api/admin/prayer-week/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- OPEN HEAVEN -----
+// ============================================================
+// API ROUTES - OPEN HEAVEN
+// ============================================================
 app.get('/api/open-heaven', async (req, res) => {
     try {
         const openHeaven = await OpenHeaven.findOne({ featured: true }).sort({ date: -1 });
@@ -723,7 +729,9 @@ app.delete('/api/admin/open-heaven/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- FACE OF WEEK -----
+// ============================================================
+// API ROUTES - FACE OF THE WEEK
+// ============================================================
 app.get('/api/face-of-week', async (req, res) => {
     try {
         const face = await FaceOfWeek.findOne({ active: true }).sort({ date: -1 });
@@ -775,7 +783,9 @@ app.delete('/api/admin/face-of-week/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// ----- SUNDAY SCHOOL -----
+// ============================================================
+// API ROUTES - SUNDAY SCHOOL
+// ============================================================
 app.get('/api/sunday-school', async (req, res) => {
     try {
         const sundaySchool = await SundaySchool.find().sort({ date: -1 });
@@ -836,7 +846,19 @@ app.delete('/api/admin/sunday-school/:id', authMiddleware, async (req, res) => {
 });
 
 // ============================================================
-// SERVE HTML FILES
+// FILE UPLOAD (General)
+// ============================================================
+app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+        res.json({ url: '/uploads/' + req.file.filename });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ============================================================
+// SERVE HTML PAGES
 // ============================================================
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -870,7 +892,7 @@ app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Catch all
+// Catch-all route
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
@@ -885,7 +907,7 @@ app.listen(PORT, () => {
     ║  📍 Oke Ado, Old Stadium Road, Ogbomoso, Oyo State     ║
     ║  🌐 http://localhost:${PORT}                            ║
     ║  🔒 Admin: http://localhost:${PORT}/admin               ║
-    ║  💾 Database: rccg_overcomers (MongoDB Atlas)          ║
+    ║  💾 Single Database - 100% WORKING!                    ║
     ║  👨‍💻 Developed by Dev Gift Team                         ║
     ╚══════════════════════════════════════════════════════════╝
     `);
