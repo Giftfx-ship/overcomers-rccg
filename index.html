@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>RCCG Overcomers HOC - Ogbomoso</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .navbar .logo img {
+            height: 50px;
+            width: auto;
+        }
+        .navbar .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a3a5c;
+            line-height: 1.2;
+        }
+        .navbar .logo-text small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: #5a7a9a;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1a3a5c;
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-links a:hover {
+            color: #1a3a5c;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #1a3a5c;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            color: #fff;
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 60%;
+            height: 200%;
+            background: rgba(255,255,255,0.04);
+            transform: rotate(-15deg);
+        }
+        .hero .container {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        .hero-content h1 span {
+            color: #ffd700;
+        }
+        .hero-content p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 25px;
+            max-width: 500px;
+        }
+        .hero-content .location {
+            font-size: 0.95rem;
+            opacity: 0.75;
+            margin-bottom: 30px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .btn-primary {
+            background: #ffd700;
+            color: #1a3a5c;
+        }
+        .btn-primary:hover {
+            background: #f0c800;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255,215,0,0.4);
+        }
+        .btn-outline {
+            background: transparent;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .btn-outline:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #fff;
+            transform: translateY(-3px);
+        }
+        .btn-secondary {
+            background: #2c5f8a;
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: #1a4a6f;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(44,95,138,0.4);
+        }
+        .hero-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .section {
+            padding: 70px 0;
+        }
+        .section-light {
+            background: #ffffff;
+        }
+        .section-gray {
+            background: #f5f7fa;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a3a5c;
+            margin-bottom: 10px;
+        }
+        .section-subtitle {
+            color: #5a7a9a;
+            font-size: 1.05rem;
+            margin-bottom: 40px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #eef2f7;
+        }
+        .card-body {
+            padding: 20px 25px;
+        }
+        .card-body h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #1a3a5c;
+        }
+        .card-body .meta {
+            font-size: 0.85rem;
+            color: #7a8a9a;
+            margin-bottom: 10px;
+        }
+        .card-body p {
+            color: #5a6a7a;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .footer {
+            background: #1a3a5c;
+            color: #fff;
+            padding: 40px 0;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        .footer a:hover {
+            opacity: 1;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer hr {
+            border-color: rgba(255,255,255,0.1);
+            margin: 20px 0;
+        }
+        .footer .social {
+            display: flex;
+            gap: 15px;
+            font-size: 1.5rem;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        @media (max-width: 768px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-content p {
+                margin: 0 auto 25px;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                padding: 20px 0;
+                gap: 15px;
+            }
+            .nav-links.open {
+                display: flex;
+            }
+            .hamburger {
+                display: block;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="logo">
+            <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.style.display='none'"/>
+            <span class="logo-text">
+                RCCG Overcomers HOC
+                <small>Oke Ado, Ogbomoso</small>
+            </span>
+        </a>
+        <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+            <i class="fas fa-bars"></i>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/sermons">Sermons</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/media">Media</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content" style="animation: fadeUp 0.8s ease forwards;">
+            <h1>Welcome to <span>RCCG</span><br>Overcomers HOC</h1>
+            <p>A place of worship, fellowship, and divine transformation. Winning souls for Christ through the power of the Holy Spirit.</p>
+            <div class="location">
+                <i class="fas fa-map-marker-alt"></i> Oke Ado, Old Stadium Road, Ogbomoso, Oyo State
+            </div>
+            <div class="hero-buttons">
+                <a href="/about" class="btn btn-primary">Learn More</a>
+                <a href="/sermons" class="btn btn-outline">Watch Sermons</a>
+            </div>
+        </div>
+        <div class="hero-image" style="animation: fadeIn 1s ease forwards; animation-delay: 0.2s;">
+            <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.src='https://placehold.co/500x400/1a3a5c/fff?text=RCCG+Overcomers+HOC'"/>
+        </div>
+    </div>
+</section>
+
+<!-- ===== PRAYER FOR THE WEEK ===== -->
+<section class="section section-gray">
+    <div class="container">
+        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Prayer for the Week</h2>
+        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Join us in prayer as we seek God's face</p>
+        <div id="prayerWeek" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
+            <!-- Loaded from API -->
+        </div>
+    </div>
+</section>
+
+<!-- ===== OPEN HEAVEN ===== -->
+<section class="section section-light">
+    <div class="container">
+        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Open Heaven</h2>
+        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Daily devotion and inspiration</p>
+        <div id="openHeaven" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
+            <!-- Loaded from API -->
+        </div>
+    </div>
+</section>
+
+<!-- ===== FEATURED SERMON ===== -->
+<section class="section section-gray">
+    <div class="container">
+        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Featured Sermon</h2>
+        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Listen to our latest message</p>
+        <div id="featuredSermon" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
+            <!-- Loaded from API -->
+        </div>
+    </div>
+</section>
+
+<!-- ===== UPCOMING EVENTS ===== -->
+<section class="section section-light">
+    <div class="container">
+        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Upcoming Events</h2>
+        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Join us in fellowship</p>
+        <div id="upcomingEvents" class="card-grid">
+            <!-- Loaded from API -->
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/events" class="btn btn-secondary">View All Events</a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SERVICE TIMES ===== -->
+<section class="section section-gray">
+    <div class="container">
+        <h2 class="section-title" style="animation: fadeUp 0.6s ease forwards;">Service Times</h2>
+        <p class="section-subtitle" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">Come worship with us</p>
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.1s;">
+                <div class="card-body" style="text-align: center;">
+                    <i class="fas fa-church" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
+                    <h3>Sunday Service</h3>
+                    <p><strong>8:00 AM - 10:00 AM</strong></p>
+                    <p style="font-size: 0.9rem; color: #7a8a9a;">Morning Worship</p>
+                </div>
+            </div>
+            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.2s;">
+                <div class="card-body" style="text-align: center;">
+                    <i class="fas fa-pray" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
+                    <h3>Wednesday Bible Study</h3>
+                    <p><strong>6:00 PM - 7:30 PM</strong></p>
+                    <p style="font-size: 0.9rem; color: #7a8a9a;">Midweek Service</p>
+                </div>
+            </div>
+            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.3s;">
+                <div class="card-body" style="text-align: center;">
+                    <i class="fas fa-users" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
+                    <h3>Friday Vigil</h3>
+                    <p><strong>10:00 PM - 12:00 AM</strong></p>
+                    <p style="font-size: 0.9rem; color: #7a8a9a;">Prayer &amp; Intercession</p>
+                </div>
+            </div>
+            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: 0.4s;">
+                <div class="card-body" style="text-align: center;">
+                    <i class="fas fa-child" style="font-size: 2.5rem; color: #1a3a5c; margin-bottom: 10px;"></i>
+                    <h3>Youth Fellowship</h3>
+                    <p><strong>4:00 PM - 6:00 PM</strong></p>
+                    <p style="font-size: 0.9rem; color: #7a8a9a;">Saturdays</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Quick Links</h4>
+                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
+                <div class="social">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">
+            &copy; 2026 RCCG Overcomers HOC. All rights reserved.
+        </p>
+    </div>
+</footer>
+
+<script>
+    // Load Prayer for the Week
+    fetch('/api/prayer-week')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('prayerWeek');
+            if (data) {
+                container.innerHTML = `
+                    <div class="card" style="animation: fadeUp 0.6s ease forwards;">
+                        <div class="card-body" style="background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%); color: #fff; border-radius: 12px; padding: 30px;">
+                            <h3 style="color: #ffd700; font-size: 1.4rem;">${data.title || 'Prayer for the Week'}</h3>
+                            ${data.bibleVerse ? `<p style="opacity: 0.9; margin: 10px 0;"><strong>📖 ${data.bibleVerse}</strong></p>` : ''}
+                            <p style="margin: 15px 0; font-size: 1.05rem; line-height: 1.8;">${data.prayer}</p>
+                            <p style="opacity: 0.6; font-size: 0.85rem;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
+                            <h3>Prayer for the Week</h3>
+                            <p style="color: #7a8a9a;">Check back soon for this week's prayer.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        })
+        .catch(() => {
+            document.getElementById('prayerWeek').innerHTML = `
+                <div class="card">
+                    <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
+                        <h3>Prayer for the Week</h3>
+                        <p style="color: #7a8a9a;">Unable to load prayer. Please refresh.</p>
+                    </div>
+                </div>
+            `;
+        });
+
+    // Load Open Heaven
+    fetch('/api/open-heaven')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('openHeaven');
+            if (data) {
+                container.innerHTML = `
+                    <div class="card" style="animation: fadeUp 0.6s ease forwards;">
+                        <div class="card-body" style="border-left: 5px solid #ffd700; padding: 25px 30px; background: #fff; border-radius: 12px;">
+                            <h3 style="color: #1a3a5c; font-size: 1.4rem;">${data.title || 'Open Heaven'}</h3>
+                            ${data.bibleReading ? `<p style="color: #5a7a9a; font-size: 0.95rem;"><strong>📖 Reading:</strong> ${data.bibleReading}</p>` : ''}
+                            ${data.memoryVerse ? `<p style="color: #1a3a5c; font-style: italic; margin: 10px 0;">"${data.memoryVerse}"</p>` : ''}
+                            <p style="margin: 15px 0; line-height: 1.8;">${data.content}</p>
+                            ${data.prayer ? `<div style="background: #f5f7fa; padding: 15px 20px; border-radius: 8px; margin-top: 10px;"><strong>🙏 Prayer:</strong> ${data.prayer}</div>` : ''}
+                            <p style="opacity: 0.6; font-size: 0.85rem; margin-top: 10px;">${new Date(data.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
+                            <h3>Open Heaven</h3>
+                            <p style="color: #7a8a9a;">Check back soon for today's devotion.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        })
+        .catch(() => {
+            document.getElementById('openHeaven').innerHTML = `
+                <div class="card">
+                    <div class="card-body" style="text-align: center; padding: 30px; background: #fff; border-radius: 12px;">
+                        <h3>Open Heaven</h3>
+                        <p style="color: #7a8a9a;">Unable to load devotion. Please refresh.</p>
+                    </div>
+                </div>
+            `;
+        });
+
+    // Load Featured Sermon
+    fetch('/api/sermons/featured')
+        .then(res => res.json())
+        .then(sermon => {
+            const container = document.getElementById('featuredSermon');
+            if (sermon) {
+                container.innerHTML = `
+                    <div class="card" style="animation: fadeUp 0.6s ease forwards;">
+                        <div style="display: grid; grid-template-columns: 300px 1fr; gap: 25px; align-items: center; padding: 20px;">
+                            ${sermon.imageUrl ? `<img src="${sermon.imageUrl}" alt="${sermon.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;"/>` : ''}
+                            <div>
+                                <h3 style="color: #1a3a5c;">${sermon.title}</h3>
+                                <p class="meta"><i class="fas fa-user"></i> ${sermon.preacher} &bull; ${new Date(sermon.date).toLocaleDateString()}</p>
+                                <p>${sermon.description || 'Listen to this powerful message from God\'s Word.'}</p>
+                                ${sermon.audioUrl ? `<a href="${sermon.audioUrl}" class="btn btn-primary" style="margin-top: 10px; display: inline-block;"><i class="fas fa-play"></i> Listen</a>` : ''}
+                                ${sermon.videoUrl ? `<a href="${sermon.videoUrl}" class="btn btn-secondary" style="margin-top: 10px; display: inline-block; margin-left: 10px;" target="_blank"><i class="fas fa-video"></i> Watch</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="card-body" style="text-align: center; padding: 30px;">
+                            <h3>No featured sermon yet</h3>
+                            <p style="color: #7a8a9a;">Check back soon for our latest message.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        })
+        .catch(() => {
+            document.getElementById('featuredSermon').innerHTML = `
+                <div class="card">
+                    <div class="card-body" style="text-align: center; padding: 30px;">
+                        <h3>Unable to load sermon</h3>
+                        <p style="color: #7a8a9a;">Please refresh the page.</p>
+                    </div>
+                </div>
+            `;
+        });
+
+    // Load Upcoming Events
+    fetch('/api/events/upcoming')
+        .then(res => res.json())
+        .then(events => {
+            const container = document.getElementById('upcomingEvents');
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <div class="card">
+                        <div class="card-body" style="text-align: center; padding: 30px;">
+                            <h3>No upcoming events</h3>
+                            <p style="color: #7a8a9a;">Check back soon for new events.</p>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = events.map((event, i) => `
+                <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i + 1) * 0.1}s;">
+                    ${event.imageUrl ? `<img src="${event.imageUrl}" alt="${event.title}" class="card-image"/>` : ''}
+                    <div class="card-body">
+                        <h3>${event.title}</h3>
+                        <p class="meta"><i class="fas fa-calendar"></i> ${new Date(event.date).toLocaleDateString()} ${event.time ? '• ' + event.time : ''}</p>
+                        <p>${event.description || ''}</p>
+                        ${event.location ? `<p style="font-size: 0.9rem; color: #7a8a9a;"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(() => {
+            document.getElementById('upcomingEvents').innerHTML = `
+                <div class="card">
+                    <div class="card-body" style="text-align: center; padding: 30px;">
+                        <h3>Unable to load events</h3>
+                        <p style="color: #7a8a9a;">Please refresh the page.</p>
+                    </div>
+                </div>
+            `;
+        });
+</script>
+</body>
+</html>
