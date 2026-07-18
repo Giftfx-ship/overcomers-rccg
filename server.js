@@ -851,54 +851,50 @@ app.post('/api/admin/upload', authMiddleware, upload.single('file'), async (req,
 // ============================================================
 // SERVE HTML PAGES - FIXED
 // ============================================================
+// ============================================================
+// SERVE HTML PAGES - FIXED FOR ROOT DIRECTORY
+// ============================================================
 
-// Create public directory if it doesn't exist
-const publicDir = path.join(__dirname, 'public');
-if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
-}
+// Serve static files from root (not public folder)
+app.use(express.static(__dirname));
 
-// Serve static files from public directory
-app.use(express.static(publicDir));
-
-// Serve HTML pages - with fallback to index.html for SPA
+// Serve HTML pages from root directory
 app.get('/', (req, res) => {
-    res.sendFile(path.join(publicDir, 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.get('/about', (req, res) => {
-    res.sendFile(path.join(publicDir, 'about.html'));
+    res.sendFile(path.join(__dirname, 'about.html'));
 });
 
 app.get('/sermons', (req, res) => {
-    res.sendFile(path.join(publicDir, 'sermons.html'));
+    res.sendFile(path.join(__dirname, 'sermons.html'));
 });
 
 app.get('/events', (req, res) => {
-    res.sendFile(path.join(publicDir, 'events.html'));
+    res.sendFile(path.join(__dirname, 'events.html'));
 });
 
 app.get('/media', (req, res) => {
-    res.sendFile(path.join(publicDir, 'media.html'));
+    res.sendFile(path.join(__dirname, 'media.html'));
 });
 
 app.get('/contact', (req, res) => {
-    res.sendFile(path.join(publicDir, 'contact.html'));
+    res.sendFile(path.join(__dirname, 'contact.html'));
 });
 
-// SECRET ADMIN ROUTE
 app.get('/admin-panel', (req, res) => {
-    res.sendFile(path.join(publicDir, 'admin.html'));
+    res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Catch-all route - for any other route, serve index.html
+// Catch-all route for any other routes
 app.get('*', (req, res) => {
     // Don't interfere with API routes
     if (req.path.startsWith('/api/')) {
         return res.status(404).json({ error: 'API endpoint not found' });
     }
     // For any other route, serve index.html
-    res.sendFile(path.join(publicDir, 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ============================================================
