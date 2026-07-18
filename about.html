@@ -7,39 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <style>
-        :root {
-            --primary: #1a3a5c;
-            --primary-light: #2c5f8a;
-            --primary-dark: #0f2a44;
-            --secondary: #ffd700;
-            --secondary-hover: #f0c800;
-            --text: #2c3e50;
-            --text-light: #5a7a9a;
-            --text-lighter: #8a9aaa;
-            --bg: #f5f7fa;
-            --white: #ffffff;
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
-            --shadow-hover: 0 12px 40px rgba(0,0,0,0.12);
-            --radius: 12px;
-            --radius-lg: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: var(--font);
-            background: var(--bg);
-            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
             line-height: 1.7;
-            overflow-x: hidden;
         }
 
         .loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--primary);
+            background: #1a3a5c;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
             z-index: 9999;
@@ -49,7 +29,7 @@
         .loader {
             width: 60px; height: 60px;
             border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--secondary);
+            border-top: 4px solid #ffd700;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -74,9 +54,9 @@
         .delay-3 { animation-delay: 0.3s; }
         .delay-4 { animation-delay: 0.4s; }
 
-        /* ===== NAVBAR ===== */
+        /* Navbar */
         .navbar {
-            background: var(--white);
+            background: #ffffff;
             box-shadow: 0 2px 20px rgba(0,0,0,0.06);
             padding: 12px 0;
             position: sticky;
@@ -101,14 +81,14 @@
         .navbar .logo-text {
             font-weight: 800;
             font-size: 1.2rem;
-            color: var(--primary);
+            color: #1a3a5c;
             line-height: 1.2;
         }
         .navbar .logo-text small {
             display: block;
             font-weight: 400;
             font-size: 0.7rem;
-            color: var(--text-light);
+            color: #5a7a9a;
         }
         .nav-links {
             display: flex;
@@ -118,10 +98,10 @@
         }
         .nav-links a {
             text-decoration: none;
-            color: var(--text);
+            color: #2c3e50;
             font-weight: 500;
             font-size: 0.95rem;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             position: relative;
         }
         .nav-links a::after {
@@ -131,34 +111,29 @@
             left: 0;
             width: 0;
             height: 2px;
-            background: var(--primary);
-            transition: var(--transition);
+            background: #1a3a5c;
+            transition: all 0.3s ease;
         }
         .nav-links a:hover::after { width: 100%; }
-        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover { color: #1a3a5c; }
         .nav-links .btn-nav {
-            background: var(--primary);
+            background: #1a3a5c;
             color: #fff !important;
             padding: 8px 20px;
             border-radius: 30px;
-            transition: var(--transition);
         }
-        .nav-links .btn-nav:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(26,58,92,0.3);
-        }
+        .nav-links .btn-nav:hover { background: #0f2a44; transform: translateY(-2px); }
         .nav-links .btn-nav::after { display: none; }
         .hamburger {
             display: none;
             font-size: 1.8rem;
             cursor: pointer;
-            color: var(--primary);
+            color: #1a3a5c;
         }
 
-        /* ===== PAGE HERO ===== */
+        /* Page Hero */
         .page-hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
             color: #fff;
             padding: 60px 0 50px;
             text-align: center;
@@ -172,7 +147,7 @@
             left: 0;
             width: 100%;
             height: 80px;
-            background: var(--bg);
+            background: #f5f7fa;
             clip-path: ellipse(70% 100% at 50% 100%);
         }
         .page-hero .container { position: relative; z-index: 1; }
@@ -181,17 +156,34 @@
             font-weight: 900;
             letter-spacing: -1px;
         }
-        .page-hero h1 i { color: var(--secondary); margin-right: 10px; }
+        .page-hero h1 i { color: #ffd700; margin-right: 10px; }
         .page-hero p {
             opacity: 0.8;
             font-size: 1.1rem;
             margin-top: 8px;
         }
 
-        /* ===== ABOUT SECTION ===== */
+        /* About Section */
         .section { padding: 70px 0; }
-        .section-light { background: var(--white); }
-        .section-gray { background: var(--bg); }
+        .section-light { background: #ffffff; }
+        .section-gray { background: #f5f7fa; }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #1a3a5c;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .section-subtitle {
+            color: #5a7a9a;
+            font-size: 1.05rem;
+            margin-bottom: 40px;
+        }
+        .section-header-center {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 50px;
+        }
 
         .about-grid {
             display: grid;
@@ -200,9 +192,9 @@
             align-items: center;
         }
         .about-grid .about-image {
-            border-radius: var(--radius-lg);
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: var(--shadow-hover);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
         }
         .about-grid .about-image img {
             width: 100%;
@@ -212,26 +204,45 @@
         .about-grid .about-content h2 {
             font-size: 2.2rem;
             font-weight: 800;
-            color: var(--primary);
+            color: #1a3a5c;
             margin-bottom: 10px;
             letter-spacing: -0.5px;
         }
         .about-grid .about-content .subtitle {
-            color: var(--text-light);
+            color: #5a7a9a;
             font-size: 1.05rem;
             margin-bottom: 20px;
             font-weight: 500;
         }
         .about-grid .about-content p {
-            color: var(--text-light);
+            color: #5a7a9a;
             margin-bottom: 15px;
             line-height: 1.8;
         }
-        .about-grid .about-content .btn {
-            margin-top: 10px;
+
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: #ffd700;
+            color: #1a3a5c;
+        }
+        .btn-primary:hover {
+            background: #f0c800;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(255,215,0,0.4);
         }
 
-        /* ===== VALUES ===== */
+        /* Values */
         .values-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -239,21 +250,21 @@
             margin-top: 30px;
         }
         .value-card {
-            background: var(--white);
+            background: #fff;
             padding: 30px 25px;
-            border-radius: var(--radius);
+            border-radius: 12px;
             text-align: center;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
         }
         .value-card:hover {
             transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
         }
         .value-card .icon {
             width: 64px;
             height: 64px;
-            background: var(--primary);
+            background: #1a3a5c;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -263,18 +274,18 @@
             font-size: 1.8rem;
         }
         .value-card h3 {
-            color: var(--primary);
+            color: #1a3a5c;
             font-size: 1.1rem;
             font-weight: 700;
             margin-bottom: 6px;
         }
         .value-card p {
-            color: var(--text-light);
+            color: #5a7a9a;
             font-size: 0.9rem;
             line-height: 1.6;
         }
 
-        /* ===== SERVICE TIMES ===== */
+        /* Service Times */
         .service-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -282,72 +293,40 @@
             margin-top: 30px;
         }
         .service-card {
-            background: var(--white);
+            background: #fff;
             padding: 30px 25px;
-            border-radius: var(--radius);
+            border-radius: 12px;
             text-align: center;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
         }
         .service-card:hover {
             transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
         }
         .service-card i {
             font-size: 2.5rem;
-            color: var(--primary);
+            color: #1a3a5c;
             margin-bottom: 12px;
         }
         .service-card h3 {
-            color: var(--primary);
+            color: #1a3a5c;
             font-size: 1.1rem;
             font-weight: 700;
         }
         .service-card .time {
             font-weight: 600;
-            color: var(--text);
+            color: #2c3e50;
             margin: 5px 0;
         }
         .service-card .desc {
             font-size: 0.9rem;
-            color: var(--text-light);
+            color: #5a7a9a;
         }
 
-        /* ===== BUTTONS ===== */
-        .btn {
-            display: inline-block;
-            padding: 12px 32px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-            border: none;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-family: var(--font);
-        }
-        .btn-primary {
-            background: var(--secondary);
-            color: var(--primary);
-        }
-        .btn-primary:hover {
-            background: var(--secondary-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(255,215,0,0.4);
-        }
-        .btn-secondary {
-            background: var(--primary-light);
-            color: #fff;
-        }
-        .btn-secondary:hover {
-            background: var(--primary-dark);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(44,95,138,0.4);
-        }
-
-        /* ===== FOOTER ===== */
+        /* Footer */
         .footer {
-            background: var(--primary-dark);
+            background: #0f2a44;
             color: #fff;
             padding: 50px 0 30px;
         }
@@ -355,7 +334,7 @@
             color: #fff;
             text-decoration: none;
             opacity: 0.7;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .footer a:hover { opacity: 1; }
         .footer-grid {
@@ -380,7 +359,7 @@
         }
         .footer .social a {
             opacity: 0.7;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
         .footer .social a:hover {
             opacity: 1;
@@ -407,17 +386,13 @@
             margin-top: 10px;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
             .about-grid {
                 grid-template-columns: 1fr;
                 gap: 40px;
                 text-align: center;
             }
-            .about-grid .about-image img {
-                height: 300px;
-            }
-            .value-card .icon { margin: 0 auto 15px; }
+            .about-grid .about-image img { height: 300px; }
         }
 
         @media (max-width: 768px) {
@@ -432,11 +407,9 @@
             .hamburger { display: block; }
             .page-hero h1 { font-size: 2rem; }
             .about-grid .about-content h2 { font-size: 1.6rem; }
-            .navbar .logo img { height: 40px; }
-            .navbar .logo-text { font-size: 1rem; }
-            .footer .bottom { flex-direction: column; text-align: center; }
             .values-grid { grid-template-columns: 1fr 1fr; }
             .service-grid { grid-template-columns: 1fr 1fr; }
+            .footer .bottom { flex-direction: column; text-align: center; }
         }
 
         @media (max-width: 480px) {
@@ -450,7 +423,6 @@
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loader-wrapper" id="loaderWrapper">
     <div class="loader"></div>
     <div class="loader-text">RCCG Overcomers HOC</div>
@@ -472,7 +444,7 @@
         </div>
         <ul class="nav-links" id="navLinks">
             <li><a href="/">Home</a></li>
-            <li><a href="/about" class="active" style="color:var(--primary);">About</a></li>
+            <li><a href="/about" style="color:#1a3a5c;">About</a></li>
             <li><a href="/sermons">Sermons</a></li>
             <li><a href="/events">Events</a></li>
             <li><a href="/media">Media</a></li>
@@ -503,18 +475,18 @@
                 <p>RCCG Overcomers HOC is a parish of the Redeemed Christian Church of God located at Oke Ado, Old Stadium Road, Ogbomoso, Oyo State.</p>
                 <p>We are a community of believers committed to winning souls for Christ, raising disciples, and transforming lives through the power of the Holy Spirit.</p>
                 <p>Our vision is to be a beacon of light in Ogbomoso and beyond, demonstrating God's love through worship, fellowship, and service.</p>
-                <a href="/contact" class="btn btn-primary">Visit Us</a>
+                <a href="/contact" class="btn btn-primary" style="margin-top:10px;">Visit Us</a>
             </div>
         </div>
     </div>
 </section>
 
-<!-- VALUES SECTION -->
+<!-- VALUES -->
 <section class="section section-gray">
     <div class="container">
-        <div style="text-align:center;max-width:700px;margin:0 auto 40px;">
-            <h2 class="animate-fade-up" style="font-size:2.2rem;font-weight:800;color:var(--primary);letter-spacing:-0.5px;">Our Values</h2>
-            <p class="animate-fade-up delay-1" style="color:var(--text-light);font-size:1.05rem;">What we stand for as a church</p>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Our Values</h2>
+            <p class="section-subtitle animate-fade-up delay-1">What we stand for as a church</p>
         </div>
         <div class="values-grid">
             <div class="value-card animate-fade-up delay-1">
@@ -544,9 +516,9 @@
 <!-- SERVICE TIMES -->
 <section class="section section-light">
     <div class="container">
-        <div style="text-align:center;max-width:700px;margin:0 auto 40px;">
-            <h2 class="animate-fade-up" style="font-size:2.2rem;font-weight:800;color:var(--primary);letter-spacing:-0.5px;">Service Times</h2>
-            <p class="animate-fade-up delay-1" style="color:var(--text-light);font-size:1.05rem;">Come worship with us</p>
+        <div class="section-header-center">
+            <h2 class="section-title animate-fade-up">Service Times</h2>
+            <p class="section-subtitle animate-fade-up delay-1">Come worship with us</p>
         </div>
         <div class="service-grid">
             <div class="service-card animate-fade-up delay-1">
@@ -597,7 +569,12 @@
             </div>
             <div>
                 <h4>Connect With Us</h4>
-                <div class="social" id="socialLinks"></div>
+                <div class="social" id="socialLinks">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
             </div>
         </div>
         <hr/>
@@ -610,18 +587,13 @@
 </footer>
 
 <script>
-    // ============================================
-    // HIDE LOADER
-    // ============================================
     window.addEventListener('load', function() {
         setTimeout(function() {
             document.getElementById('loaderWrapper').classList.add('hidden');
         }, 800);
     });
 
-    // ============================================
-    // SOCIAL LINKS
-    // ============================================
+    // Load Social Links
     fetch('/api/social-links')
         .then(res => res.json())
         .then(links => {
@@ -632,13 +604,6 @@
                         <i class="${link.icon}"></i>
                     </a>
                 `).join('');
-            } else {
-                container.innerHTML = `
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-whatsapp"></i></a>
-                `;
             }
         })
         .catch(() => {});
