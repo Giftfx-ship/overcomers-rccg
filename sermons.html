@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sermons - RCCG Overcomers HOC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #2c3e50;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        .loader-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a3a5c;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .loader-wrapper.hidden { opacity: 0; visibility: hidden; }
+        .loader {
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #ffd700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-text { color: #fff; margin-top: 15px; font-size: 0.8rem; opacity: 0.6; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .navbar .logo img { height: 50px; width: auto; }
+        .navbar .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #1a3a5c;
+            line-height: 1.2;
+        }
+        .navbar .logo-text small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: #5a7a9a;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #1a3a5c;
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a:hover { color: #1a3a5c; }
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #1a3a5c;
+        }
+
+        .page-hero {
+            background: linear-gradient(135deg, #1a3a5c 0%, #2c5f8a 100%);
+            color: #fff;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .page-hero h1 { font-size: 2.8rem; font-weight: 800; }
+        .page-hero p { opacity: 0.8; font-size: 1.1rem; margin-top: 10px; }
+
+        .section { padding: 60px 0; }
+        .section-gray { background: #f5f7fa; }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transition: all 0.4s ease;
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #eef2f7;
+        }
+        .card-body { padding: 20px 25px; }
+        .card-body h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: #1a3a5c;
+        }
+        .card-body .meta {
+            font-size: 0.85rem;
+            color: #7a8a9a;
+            margin-bottom: 10px;
+        }
+        .card-body p { color: #5a6a7a; font-size: 0.95rem; margin-bottom: 12px; }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-primary {
+            background: #ffd700;
+            color: #1a3a5c;
+        }
+        .btn-primary:hover {
+            background: #f0c800;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #2c5f8a;
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: #1a4a6f;
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 1rem;
+            transition: border 0.3s ease;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #1a3a5c;
+        }
+        .search-box button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 30px;
+            background: #1a3a5c;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .search-box button:hover { background: #0f2a44; }
+
+        .skeleton-image { height: 200px; background: #e2e8f0; border-radius: 8px; animation: pulse 1.5s ease-in-out infinite; }
+        .skeleton-text { height: 12px; margin: 8px 0; background: #e2e8f0; border-radius: 4px; animation: pulse 1.5s ease-in-out infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .footer {
+            background: #1a3a5c;
+            color: #fff;
+            padding: 40px 0;
+            margin-top: 40px;
+        }
+        .footer a { color: #fff; text-decoration: none; opacity: 0.8; }
+        .footer a:hover { opacity: 1; }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        .footer hr { border-color: rgba(255,255,255,0.1); margin: 20px 0; }
+        .footer .social { display: flex; gap: 15px; font-size: 1.5rem; }
+        .footer .dev-credit {
+            text-align: center;
+            opacity: 0.3;
+            font-size: 0.7rem;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                padding: 20px 0;
+                gap: 15px;
+            }
+            .nav-links.open { display: flex; }
+            .hamburger { display: block; }
+            .page-hero h1 { font-size: 2rem; }
+            .search-box { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="loader-wrapper" id="loaderWrapper">
+    <div class="loader"></div>
+    <div class="loader-text">RCCG Overcomers HOC</div>
+</div>
+
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="logo">
+            <img src="/images/logo.webp" alt="RCCG Overcomers HOC" onerror="this.style.display='none'"/>
+            <span class="logo-text">
+                RCCG Overcomers HOC
+                <small>Oke Ado, Ogbomoso</small>
+            </span>
+        </a>
+        <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+            <i class="fas fa-bars"></i>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/sermons">Sermons</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/media">Media</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<section class="page-hero" style="animation: fadeIn 0.8s ease forwards;">
+    <div class="container">
+        <h1>Sermons</h1>
+        <p>Listen to powerful messages from God's Word</p>
+    </div>
+</section>
+
+<section class="section section-gray">
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search sermons by title or preacher..." onkeyup="filterSermons()"/>
+            <button onclick="filterSermons()"><i class="fas fa-search"></i> Search</button>
+        </div>
+        <div id="sermonsContainer" class="card-grid">
+            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+            <div class="card"><div class="skeleton-image"></div><div class="card-body"><div class="skeleton-text" style="width:70%;"></div><div class="skeleton-text" style="width:50%;"></div><div class="skeleton-text" style="width:80%;"></div></div></div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div>
+                <h4 style="margin-bottom: 15px;">RCCG Overcomers HOC</h4>
+                <p style="opacity: 0.8; font-size: 0.9rem;">Oke Ado, Old Stadium Road<br/>Ogbomoso, Oyo State</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Quick Links</h4>
+                <ul style="list-style: none; opacity: 0.8; font-size: 0.9rem;">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/sermons">Sermons</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 15px;">Connect With Us</h4>
+                <div class="social" id="socialLinks">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <p style="text-align: center; opacity: 0.6; font-size: 0.85rem;">&copy; 2026 RCCG Overcomers HOC. All rights reserved.</p>
+        <div class="dev-credit">Developed by Dev Gift Team</div>
+    </div>
+</footer>
+
+<script>
+    window.addEventListener('load', function() {
+        setTimeout(() => {
+            document.getElementById('loaderWrapper').classList.add('hidden');
+        }, 600);
+    });
+
+    let allSermons = [];
+
+    function renderSermons(sermons) {
+        const container = document.getElementById('sermonsContainer');
+        if (sermons.length === 0) {
+            container.innerHTML = `
+                <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <h3>No sermons found</h3>
+                    <p style="color: #7a8a9a;">Check back soon for new messages.</p>
+                </div>
+            `;
+            return;
+        }
+        container.innerHTML = sermons.map((s, i) => `
+            <div class="card" style="animation: fadeUp 0.6s ease forwards; animation-delay: ${(i % 3) * 0.1}s;">
+                ${s.imageUrl ? `<img src="${s.imageUrl}" alt="${s.title}" class="card-image"/>` : ''}
+                <div class="card-body">
+                    <h3>${s.title}</h3>
+                    <p class="meta"><i class="fas fa-user"></i> ${s.preacher} &bull; ${new Date(s.date).toLocaleDateString()}</p>
+                    <p>${s.description || 'Listen to this powerful message from God\'s Word.'}</p>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
+                        ${s.audioUrl ? `<a href="${s.audioUrl}" class="btn btn-primary" target="_blank"><i class="fas fa-play"></i> Listen</a>` : ''}
+                        ${s.videoUrl ? `<a href="${s.videoUrl}" class="btn btn-secondary" target="_blank"><i class="fas fa-video"></i> Watch</a>` : ''}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterSermons() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        if (!query) {
+            renderSermons(allSermons);
+            return;
+        }
+        const filtered = allSermons.filter(s => 
+            s.title.toLowerCase().includes(query) || 
+            s.preacher.toLowerCase().includes(query)
+        );
+        renderSermons(filtered);
+    }
+
+    fetch('/api/sermons')
+        .then(res => res.json())
+        .then(data => {
+            allSermons = data;
+            renderSermons(data);
+        })
+        .catch(() => {
+            document.getElementById('sermonsContainer').innerHTML = `
+                <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <h3>Unable to load sermons</h3>
+                    <p style="color: #7a8a9a;">Please refresh the page.</p>
+                </div>
+            `;
+        });
+
+    fetch('/api/social-links')
+        .then(res => res.json())
+        .then(links => {
+            const container = document.getElementById('socialLinks');
+            container.innerHTML = '';
+            links.forEach(link => {
+                const a = document.createElement('a');
+                a.href = link.url || '#';
+                a.target = '_blank';
+                a.rel = 'noopener';
+                a.innerHTML = `<i class="${link.icon}"></i>`;
+                container.appendChild(a);
+            });
+        })
+        .catch(() => {});
+</script>
+</body>
+</html>
